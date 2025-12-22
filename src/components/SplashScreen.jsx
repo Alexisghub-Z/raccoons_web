@@ -24,7 +24,7 @@ function SplashScreen({ onFinish }) {
   return (
     <div className={`splash ${fadeOut ? 'fade-out' : ''}`}>
       <div className="splash_logo">
-        <img src="/logo.png" alt="Raccoons" className="splash_logo_img" />
+        <img src="/logo.jpg" alt="Raccoons" className="splash_logo_img" />
         <span className="splash_logo_text">RACCOONS</span>
       </div>
       <div className="splash_svg">

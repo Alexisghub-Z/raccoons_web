@@ -31,13 +31,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 1.5rem;
   opacity: 1;
   will-change: opacity;
-  -webkit-animation: logo 0.3s ease-in 1.5s forwards, off 0.6s ease-in-out 3.2s forwards;
-  -moz-animation: logo 0.3s ease-in 1.5s forwards, off 0.6s ease-in-out 3.2s forwards;
-  -o-animation: logo 0.3s ease-in 1.5s forwards, off 0.6s ease-in-out 3.2s forwards;
-  animation: logo 0.3s ease-in 1.5s forwards, off 0.6s ease-in-out 3.2s forwards;
+  -webkit-animation: logoColor 0.3s ease-in 1.5s forwards, off 0.6s ease-in-out 3.2s forwards;
+  -moz-animation: logoColor 0.3s ease-in 1.5s forwards, off 0.6s ease-in-out 3.2s forwards;
+  -o-animation: logoColor 0.3s ease-in 1.5s forwards, off 0.6s ease-in-out 3.2s forwards;
+  animation: logoColor 0.3s ease-in 1.5s forwards, off 0.6s ease-in-out 3.2s forwards;
 }
 
 .splash_logo_img {
@@ -284,25 +285,25 @@
   }
 }
 
-@-webkit-keyframes logo {
+@-webkit-keyframes logoColor {
   100% {
     color: var(--color-bg-primary);
   }
 }
 
-@-moz-keyframes logo {
+@-moz-keyframes logoColor {
   100% {
     color: var(--color-bg-primary);
   }
 }
 
-@-o-keyframes logo {
+@-o-keyframes logoColor {
   100% {
     color: var(--color-bg-primary);
   }
 }
 
-@keyframes logo {
+@keyframes logoColor {
   100% {
     color: var(--color-bg-primary);
   }
