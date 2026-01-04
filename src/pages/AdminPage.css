@@ -1,0 +1,742 @@
+/* Admin Page Login */
+.admin-page-login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  padding: 2rem;
+}
+
+.admin-login-container {
+  background-color: #2a2a2a;
+  border: 2px solid #dc2626;
+  border-radius: 8px;
+  padding: 3rem;
+  max-width: 450px;
+  width: 100%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.admin-login-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.admin-login-header h1 {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, var(--color-red) 0%, var(--color-red-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.admin-login-header p {
+  color: var(--color-text-secondary);
+  font-size: 1.1rem;
+}
+
+.admin-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin-login-btn {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.1rem;
+  background: linear-gradient(135deg, var(--color-red) 0%, var(--color-red-light) 100%);
+}
+
+.admin-back-btn {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1rem;
+  background: transparent;
+  border: 2px solid #a0a0a0;
+  color: #e5e5e5;
+}
+
+.admin-back-btn:hover {
+  background: #333333;
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+/* Admin Page */
+.admin-page {
+  min-height: 100vh;
+  background-color: #1a1a1a;
+  padding: 2rem;
+}
+
+.admin-page-header {
+  background-color: #2a2a2a;
+  border: 2px solid #dc2626;
+  border-radius: 8px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.admin-page-title h1 {
+  font-size: 2rem;
+  background: linear-gradient(135deg, var(--color-red) 0%, var(--color-red-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
+
+.admin-page-title p {
+  color: var(--color-text-secondary);
+}
+
+.admin-page-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Admin Tabs */
+.admin-tabs {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem 3rem;
+  background-color: var(--color-bg-primary);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.admin-tab {
+  padding: 0.875rem 2rem;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.admin-tab:hover {
+  border-color: var(--color-red);
+  background-color: var(--color-bg-secondary);
+}
+
+.admin-tab.active {
+  background: linear-gradient(135deg, var(--color-red) 0%, var(--color-red-light) 100%);
+  border-color: var(--color-red);
+  color: white;
+}
+
+.admin-new-btn {
+  background: linear-gradient(135deg, var(--color-red) 0%, var(--color-red-light) 100%);
+  padding: 0.75rem 1.5rem;
+  white-space: nowrap;
+}
+
+.admin-logout-btn {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  padding: 0.75rem 1.5rem;
+}
+
+.admin-logout-btn:hover {
+  background: var(--color-bg-secondary);
+  border-color: var(--color-text-primary);
+  color: var(--color-text-primary);
+}
+
+.admin-page-content {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Form Container */
+.admin-form-container {
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 12px var(--color-shadow);
+}
+
+.admin-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.admin-form-container h2 {
+  color: var(--color-text-primary);
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+/* WhatsApp Toggles */
+.whatsapp-toggles {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.whatsapp-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-checkbox {
+  display: none;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 50px;
+  height: 26px;
+  background-color: var(--color-bg-tertiary);
+  border-radius: 50px;
+  transition: background-color 0.3s ease;
+  border: 2px solid var(--color-bg-tertiary);
+}
+
+.toggle-switch::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: white;
+  top: 1px;
+  left: 2px;
+  transition: transform 0.3s ease;
+}
+
+.toggle-checkbox:checked + .toggle-switch {
+  background-color: #10b981;
+  border-color: #10b981;
+}
+
+.toggle-checkbox:checked + .toggle-switch::before {
+  transform: translateX(24px);
+}
+
+.toggle-text {
+  color: var(--color-text-primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.admin-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-input-group label {
+  color: var(--color-text-primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.admin-input-group input,
+.admin-input-group select,
+.admin-input-group textarea {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  padding: 0.75rem 1rem;
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: 1rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.admin-input-group input:focus,
+.admin-input-group select:focus,
+.admin-input-group textarea:focus {
+  outline: none;
+  border-color: var(--color-red);
+  background-color: var(--color-bg-primary);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.admin-input-group textarea {
+  resize: vertical;
+}
+
+.admin-form-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.admin-submit-btn {
+  flex: 1;
+  background: linear-gradient(135deg, var(--color-red) 0%, var(--color-red-light) 100%);
+  padding: 1rem 2rem;
+}
+
+.admin-cancel-btn {
+  flex: 1;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  padding: 1rem 2rem;
+}
+
+.admin-cancel-btn:hover {
+  background: var(--color-bg-secondary);
+  border-color: var(--color-text-primary);
+  color: var(--color-text-primary);
+}
+
+/* Services Section */
+.admin-services-section {
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 2px 12px var(--color-shadow);
+}
+
+.admin-services-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.admin-services-header h2 {
+  color: var(--color-text-primary);
+  font-size: 1.5rem;
+}
+
+.admin-services-count {
+  background-color: var(--color-red);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.admin-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--color-text-muted);
+  background-color: var(--color-bg-secondary);
+  border-radius: 12px;
+  border: 2px dashed var(--color-border);
+}
+
+.admin-empty p:first-child {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.admin-services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.admin-service-card {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.admin-service-card:hover {
+  border-color: var(--color-red);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px var(--color-shadow), 0 0 0 1px var(--color-red);
+}
+
+.admin-service-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.admin-service-header h3 {
+  color: var(--color-text-primary);
+  font-size: 1.2rem;
+  margin-bottom: 0.3rem;
+  letter-spacing: 1px;
+  font-family: monospace;
+}
+
+.admin-service-client {
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+}
+
+.admin-status-badge {
+  padding: 0.4rem 1rem;
+  border-radius: 50px;
+  color: white;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.admin-service-body {
+  display: grid;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-service-info {
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.admin-service-info strong {
+  color: var(--color-text-primary);
+  margin-right: 0.5rem;
+}
+
+.admin-service-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.admin-edit-btn,
+.admin-delete-btn,
+.admin-pdf-btn,
+.admin-whatsapp-btn {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+}
+
+.admin-edit-btn {
+  background: linear-gradient(135deg, #06b6d4 0%, #0dcaf0 100%);
+}
+
+.admin-pdf-btn {
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+}
+
+.admin-whatsapp-btn {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+}
+
+.admin-delete-btn {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.admin-edit-btn:hover {
+  background: linear-gradient(135deg, #0dcaf0 0%, #06b6d4 100%);
+}
+
+.admin-pdf-btn:hover {
+  background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+}
+
+.admin-whatsapp-btn:hover {
+  background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+}
+
+.admin-delete-btn:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+}
+
+/* Evidence Preview */
+.evidence-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.evidence-item {
+  position: relative;
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.evidence-item:hover {
+  border-color: var(--color-red);
+  box-shadow: 0 4px 12px var(--color-shadow);
+}
+
+.evidence-item img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.evidence-item input {
+  width: 100%;
+  padding: 0.5rem;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+.evidence-item input:focus {
+  outline: none;
+  border-color: var(--color-red);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.remove-evidence-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background-color: var(--color-red);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.remove-evidence-btn:hover {
+  background-color: var(--color-red-light);
+  transform: scale(1.1);
+}
+
+/* PDF Upload Styles */
+.admin-pdf-upload {
+  margin-top: 0.5rem;
+}
+
+.admin-pdf-upload-area {
+  border: 2px dashed #4a5568;
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+  background-color: #2a2a2a;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.admin-pdf-upload-area:hover {
+  border-color: var(--color-red);
+  background-color: rgba(220, 38, 38, 0.05);
+}
+
+.admin-pdf-input {
+  display: none;
+}
+
+.admin-pdf-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+  cursor: pointer;
+  color: #a0a0a0;
+  font-size: 0.95rem;
+}
+
+.upload-icon {
+  font-size: 2rem;
+}
+
+.admin-pdf-preview {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #2a2a2a;
+  border: 2px solid var(--color-red);
+  border-radius: 8px;
+}
+
+.pdf-icon {
+  font-size: 2rem;
+}
+
+.pdf-name {
+  flex: 1;
+  color: #e5e5e5;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-remove-pdf-btn {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.admin-remove-pdf-btn:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+  transform: scale(1.1);
+}
+
+.admin-help-text {
+  display: block;
+  margin-top: 0.5rem;
+  color: #a0a0a0;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.admin-pdf-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pdf-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .admin-services-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-page {
+    padding: 1rem;
+  }
+
+  .admin-page-header {
+    padding: 1.5rem;
+  }
+
+  .admin-page-title h1 {
+    font-size: 1.5rem;
+  }
+
+  .admin-page-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .admin-new-btn,
+  .admin-logout-btn {
+    width: 100%;
+  }
+
+  .admin-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-service-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .admin-form-actions {
+    flex-direction: column;
+  }
+
+  .admin-login-container {
+    padding: 2rem;
+  }
+
+  .admin-service-actions {
+    flex-wrap: wrap;
+  }
+
+  .admin-edit-btn,
+  .admin-delete-btn,
+  .admin-pdf-btn,
+  .admin-whatsapp-btn {
+    min-width: 45%;
+  }
+
+  .evidence-preview {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-form-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .toggle-text {
+    font-size: 0.85rem;
+  }
+}

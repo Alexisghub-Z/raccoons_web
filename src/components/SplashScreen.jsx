@@ -38,8 +38,8 @@ function SplashScreen({ onFinish }) {
         </svg>
       </div>
       <div className="text">
-        <p>Taller de</p>
-        <p>Motocicletas</p>
+        <p>Ingenio Sin</p>
+        <p>Limites</p>
       </div>
     </div>
   );

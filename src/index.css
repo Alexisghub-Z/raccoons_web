@@ -12,8 +12,8 @@
   --color-blue: #2563eb;
   --color-blue-light: #3b82f6;
 
-  --color-red: #dc2626;
-  --color-red-light: #ef4444;
+  --color-red: #1e40af;
+  --color-red-light: #3b82f6;
 
   --color-cyan: #06b6d4;
   --color-cyan-light: #22d3ee;
@@ -37,6 +37,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 a {
