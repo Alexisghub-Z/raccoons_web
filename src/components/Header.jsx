@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { MessageCircle, Instagram } from 'lucide-react';
+import { Instagram } from 'lucide-react';
 import './Header.css';
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [headerHidden, setHeaderHidden] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -37,8 +38,31 @@ function Header() {
     }
   };
 
+  // Detectar si el usuario está en la sección de la galería
+  useEffect(() => {
+    const handleScroll = () => {
+      const gallery = document.querySelector('.gallery-grid');
+      if (!gallery) return;
+
+      const galleryRect = gallery.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      // Ocultar el header si la galería está visible en el viewport
+      if (galleryRect.top < windowHeight * 0.5 && galleryRect.bottom > windowHeight * 0.5) {
+        setHeaderHidden(true);
+      } else {
+        setHeaderHidden(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Ejecutar una vez al montar
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <header className="header">
+    <header className={`header ${headerHidden ? 'hidden' : ''}`}>
       <div className="header-container">
         <div className="logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
           <img src="/logo.png" alt="Raccoons Logo" className="logo-img" />
@@ -61,17 +85,7 @@ function Header() {
               }}
             >
               <Instagram size={24} />
-              <span>@raccoons_oax</span>
-            </button>
-            <button
-              className="mobile-social-btn whatsapp"
-              onClick={() => {
-                window.open('https://wa.me/12345678900?text=Hola,%20me%20gustaría%20información%20sobre%20sus%20servicios', '_blank');
-                closeMenu();
-              }}
-            >
-              <MessageCircle size={24} />
-              <span>WhatsApp</span>
+              <span>Síguenos en Instagram</span>
             </button>
           </div>
         </nav>
@@ -81,15 +95,8 @@ function Header() {
             className="cta-button instagram-button"
             onClick={() => window.open('https://www.instagram.com/raccoons_oax/', '_blank')}
           >
-            <Instagram size={18} />
+            <Instagram size={20} />
             <span>@raccoons_oax</span>
-          </button>
-          <button
-            className="cta-button whatsapp-button"
-            onClick={() => window.open('https://wa.me/12345678900?text=Hola,%20me%20gustaría%20información%20sobre%20sus%20servicios', '_blank')}
-          >
-            <MessageCircle size={18} />
-            <span>WhatsApp</span>
           </button>
         </div>
 

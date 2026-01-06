@@ -1,5 +1,8 @@
+import { useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
+import Stats from '../components/Stats';
+import MosaicGallery from '../components/MosaicGallery';
 import {
   Wrench,
   Settings,
@@ -14,12 +17,58 @@ import {
   Bike,
   MapPin,
   Phone,
-  Mail
+  Mail,
+  MessageCircle,
+  ArrowRight
 } from 'lucide-react';
 import './HomePage.css';
 
 function HomePage() {
   const navigate = useNavigate();
+  const heroRef = useRef(null);
+
+  // Optimización: Memoización de handlers
+  const handleWhatsAppClick = useCallback(() => {
+    window.open('https://wa.me/12345678900?text=Hola,%20me%20gustaría%20agendar%20una%20cita%20para%20mi%20moto', '_blank');
+  }, []);
+
+  const handleTrackingClick = useCallback(() => {
+    navigate('/seguimiento');
+  }, [navigate]);
+
+  // Optimización: Parallax con throttling para mejor performance
+  useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking && heroRef.current) {
+        window.requestAnimationFrame(() => {
+          const scrollPosition = window.scrollY;
+          const heroHeight = heroRef.current?.offsetHeight || window.innerHeight;
+          const scrollPercentage = Math.min(scrollPosition / heroHeight, 1);
+
+          // Parallax effect - move slower than scroll
+          const parallaxY = scrollPosition * 0.5;
+
+          // Fade out and scale down
+          const opacity = 1 - scrollPercentage * 1.2;
+          const scale = 1 - scrollPercentage * 0.1;
+
+          if (heroRef.current) {
+            heroRef.current.style.transform = `translateY(${parallaxY}px) scale(${scale})`;
+            heroRef.current.style.opacity = opacity;
+          }
+
+          ticking = false;
+        });
+
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <div className="home-page">
@@ -27,28 +76,34 @@ function HomePage() {
 
       {/* Hero Section */}
       <section id="inicio" className="hero">
-        <div className="hero-content">
-          <h1 className="hero-title">RACCOONS</h1>
-          <p className="hero-subtitle">Taller Especializado en Motocicletas</p>
+        <div className="hero-content" ref={heroRef}>
+          <div className="hero-badge">Taller Profesional</div>
+          <h1 className="hero-title">
+            <span className="hero-title-main">RACCOONS</span>
+            <span className="hero-title-sub">Especialistas en Motocicletas</span>
+          </h1>
           <p className="hero-description">
             Servicio profesional, pasión por las motos y compromiso con la excelencia
           </p>
           <div className="hero-buttons">
-            <button
-              className="hero-cta"
-              onClick={() => window.open('https://wa.me/12345678900?text=Hola,%20me%20gustaría%20agendar%20una%20cita%20para%20mi%20moto', '_blank')}
-            >
-              Contactar por WhatsApp
+            <button className="hero-cta" onClick={handleWhatsAppClick}>
+              <MessageCircle size={20} />
+              <span>Contactar por WhatsApp</span>
+              <ArrowRight size={18} className="btn-arrow" />
             </button>
-            <button className="hero-cta-secondary" onClick={() => navigate('/seguimiento')}>
-              Seguimiento de Servicio
+            <button className="hero-cta-secondary" onClick={handleTrackingClick}>
+              <Search size={20} />
+              <span>Seguimiento de Servicio</span>
             </button>
           </div>
         </div>
       </section>
 
+      {/* Stats Section */}
+      <Stats />
+
       {/* Servicios Section */}
-      <section id="servicios" className="services">
+      <section id="servicios" className="services fade-in">
         <div className="container">
           <h2 className="section-title">Nuestros Servicios</h2>
           <p className="section-subtitle">
@@ -108,7 +163,7 @@ function HomePage() {
       </section>
 
       {/* Brands Carousel Section */}
-      <section className="brands-section">
+      <section className="brands-section fade-in">
         <div className="container">
           <h2 className="section-title">Marcas con las que Trabajamos</h2>
           <p className="section-subtitle">
@@ -178,7 +233,7 @@ function HomePage() {
       </section>
 
       {/* About Section */}
-      <section id="nosotros" className="about">
+      <section id="nosotros" className="about fade-in">
         <div className="container">
           <div className="about-content">
             <div className="about-text">
@@ -254,6 +309,9 @@ function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Workshop Gallery Section */}
+      <MosaicGallery />
 
       {/* Service Tracking Section */}
       <section className="tracking-section">
@@ -352,7 +410,7 @@ function HomePage() {
       </section>
 
       {/* Contact Section */}
-      <section id="contacto" className="contact">
+      <section id="contacto" className="contact fade-in">
         <div className="container">
           <h2 className="section-title">Contáctanos y Encuéntranos</h2>
 
@@ -448,7 +506,7 @@ function HomePage() {
             </div>
           </div>
           <div className="footer-bottom">
-            <p>&copy; 2024 Raccoons. Todos los derechos reservados.</p>
+            <p>&copy; {new Date().getFullYear()} Raccoons. Todos los derechos reservados.</p>
             <Link to="/admin" className="admin-link">Panel de Administración</Link>
           </div>
         </div>

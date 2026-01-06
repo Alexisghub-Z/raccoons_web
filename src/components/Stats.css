@@ -1,0 +1,500 @@
+/* Stats Section - Modern Animated Statistics */
+.stats-section {
+  position: relative;
+  padding: 6rem 0;
+  background: #ffffff;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Gráfica animada de fondo */
+.stats-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  opacity: 0.3;
+}
+
+.stats-graph {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Animación de las líneas de la gráfica - sutil */
+.graph-line {
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  animation: drawLine 4s ease-out forwards;
+}
+
+.graph-line-1 {
+  animation-delay: 0s;
+}
+
+.graph-line-2 {
+  animation-delay: 0s;
+}
+
+.graph-line-3 {
+  animation-delay: 0s;
+}
+
+@keyframes drawLine {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Puntos animados en las líneas - removidos para simplicidad */
+.graph-dot {
+  display: none;
+}
+
+/* Partículas flotantes - removidas */
+.particles {
+  display: none;
+}
+
+/* Contenedor de estadísticas */
+.stats-section .container {
+  position: relative;
+  z-index: 2;
+}
+
+/* Header de la sección */
+.stats-header {
+  text-align: center;
+  margin-bottom: 5rem;
+}
+
+.stats-title {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #10b981 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+  letter-spacing: -1px;
+  animation: fadeInUp 0.8s ease-out;
+  position: relative;
+  display: inline-block;
+}
+
+.stats-title::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6 0%, #10b981 100%);
+  border-radius: 2px;
+  animation: fadeInUp 0.8s ease-out 0.3s backwards;
+}
+
+.stats-header {
+  text-align: center;
+  margin-bottom: 5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stats-subtitle {
+  font-size: 1.2rem;
+  color: #4a5568;
+  max-width: 600px;
+  margin: 1.5rem auto 0;
+  line-height: 1.8;
+  animation: fadeInUp 0.8s ease-out 0.2s backwards;
+}
+
+/* Grid de estadísticas */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Tarjeta de estadística */
+.stat-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  padding: 3rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.8s ease-out backwards;
+}
+
+/* Línea decorativa superior con color */
+.stat-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+  border-radius: 24px 24px 0 0;
+}
+
+/* Efecto de brillo al pasar el mouse */
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(30, 64, 175, 0.05) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+.stat-card:hover::before {
+  opacity: 1;
+}
+
+.stat-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(30, 64, 175, 0.2);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Líneas decorativas de color para cada tarjeta */
+.stat-card:nth-child(1)::after {
+  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+}
+.stat-card:nth-child(2)::after {
+  background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+}
+.stat-card:nth-child(3)::after {
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+}
+.stat-card:nth-child(4)::after {
+  background: linear-gradient(90deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+/* Mantener el contenido por encima del ::before */
+.stat-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Icono de la estadística */
+.stat-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 2rem;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover .stat-icon-wrapper {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.1) 100%);
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
+}
+
+.stat-icon {
+  color: #3b82f6;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover .stat-icon {
+  color: #2563eb;
+  filter: drop-shadow(0 4px 8px rgba(59, 130, 246, 0.3));
+}
+
+/* Colores específicos para cada tarjeta */
+/* Tarjeta 1 - Azul (Motos Reparadas) */
+.stat-card:nth-child(1) .stat-icon-wrapper {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+}
+.stat-card:nth-child(1) .stat-icon {
+  color: #3b82f6;
+}
+.stat-card:nth-child(1):hover .stat-icon-wrapper {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.1) 100%);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25);
+}
+.stat-card:nth-child(1):hover .stat-icon {
+  color: #2563eb;
+}
+.stat-card:nth-child(1):hover .stat-number {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Tarjeta 2 - Naranja/Amarillo (Años de Experiencia) */
+.stat-card:nth-child(2) .stat-icon-wrapper {
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(251, 146, 60, 0.05) 100%);
+}
+.stat-card:nth-child(2) .stat-icon {
+  color: #f59e0b;
+}
+.stat-card:nth-child(2):hover .stat-icon-wrapper {
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.2) 0%, rgba(251, 146, 60, 0.1) 100%);
+  box-shadow: 0 8px 24px rgba(251, 146, 60, 0.25);
+}
+.stat-card:nth-child(2):hover .stat-icon {
+  color: #d97706;
+}
+.stat-card:nth-child(2):hover .stat-number {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Tarjeta 3 - Verde (Clientes Satisfechos) */
+.stat-card:nth-child(3) .stat-icon-wrapper {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+}
+.stat-card:nth-child(3) .stat-icon {
+  color: #10b981;
+}
+.stat-card:nth-child(3):hover .stat-icon-wrapper {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25);
+}
+.stat-card:nth-child(3):hover .stat-icon {
+  color: #059669;
+}
+.stat-card:nth-child(3):hover .stat-number {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Tarjeta 4 - Morado (Tiempo Promedio) */
+.stat-card:nth-child(4) .stat-icon-wrapper {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
+}
+.stat-card:nth-child(4) .stat-icon {
+  color: #8b5cf6;
+}
+.stat-card:nth-child(4):hover .stat-icon-wrapper {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0.1) 100%);
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.25);
+}
+.stat-card:nth-child(4):hover .stat-icon {
+  color: #7c3aed;
+}
+.stat-card:nth-child(4):hover .stat-number {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Número de la estadística */
+.stat-number {
+  font-size: 4rem;
+  font-weight: 900;
+  color: #1a1a1a;
+  line-height: 1;
+  margin-bottom: 1rem;
+  letter-spacing: -2px;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover .stat-number {
+  color: #1e40af;
+}
+
+/* Etiqueta de la estadística */
+.stat-label {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+/* Descripción de la estadística */
+.stat-description {
+  font-size: 0.95rem;
+  color: #718096;
+  line-height: 1.6;
+}
+
+/* Animación de fade in up */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .stats-section {
+    padding: 6rem 0;
+  }
+
+  .stats-title {
+    font-size: 2.5rem;
+  }
+
+  .stats-grid {
+    gap: 2.5rem;
+  }
+
+  .stat-card {
+    padding: 2.5rem 1.8rem;
+  }
+
+  .stat-number {
+    font-size: 3.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-section {
+    padding: 5rem 0;
+  }
+
+  .stats-header {
+    margin-bottom: 3.5rem;
+  }
+
+  .stats-title {
+    font-size: 2rem;
+  }
+
+  .stats-subtitle {
+    font-size: 1.05rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+  }
+
+  .stat-card {
+    padding: 2.2rem 1.5rem;
+  }
+
+  .stat-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .stat-number {
+    font-size: 3rem;
+  }
+
+  .stat-label {
+    font-size: 0.85rem;
+  }
+
+  .stat-description {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-section {
+    padding: 4rem 0;
+  }
+
+  .stats-header {
+    margin-bottom: 3rem;
+  }
+
+  .stats-title {
+    font-size: 1.8rem;
+  }
+
+  .stats-subtitle {
+    font-size: 1rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .stat-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .stat-icon-wrapper {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 1.2rem;
+  }
+
+  .stat-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .stat-number {
+    font-size: 2.8rem;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+  }
+
+  .stat-description {
+    font-size: 0.85rem;
+  }
+}
+
+/* Reducir animaciones en dispositivos con preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  .stat-card,
+  .stats-title,
+  .stats-subtitle,
+  .graph-line,
+  .graph-dot,
+  .particle {
+    animation: none !important;
+  }
+
+  .stat-card:hover {
+    transform: none;
+  }
+}

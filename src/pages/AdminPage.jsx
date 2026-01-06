@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { sendTrackingCodeWhatsApp } from '../services/whatsappService';
 import { sendTrackingCodeBackend } from '../services/backendWhatsappService';
+import { getStatusColor, getStatusText } from '../utils/statusHelpers';
 import './AdminPage.css';
 
 function AdminPage() {
@@ -303,27 +304,6 @@ function AdminPage() {
     localStorage.setItem('raccoons_use_backend_whatsapp', newValue.toString());
   };
 
-  const getStatusColor = (status) => {
-    const colors = {
-      'recibido': '#06b6d4',
-      'en_diagnostico': '#f59e0b',
-      'en_reparacion': '#ef4444',
-      'listo': '#10b981',
-      'entregado': '#6366f1'
-    };
-    return colors[status] || '#a0a0a0';
-  };
-
-  const getStatusText = (status) => {
-    const texts = {
-      'recibido': 'Recibido',
-      'en_diagnostico': 'En Diagnóstico',
-      'en_reparacion': 'En Reparación',
-      'listo': 'Listo para Entrega',
-      'entregado': 'Entregado'
-    };
-    return texts[status] || status;
-  };
 
   if (!isAuthenticated) {
     return (

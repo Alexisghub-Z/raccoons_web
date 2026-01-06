@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { getStatusColor, getStatusText } from '../utils/statusHelpers';
 import './ServiceTracking.css';
 
 function ServiceTracking({ onClose }) {
@@ -43,28 +44,6 @@ function ServiceTracking({ onClose }) {
       }
       setIsSearching(false);
     }, 500);
-  };
-
-  const getStatusColor = (status) => {
-    const colors = {
-      'recibido': '#06b6d4',
-      'en_diagnostico': '#f59e0b',
-      'en_reparacion': '#ef4444',
-      'listo': '#10b981',
-      'entregado': '#6366f1'
-    };
-    return colors[status] || '#a0a0a0';
-  };
-
-  const getStatusText = (status) => {
-    const texts = {
-      'recibido': 'Recibido',
-      'en_diagnostico': 'En Diagnóstico',
-      'en_reparacion': 'En Reparación',
-      'listo': 'Listo para Entrega',
-      'entregado': 'Entregado'
-    };
-    return texts[status] || status;
   };
 
   const getStatusIcon = (status) => {

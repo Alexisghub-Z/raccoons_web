@@ -1,0 +1,20 @@
+.interactive-grid-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0; /* Detrás del contenido (contenido tiene z-index: 10) */
+  overflow: hidden;
+  pointer-events: none; /* No bloquea clics - eventos se manejan vía document */
+}
+
+.interactive-grid-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none; /* No bloquea clics */
+}

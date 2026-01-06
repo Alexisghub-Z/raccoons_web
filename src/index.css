@@ -18,6 +18,20 @@
   --color-cyan: #06b6d4;
   --color-cyan-light: #22d3ee;
 
+  /* Borders */
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-shadow: rgba(0, 0, 0, 0.2);
+
+  /* Transitions - Optimized */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 4px var(--color-shadow);
+  --shadow-md: 0 4px 16px var(--color-shadow);
+  --shadow-lg: 0 8px 24px var(--color-shadow);
+
   /* Typography */
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -31,6 +45,7 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-display: swap; /* Optimización de carga de fuentes */
 }
 
 * {
@@ -41,6 +56,8 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 a {
@@ -59,6 +76,8 @@ body {
   min-height: 100vh;
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 h1 {

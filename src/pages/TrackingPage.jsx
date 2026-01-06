@@ -1,13 +1,54 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Download, Search, Inbox, Cog, CheckCircle, Bike, Package } from 'lucide-react';
 import Header from '../components/Header';
+import InteractiveGrid from '../components/InteractiveGrid';
+import { getStatusColor, getStatusText } from '../utils/statusHelpers';
+import { useCookie } from '../hooks/useCookie';
 import './TrackingPage.css';
 
 function TrackingPage() {
-  const [trackingCode, setTrackingCode] = useState('');
+  const [lastTrackingCode, setLastTrackingCode] = useCookie('raccoons_last_tracking_code', '', 90);
+  const [trackingCode, setTrackingCode] = useState(lastTrackingCode || '');
   const [serviceData, setServiceData] = useState(null);
   const [error, setError] = useState('');
   const [isSearching, setIsSearching] = useState(false);
+  const heroContentRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!heroContentRef.current) return;
+
+      const scrollPosition = window.scrollY;
+      const heroHeight = window.innerHeight * 0.6; // 60vh
+      const scrollPercentage = Math.min(scrollPosition / heroHeight, 1);
+
+      // Parallax effect - move slower than scroll
+      const parallaxY = scrollPosition * 0.4;
+
+      // Fade out and slight scale
+      const opacity = 1 - scrollPercentage * 1.3;
+      const scale = 1 - scrollPercentage * 0.08;
+
+      heroContentRef.current.style.transform = `translateY(${parallaxY}px) scale(${scale})`;
+      heroContentRef.current.style.opacity = opacity;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Cargar automáticamente el servicio si hay un código guardado en la cookie
+  useEffect(() => {
+    if (lastTrackingCode && !serviceData) {
+      const services = JSON.parse(localStorage.getItem('raccoons_services') || '[]');
+      const service = services.find(s => s.code === lastTrackingCode);
+
+      if (service) {
+        setServiceData(service);
+        setTrackingCode(lastTrackingCode);
+      }
+    }
+  }, [lastTrackingCode]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -27,34 +68,14 @@ function TrackingPage() {
 
       if (service) {
         setServiceData(service);
+        // Guardar el código en la cookie para uso futuro
+        setLastTrackingCode(trackingCode.toUpperCase());
       } else {
         setError('Código de seguimiento no encontrado. Verifica e intenta de nuevo.');
         setServiceData(null);
       }
       setIsSearching(false);
     }, 500);
-  };
-
-  const getStatusColor = (status) => {
-    const colors = {
-      'recibido': '#06b6d4',
-      'en_diagnostico': '#f59e0b',
-      'en_reparacion': '#ef4444',
-      'listo': '#10b981',
-      'entregado': '#6366f1'
-    };
-    return colors[status] || '#a0a0a0';
-  };
-
-  const getStatusText = (status) => {
-    const texts = {
-      'recibido': 'Recibido',
-      'en_diagnostico': 'En Diagnóstico',
-      'en_reparacion': 'En Reparación',
-      'listo': 'Listo para Entrega',
-      'entregado': 'Entregado'
-    };
-    return texts[status] || status;
   };
 
   const getStatusIcon = (status) => {
@@ -146,8 +167,9 @@ function TrackingPage() {
 
       {/* Hero Section */}
       <section className="tracking-hero">
+        <InteractiveGrid />
         <div className="container">
-          <div className="tracking-hero-content">
+          <div className="tracking-hero-content" ref={heroContentRef}>
             <h1 className="section-title">Seguimiento de Servicio</h1>
             <p className="tracking-hero-subtitle">Consulta el estado de tu motocicleta en tiempo real</p>
 

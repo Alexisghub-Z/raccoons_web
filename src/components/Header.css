@@ -8,6 +8,13 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   z-index: 1000;
   padding: 1rem 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.header.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .header-container {
@@ -96,50 +103,67 @@
   justify-self: end;
 }
 
-/* CTA Button Base */
+/* Instagram Button - Mejorado y moderno */
 .cta-button {
-  padding: 0.65rem 1.2rem;
-  font-weight: 600;
+  position: relative;
+  padding: 0.75rem 1.5rem;
+  font-weight: 700;
   color: white;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  border-radius: 8px;
+  gap: 0.6rem;
+  border-radius: 12px;
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
 }
 
 .cta-button span {
   font-size: 0.95rem;
+  position: relative;
+  z-index: 1;
 }
 
-/* WhatsApp Button */
-.whatsapp-button {
-  background: #25D366 !important;
-  border: 2px solid #25D366 !important;
-  color: white !important;
-  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
-}
-
-.whatsapp-button:hover {
-  background: #20bd5a !important;
-  border-color: #20bd5a !important;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 14px rgba(37, 211, 102, 0.35);
-}
-
-/* Instagram Button */
 .instagram-button {
   background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
-  border: 2px solid transparent !important;
-  color: white !important;
-  box-shadow: 0 4px 12px rgba(188, 24, 136, 0.3);
+  border: none !important;
+  box-shadow: 0 6px 20px rgba(188, 24, 136, 0.35);
+}
+
+.instagram-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
+  transition: left 0.5s ease;
+  z-index: 0;
 }
 
 .instagram-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 14px rgba(188, 24, 136, 0.35);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 28px rgba(188, 24, 136, 0.45);
+}
+
+.instagram-button:hover::before {
+  left: 100%;
+}
+
+.instagram-button:active {
+  transform: translateY(-1px) scale(1.02);
+}
+
+.instagram-button svg {
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease;
+}
+
+.instagram-button:hover svg {
+  transform: rotate(-10deg) scale(1.1);
 }
 
 /* Mobile Social Buttons - Hidden on Desktop */
@@ -198,11 +222,16 @@
   }
 
   .cta-button {
-    padding: 0.6rem 1rem;
+    padding: 0.7rem 1.3rem;
   }
 
   .cta-button span {
-    font-size: 0.9rem;
+    font-size: 0.92rem;
+  }
+
+  .cta-button svg {
+    width: 19px;
+    height: 19px;
   }
 }
 
@@ -277,29 +306,52 @@
   }
 
   .mobile-social-btn {
+    position: relative;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 1rem;
-    padding: 1rem 1.5rem;
-    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    border-radius: 14px;
     font-size: 1.1rem;
-    font-weight: 600;
+    font-weight: 700;
     color: white;
     border: none;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
   }
 
   .mobile-social-btn.instagram {
     background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
+    box-shadow: 0 8px 24px rgba(188, 24, 136, 0.4);
   }
 
-  .mobile-social-btn.whatsapp {
-    background: #25D366 !important;
+  .mobile-social-btn.instagram::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
+    transition: left 0.5s ease;
   }
 
-  .mobile-social-btn:active {
-    transform: scale(0.95);
+  .mobile-social-btn.instagram:active {
+    transform: scale(0.97);
+  }
+
+  .mobile-social-btn.instagram:active::before {
+    left: 100%;
+  }
+
+  .mobile-social-btn svg {
+    transition: transform 0.3s ease;
+  }
+
+  .mobile-social-btn:active svg {
+    transform: rotate(-10deg) scale(1.1);
   }
 
   .header-social-buttons {

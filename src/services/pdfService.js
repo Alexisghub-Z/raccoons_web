@@ -1,5 +1,6 @@
 // PDF Service para generación de reportes de servicio
 import jsPDF from 'jspdf';
+import { getStatusText } from '../utils/statusHelpers';
 
 /**
  * Generar PDF con el reporte de servicio
@@ -164,20 +165,6 @@ export const generateServicePDF = async (serviceData) => {
   // Descargar el PDF
   const fileName = `Servicio_${serviceData.code}_${new Date().getTime()}.pdf`;
   pdf.save(fileName);
-};
-
-/**
- * Obtener texto del estado
- */
-const getStatusText = (status) => {
-  const texts = {
-    'recibido': 'Recibido',
-    'en_diagnostico': 'En Diagnóstico',
-    'en_reparacion': 'En Reparación',
-    'listo': 'Listo para Entrega',
-    'entregado': 'Entregado'
-  };
-  return texts[status] || status;
 };
 
 /**

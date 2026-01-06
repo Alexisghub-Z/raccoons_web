@@ -5,15 +5,16 @@ function SplashScreen({ onFinish }) {
   const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
-    // Iniciar fade out después de mostrar el texto
+    // Tiempos ajustados para que la animación se complete
+    // Texto termina a los 4.2s, esperamos un poco más
     const fadeTimer = setTimeout(() => {
       setFadeOut(true);
-    }, 4500);
+    }, 4500); // Inicia fade después de que termine toda la animación
 
-    // Llamar a onFinish después del fade out completo
+    // Llamar a onFinish después del fade out completo (1s)
     const finishTimer = setTimeout(() => {
       onFinish();
-    }, 5500);
+    }, 5500); // 4.5s + 1s de fade = 5.5s total
 
     return () => {
       clearTimeout(fadeTimer);

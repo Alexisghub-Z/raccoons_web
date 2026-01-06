@@ -1,3 +1,25 @@
+/* Lenis Smooth Scroll Styles */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
 #root {
   min-height: 100vh;
 }
@@ -13,6 +35,20 @@
 
 .main-content.visible {
   opacity: 1;
+}
+
+/* Loading Spinner para Lazy Loading */
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(220, 38, 38, 0.1);
+  border-top-color: var(--color-red);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 /* Container */
