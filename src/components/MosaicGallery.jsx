@@ -29,6 +29,9 @@ function MosaicGallery() {
     const updateFeaturedAnimation = () => {
       const { width, height } = getGridTargetSize();
 
+      // Responsive border radius
+      const borderRadius = window.innerWidth <= 480 ? 28 : window.innerWidth <= 768 ? 36 : 56;
+
       const pinConfig = {
         trigger: ".gallery-grid__featured",
         start: "center center",
@@ -49,7 +52,7 @@ function MosaicGallery() {
         .to(".gallery-grid__featured-inner", {
           width,
           height,
-          borderRadius: 56,
+          borderRadius,
           ease: "power2.inOut"
         });
 
@@ -80,26 +83,44 @@ function MosaicGallery() {
       updateFeaturedAnimation();
     }, 100);
 
+    let resizeTimeout;
     const handleResize = () => {
-      ScrollTrigger.getAll().forEach(st => st.kill());
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        ScrollTrigger.getAll().forEach(st => st.kill());
 
-      gsap.set(".gallery-grid__featured", { clearProps: "all" });
-      gsap.set(".gallery-grid__featured-inner", { clearProps: "all" });
+        gsap.set(".gallery-grid__featured", { clearProps: "all" });
+        gsap.set(".gallery-grid__featured-inner", { clearProps: "all" });
 
-      const featured = document.querySelector(".gallery-grid__featured");
-      if (featured) {
-        featured.style.width = "75vw";
-        featured.style.maxWidth = "75vw";
-      }
+        const featured = document.querySelector(".gallery-grid__featured");
+        if (featured) {
+          // Responsive width based on screen size
+          const width = window.innerWidth;
+          if (width <= 480) {
+            featured.style.width = "90vw";
+            featured.style.maxWidth = "90vw";
+          } else if (width <= 768) {
+            featured.style.width = "85vw";
+            featured.style.maxWidth = "85vw";
+          } else if (width <= 1024) {
+            featured.style.width = "80vw";
+            featured.style.maxWidth = "80vw";
+          } else {
+            featured.style.width = "75vw";
+            featured.style.maxWidth = "75vw";
+          }
+        }
 
-      updateFeaturedAnimation();
-      ScrollTrigger.refresh();
+        updateFeaturedAnimation();
+        ScrollTrigger.refresh();
+      }, 200);
     };
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize, { passive: true });
 
     return () => {
       clearTimeout(initTimer);
+      clearTimeout(resizeTimeout);
       window.removeEventListener("resize", handleResize);
       ScrollTrigger.getAll().forEach(st => st.kill());
     };

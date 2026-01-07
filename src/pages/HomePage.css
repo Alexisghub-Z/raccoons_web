@@ -13,11 +13,17 @@
 .home-page {
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
+  margin: 0;
+  padding: 0;
 }
 
 /* Hero Section - Modern with Image */
 .home-page .hero {
+  height: 100vh;
   min-height: 100vh;
+  margin: 0 !important;
+  margin-top: 0 !important;
+  padding: 0;
   position: relative;
   background: url('/hero.jpg');
   background-size: cover;
@@ -26,6 +32,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 .home-page .hero::before {
@@ -1181,6 +1189,10 @@
 
 /* Responsive */
 @media (max-width: 1024px) {
+  .home-page .hero {
+    background-attachment: scroll;
+  }
+
   .home-page .hero-title-main {
     font-size: 5rem;
   }
@@ -1192,6 +1204,22 @@
   .home-page .hero-badge {
     font-size: 0.85rem;
     padding: 0.5rem 1.2rem;
+  }
+
+  .home-page .hero-buttons {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .home-page .hero-cta,
+  .home-page .hero-cta-secondary {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+  }
+
+  /* Services with background image */
+  .home-page .services {
+    background-size: auto 70%;
   }
 
   .home-page .about-content {
@@ -1221,23 +1249,56 @@
 }
 
 @media (max-width: 768px) {
+  .home-page .hero {
+    height: 100vh;
+    min-height: 100vh;
+    background-attachment: scroll;
+    background-position: center center;
+  }
+
+  .home-page .hero-content {
+    padding: 1.5rem;
+  }
+
   .home-page .hero-title-main {
-    font-size: 3.8rem;
+    font-size: 3rem;
     letter-spacing: -1px;
   }
 
   .home-page .hero-title-sub {
-    font-size: 1.2rem;
+    font-size: 1rem;
     letter-spacing: 2px;
   }
 
   .home-page .hero-badge {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     padding: 0.5rem 1rem;
+    margin-bottom: 1.5rem;
   }
 
   .home-page .hero-description {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+  }
+
+  .home-page .hero-buttons {
+    flex-direction: column;
+    gap: 0.8rem;
+    width: 100%;
+  }
+
+  .home-page .hero-cta,
+  .home-page .hero-cta-secondary {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    font-size: 0.95rem;
+    justify-content: center;
+  }
+
+  /* Services background image - ocultar o hacer más pequeña */
+  .home-page .services {
+    background-size: auto 50%;
+    background-position: right center;
   }
 
   .home-page .section-title {
@@ -1278,19 +1339,6 @@
   .home-page .carousel__nav > label {
     width: 14px;
     height: 14px;
-  }
-
-  .home-page .hero-cta,
-  .home-page .hero-cta-secondary {
-    padding: 1.1rem 2rem;
-    font-size: 0.95rem;
-    gap: 0.6rem;
-  }
-
-  .home-page .hero-cta svg,
-  .home-page .hero-cta-secondary svg {
-    width: 18px;
-    height: 18px;
   }
 
   /* Brands Carousel Responsive */
@@ -1364,29 +1412,59 @@
 }
 
 @media (max-width: 480px) {
+  .home-page .hero {
+    height: 100vh;
+    min-height: 100vh;
+    background-attachment: scroll;
+    background-position: center center;
+  }
+
+  .home-page .hero-content {
+    padding: 1rem;
+  }
+
   .home-page .hero-title-main {
-    font-size: 2.8rem;
+    font-size: 2.2rem;
     letter-spacing: 0px;
   }
 
   .home-page .hero-title-sub {
-    font-size: 1rem;
+    font-size: 0.85rem;
     letter-spacing: 1.5px;
+    padding-top: 0.5rem;
   }
 
   .home-page .hero-badge {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     padding: 0.4rem 0.8rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.2rem;
   }
 
   .home-page .hero-description {
-    font-size: 1rem;
-    margin-bottom: 2rem;
+    font-size: 0.9rem;
+    margin-bottom: 1.8rem;
   }
 
-  .home-page .hero-content {
-    padding: 1.5rem;
+  .home-page .hero-buttons {
+    width: 100%;
+    gap: 0.7rem;
+  }
+
+  .home-page .hero-cta,
+  .home-page .hero-cta-secondary {
+    padding: 0.9rem 1.2rem;
+    font-size: 0.9rem;
+  }
+
+  .home-page .hero-cta svg,
+  .home-page .hero-cta-secondary svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Services background image - ocultar en móvil */
+  .home-page .services {
+    background-image: none;
   }
 
   .home-page .section-title {
@@ -1540,6 +1618,32 @@
 
   .home-page .contact-map-section h3 {
     font-size: 1.25rem;
+  }
+}
+
+/* Extra Small Devices (320px - 375px) */
+@media (max-width: 375px) {
+  .home-page .hero-title-main {
+    font-size: 1.9rem;
+  }
+
+  .home-page .hero-title-sub {
+    font-size: 0.8rem;
+  }
+
+  .home-page .hero-badge {
+    font-size: 0.6rem;
+    padding: 0.3rem 0.7rem;
+  }
+
+  .home-page .hero-description {
+    font-size: 0.85rem;
+  }
+
+  .home-page .hero-cta,
+  .home-page .hero-cta-secondary {
+    padding: 0.85rem 1rem;
+    font-size: 0.85rem;
   }
 }
 
