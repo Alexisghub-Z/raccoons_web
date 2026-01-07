@@ -440,33 +440,20 @@ function HomePage() {
             </div>
           </div>
 
-          {/* Formulario y Mapa lado a lado */}
-          <div className="contact-main-content">
-            <div className="contact-form-wrapper">
-              <h3>Envíanos un mensaje</h3>
-              <form className="contact-form">
-                <input type="text" placeholder="Nombre" required />
-                <input type="email" placeholder="Email" required />
-                <input type="tel" placeholder="Teléfono" />
-                <textarea placeholder="Mensaje" rows="6" required></textarea>
-                <button type="submit">Enviar Mensaje</button>
-              </form>
-            </div>
-
-            <div className="contact-map-wrapper">
-              <h3>Nuestra ubicación</h3>
-              <div className="map-container">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3813.0184853317637!2d-96.76939392310126!3d17.120597610432537!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85c71fa31eac39a7%3A0xa50332883a9f1a54!2sRACCOONS!5e0!3m2!1ses!2smx!4v1767456037370!5m2!1ses!2smx"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Ubicación del Taller Raccoons"
-                />
-              </div>
+          {/* Mapa de ubicación */}
+          <div className="contact-map-section">
+            <h3>Nuestra ubicación</h3>
+            <div className="map-container-large">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3813.0184853317637!2d-96.76939392310126!3d17.120597610432537!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85c71fa31eac39a7%3A0xa50332883a9f1a54!2sRACCOONS!5e0!3m2!1ses!2smx!4v1767456037370!5m2!1ses!2smx"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Ubicación del Taller Raccoons"
+              />
             </div>
           </div>
         </div>

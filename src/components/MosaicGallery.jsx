@@ -11,7 +11,7 @@ function MosaicGallery() {
   useEffect(() => {
     if (!galleryRef.current) return;
 
-    function getGridTargetSize() {
+    const getGridTargetSize = () => {
       const el = document.getElementById("grid-target");
       const svg = document.querySelector(".gallery-grid__svg");
       if (!svg || !el) return { width: 400, height: 500 };
@@ -24,26 +24,23 @@ function MosaicGallery() {
         width: 400 * scale,
         height: 500 * scale
       };
-    }
+    };
 
-    function updateFeaturedAnimation() {
+    const updateFeaturedAnimation = () => {
       const { width, height } = getGridTargetSize();
-
-      ScrollTrigger.getById("featuredAnim")?.kill();
-      ScrollTrigger.getById("groupAnim")?.kill();
 
       const pinConfig = {
         trigger: ".gallery-grid__featured",
         start: "center center",
         endTrigger: ".gallery-grid",
-        end: "bottom-=100 bottom",
+        end: "bottom-=150 bottom",
         scrub: 1,
         anticipatePin: 1
       };
 
+      // Animación de la imagen principal
       gsap
         .timeline({
-          id: "featuredAnim",
           scrollTrigger: {
             ...pinConfig,
             pin: ".gallery-grid__featured"
@@ -56,9 +53,9 @@ function MosaicGallery() {
           ease: "power2.inOut"
         });
 
+      // Animación del grid
       gsap
         .timeline({
-          id: "groupAnim",
           scrollTrigger: {
             ...pinConfig,
             pin: ".gallery-grid__images"
@@ -77,32 +74,14 @@ function MosaicGallery() {
           },
           "<"
         );
-    }
-
-    // Esperar a que las imágenes se carguen
-    const images = galleryRef.current.querySelectorAll('image');
-    let loadedImages = 0;
-
-    const handleImageLoad = () => {
-      loadedImages++;
-      if (loadedImages === images.length) {
-        setTimeout(() => {
-          updateFeaturedAnimation();
-        }, 100);
-      }
     };
 
-    if (images.length === 0) {
+    const initTimer = setTimeout(() => {
       updateFeaturedAnimation();
-    } else {
-      images.forEach(() => {
-        handleImageLoad();
-      });
-    }
+    }, 100);
 
     const handleResize = () => {
-      ScrollTrigger.getById("featuredAnim")?.kill();
-      ScrollTrigger.getById("groupAnim")?.kill();
+      ScrollTrigger.getAll().forEach(st => st.kill());
 
       gsap.set(".gallery-grid__featured", { clearProps: "all" });
       gsap.set(".gallery-grid__featured-inner", { clearProps: "all" });
@@ -120,15 +99,15 @@ function MosaicGallery() {
     window.addEventListener("resize", handleResize);
 
     return () => {
+      clearTimeout(initTimer);
       window.removeEventListener("resize", handleResize);
-      ScrollTrigger.getById("featuredAnim")?.kill();
-      ScrollTrigger.getById("groupAnim")?.kill();
+      ScrollTrigger.getAll().forEach(st => st.kill());
     };
   }, []);
 
   return (
     <section className="gallery-grid" ref={galleryRef}>
-      <h2 className="gallery-grid__title">Nuestro Taller</h2>
+      <h2 className="gallery-grid__title">Más de 100 Clientes Satisfechos</h2>
       <div className="gallery-grid__container">
         <div className="gallery-grid__featured">
           <div className="gallery-grid__featured-inner">

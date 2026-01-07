@@ -1,29 +1,19 @@
-/* Stats Section - Modern Animated Statistics */
+/* Stats Section - Minimalist White */
 .stats-section {
   position: relative;
   padding: 6rem 0;
-  background: #ffffff;
+  background: #f8f9fa;
   overflow: hidden;
   isolation: isolate;
 }
 
-/* Gráfica animada de fondo */
+/* Gráfica de fondo - simplificada */
 .stats-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  opacity: 0.3;
+  display: none;
 }
 
 .stats-graph {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  display: none;
 }
 
 /* Animación de las líneas de la gráfica - sutil */
@@ -76,10 +66,7 @@
 .stats-title {
   font-size: 3rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #10b981 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #1a1a1a;
   margin-bottom: 1rem;
   letter-spacing: -1px;
   animation: fadeInUp 0.8s ease-out;
@@ -95,7 +82,7 @@
   transform: translateX(-50%);
   width: 120px;
   height: 4px;
-  background: linear-gradient(90deg, #3b82f6 0%, #10b981 100%);
+  background: #3b82f6;
   border-radius: 2px;
   animation: fadeInUp 0.8s ease-out 0.3s backwards;
 }
@@ -135,63 +122,33 @@
   text-align: center;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
   animation: fadeInUp 0.8s ease-out backwards;
 }
 
-/* Línea decorativa superior con color */
+/* Sin línea decorativa superior */
 .stat-card::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
-  border-radius: 24px 24px 0 0;
+  display: none;
 }
 
-/* Efecto de brillo al pasar el mouse */
+/* Sin efecto de brillo */
 .stat-card::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(
-    circle,
-    rgba(30, 64, 175, 0.05) 0%,
-    transparent 70%
-  );
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 0;
-}
-
-.stat-card:hover::before {
-  opacity: 1;
+  display: none;
 }
 
 .stat-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(30, 64, 175, 0.2);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  border-color: rgba(59, 130, 246, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
-/* Líneas decorativas de color para cada tarjeta */
-.stat-card:nth-child(1)::after {
-  background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
-}
-.stat-card:nth-child(2)::after {
-  background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
-}
-.stat-card:nth-child(3)::after {
-  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
-}
+/* Sin líneas decorativas de color */
+.stat-card:nth-child(1)::after,
+.stat-card:nth-child(2)::after,
+.stat-card:nth-child(3)::after,
 .stat-card:nth-child(4)::after {
-  background: linear-gradient(90deg, #8b5cf6 0%, #7c3aed 100%);
+  display: none;
 }
 
 /* Mantener el contenido por encima del ::before */
@@ -205,114 +162,27 @@
   width: 80px;
   height: 80px;
   margin: 0 auto 2rem;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+  background: rgba(59, 130, 246, 0.08);
   border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .stat-card:hover .stat-icon-wrapper {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.1) 100%);
+  background: rgba(59, 130, 246, 0.12);
   transform: scale(1.05);
-  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
 }
 
 .stat-icon {
   color: #3b82f6;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .stat-card:hover .stat-icon {
   color: #2563eb;
-  filter: drop-shadow(0 4px 8px rgba(59, 130, 246, 0.3));
-}
-
-/* Colores específicos para cada tarjeta */
-/* Tarjeta 1 - Azul (Motos Reparadas) */
-.stat-card:nth-child(1) .stat-icon-wrapper {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
-}
-.stat-card:nth-child(1) .stat-icon {
-  color: #3b82f6;
-}
-.stat-card:nth-child(1):hover .stat-icon-wrapper {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.1) 100%);
-  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25);
-}
-.stat-card:nth-child(1):hover .stat-icon {
-  color: #2563eb;
-}
-.stat-card:nth-child(1):hover .stat-number {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Tarjeta 2 - Naranja/Amarillo (Años de Experiencia) */
-.stat-card:nth-child(2) .stat-icon-wrapper {
-  background: linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(251, 146, 60, 0.05) 100%);
-}
-.stat-card:nth-child(2) .stat-icon {
-  color: #f59e0b;
-}
-.stat-card:nth-child(2):hover .stat-icon-wrapper {
-  background: linear-gradient(135deg, rgba(251, 146, 60, 0.2) 0%, rgba(251, 146, 60, 0.1) 100%);
-  box-shadow: 0 8px 24px rgba(251, 146, 60, 0.25);
-}
-.stat-card:nth-child(2):hover .stat-icon {
-  color: #d97706;
-}
-.stat-card:nth-child(2):hover .stat-number {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Tarjeta 3 - Verde (Clientes Satisfechos) */
-.stat-card:nth-child(3) .stat-icon-wrapper {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
-}
-.stat-card:nth-child(3) .stat-icon {
-  color: #10b981;
-}
-.stat-card:nth-child(3):hover .stat-icon-wrapper {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
-  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25);
-}
-.stat-card:nth-child(3):hover .stat-icon {
-  color: #059669;
-}
-.stat-card:nth-child(3):hover .stat-number {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Tarjeta 4 - Morado (Tiempo Promedio) */
-.stat-card:nth-child(4) .stat-icon-wrapper {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
-}
-.stat-card:nth-child(4) .stat-icon {
-  color: #8b5cf6;
-}
-.stat-card:nth-child(4):hover .stat-icon-wrapper {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0.1) 100%);
-  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.25);
-}
-.stat-card:nth-child(4):hover .stat-icon {
-  color: #7c3aed;
-}
-.stat-card:nth-child(4):hover .stat-number {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 /* Número de la estadística */
@@ -323,11 +193,11 @@
   line-height: 1;
   margin-bottom: 1rem;
   letter-spacing: -2px;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .stat-card:hover .stat-number {
-  color: #1e40af;
+  color: #3b82f6;
 }
 
 /* Etiqueta de la estadística */
