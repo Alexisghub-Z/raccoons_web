@@ -51,20 +51,20 @@ function Header() {
 
       // Detectar galería para ocultar header
       const gallery = document.querySelector('.gallery-grid');
-      if (!gallery) return;
+      if (gallery) {
+        const galleryRect = gallery.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
 
-      const galleryRect = gallery.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-
-      // Ocultar el header si la galería está visible en el viewport
-      if (galleryRect.top < windowHeight * 0.5 && galleryRect.bottom > windowHeight * 0.5) {
-        setHeaderHidden(true);
-      } else {
-        setHeaderHidden(false);
+        // Ocultar el header si la galería está visible en el viewport
+        if (galleryRect.top < windowHeight * 0.5 && galleryRect.bottom > windowHeight * 0.5) {
+          setHeaderHidden(true);
+        } else {
+          setHeaderHidden(false);
+        }
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll(); // Ejecutar una vez al montar
 
     return () => window.removeEventListener('scroll', handleScroll);
