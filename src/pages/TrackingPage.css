@@ -15,14 +15,13 @@
 
 /* Hero Section */
 .tracking-hero {
-  margin-top: 80px;
   min-height: 60vh;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: var(--color-bg-primary);
   position: relative;
-  padding: 4rem 0;
+  padding: 8rem 0 4rem 0;
 }
 
 .tracking-hero::before {
