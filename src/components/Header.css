@@ -378,25 +378,19 @@
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     padding-top: 80px;
-    display: none;
+    opacity: 0;
+    transform: translateY(-30px);
+    pointer-events: none;
     z-index: 999;
     overflow-y: auto;
+    transition: opacity 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 
   .nav.active {
-    display: block;
-    animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
-
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
   }
 
   .nav-list {
