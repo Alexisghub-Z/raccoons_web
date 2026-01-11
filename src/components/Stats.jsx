@@ -60,7 +60,7 @@ function Stats() {
   }, []);
 
   // Valores de las estadísticas
-  const motosReparadas = useCountUp(1200, 2500, isVisible);
+  const motosReparadas = useCountUp(700, 2500, isVisible);
   const anosExperiencia = useCountUp(10, 2000, isVisible);
   const clientesSatisfechos = useCountUp(98, 2000, isVisible);
   const tiempoPromedio = useCountUp(24, 2000, isVisible);

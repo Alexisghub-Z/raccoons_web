@@ -306,6 +306,10 @@
 }
 
 /* Hamburger Animation */
+.menu-toggle.active .hamburger {
+  background-color: #ffffff;
+}
+
 .menu-toggle.active .hamburger:nth-child(1) {
   transform: rotate(45deg) translate(8px, 8px);
 }
