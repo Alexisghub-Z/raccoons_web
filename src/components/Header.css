@@ -59,19 +59,13 @@
 .logo-text {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #ffffff;
-  letter-spacing: 1px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  transition: color 0.3s ease, text-shadow 0.3s ease;
-}
-
-.header.scrolled .logo-text {
   color: var(--color-text-primary);
-  text-shadow: none;
+  letter-spacing: 1px;
   background: linear-gradient(135deg, var(--color-red) 0%, var(--color-red-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  transition: all 0.3s ease;
 }
 
 .logo-text .trademark {
@@ -79,10 +73,6 @@
   font-weight: 600;
   margin-left: 2px;
   vertical-align: super;
-  color: inherit;
-}
-
-.header.scrolled .logo-text .trademark {
   background: linear-gradient(135deg, var(--color-red) 0%, var(--color-red-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -105,7 +95,7 @@
 }
 
 .nav-link {
-  color: rgba(255, 255, 255, 0.95);
+  color: var(--color-text-primary);
   font-weight: 500;
   font-size: 1rem;
   position: relative;
@@ -114,25 +104,13 @@
   border: none !important;
   cursor: pointer;
   text-decoration: none;
-  transition: color 0.2s ease, text-shadow 0.2s ease;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-.header.scrolled .nav-link {
-  color: var(--color-text-secondary);
-  text-shadow: none;
+  transition: color 0.2s ease;
 }
 
 .nav-link:hover {
-  color: #ffffff;
+  color: var(--color-red);
   background: none !important;
   border: none !important;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-}
-
-.header.scrolled .nav-link:hover {
-  color: var(--color-text-primary);
-  text-shadow: none;
 }
 
 .nav-link:focus,
@@ -371,6 +349,15 @@
 @media (max-width: 768px) {
   .header {
     padding: 0.6rem 0;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .header.scrolled {
+    background: rgba(248, 249, 250, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
 
   .header-container {
@@ -533,6 +520,15 @@
 @media (max-width: 480px) {
   .header {
     padding: 0.5rem 0;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .header.scrolled {
+    background: rgba(248, 249, 250, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
 
   .nav {
