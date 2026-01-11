@@ -519,7 +519,7 @@
 @media (max-width: 768px) {
   .tracking-hero {
     min-height: 50vh;
-    padding: 3rem 0;
+    padding: 6rem 0 3rem 0;
   }
 
   .tracking-hero-subtitle {
@@ -587,7 +587,7 @@
 
 @media (max-width: 480px) {
   .tracking-hero {
-    margin-top: 70px;
+    padding: 5rem 0 2rem 0;
   }
 
   .tracking-search-input {
