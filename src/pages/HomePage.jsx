@@ -77,7 +77,6 @@ function HomePage() {
       {/* Hero Section */}
       <section id="inicio" className="hero">
         <div className="hero-content" ref={heroRef}>
-          <div className="hero-badge">Taller Profesional</div>
           <h1 className="hero-title">
             <span className="hero-title-main">RACCOONS</span>
             <span className="hero-title-sub">Especialistas en Motocicletas</span>
@@ -174,59 +173,59 @@ function HomePage() {
           <div className="slide-track">
             {/* Primera serie de logos */}
             <div className="slide">
-              <img src="/brands/honda.png" height="80" alt="Honda" />
+              <img src="/brands/honda.png" height="120" alt="Honda" />
             </div>
             <div className="slide">
-              <img src="/brands/yamaha.png" height="80" alt="Yamaha" />
+              <img src="/brands/yamaha.png" height="120" alt="Yamaha" />
             </div>
             <div className="slide">
-              <img src="/brands/suzuki.png" height="80" alt="Suzuki" />
+              <img src="/brands/suzuki.png" height="120" alt="Suzuki" />
             </div>
             <div className="slide">
-              <img src="/brands/kawasaki.png" height="80" alt="Kawasaki" />
+              <img src="/brands/kawasaki.png" height="120" alt="Kawasaki" />
             </div>
             <div className="slide">
-              <img src="/brands/ducati.png" height="80" alt="Ducati" />
+              <img src="/brands/ducati.png" height="120" alt="Ducati" />
             </div>
             <div className="slide">
-              <img src="/brands/harley.png" height="80" alt="Harley Davidson" />
+              <img src="/brands/harley.png" height="120" alt="Harley Davidson" />
             </div>
             <div className="slide">
-              <img src="/brands/bmw.png" height="80" alt="BMW" />
+              <img src="/brands/bmw.png" height="120" alt="BMW" />
             </div>
             <div className="slide">
-              <img src="/brands/cfmoto.png" height="80" alt="CF Moto" />
+              <img src="/brands/cfmoto.png" height="120" alt="CF Moto" />
             </div>
             <div className="slide">
-              <img src="/brands/bajaj.png" height="80" alt="Bajaj" />
+              <img src="/brands/bajaj.png" height="120" alt="Bajaj" />
             </div>
             {/* Segunda serie (duplicada para efecto infinito) */}
             <div className="slide">
-              <img src="/brands/honda.png" height="80" alt="Honda" />
+              <img src="/brands/honda.png" height="120" alt="Honda" />
             </div>
             <div className="slide">
-              <img src="/brands/yamaha.png" height="80" alt="Yamaha" />
+              <img src="/brands/yamaha.png" height="120" alt="Yamaha" />
             </div>
             <div className="slide">
-              <img src="/brands/suzuki.png" height="80" alt="Suzuki" />
+              <img src="/brands/suzuki.png" height="120" alt="Suzuki" />
             </div>
             <div className="slide">
-              <img src="/brands/kawasaki.png" height="80" alt="Kawasaki" />
+              <img src="/brands/kawasaki.png" height="120" alt="Kawasaki" />
             </div>
             <div className="slide">
-              <img src="/brands/ducati.png" height="80" alt="Ducati" />
+              <img src="/brands/ducati.png" height="120" alt="Ducati" />
             </div>
             <div className="slide">
-              <img src="/brands/harley.png" height="80" alt="Harley Davidson" />
+              <img src="/brands/harley.png" height="120" alt="Harley Davidson" />
             </div>
             <div className="slide">
-              <img src="/brands/bmw.png" height="80" alt="BMW" />
+              <img src="/brands/bmw.png" height="120" alt="BMW" />
             </div>
             <div className="slide">
-              <img src="/brands/cfmoto.png" height="80" alt="CF Moto" />
+              <img src="/brands/cfmoto.png" height="120" alt="CF Moto" />
             </div>
             <div className="slide">
-              <img src="/brands/bajaj.png" height="80" alt="Bajaj" />
+              <img src="/brands/bajaj.png" height="120" alt="Bajaj" />
             </div>
           </div>
         </div>
@@ -316,17 +315,16 @@ function HomePage() {
       {/* Service Tracking Section */}
       <section className="tracking-section">
         <div className="container">
-          <h2 className="section-title">Seguimiento en Tiempo Real</h2>
+          <h2 className="section-title">Rastrea tu Servicio 24/7</h2>
           <p className="section-subtitle">
-            Mantente informado del estado de tu moto en cada paso del proceso
+            Con nuestro sistema de seguimiento en línea, puedes verificar el estado de tu motocicleta en cualquier momento
           </p>
 
           <div className="tracking-content">
             <div className="tracking-info">
-              <h3>Rastrea tu Servicio 24/7</h3>
+              <h3>Seguimiento en Tiempo Real</h3>
               <p>
-                Con nuestro sistema de seguimiento en línea, puedes verificar el estado
-                de tu motocicleta en cualquier momento. Solo necesitas tu código de
+                Mantente informado del estado de tu moto en cada paso del proceso. Solo necesitas tu código de
                 seguimiento único.
               </p>
 
@@ -488,8 +486,10 @@ function HomePage() {
             </div>
 
             <div className="footer-social">
-              <a href="#" className="social-link">Facebook</a>
-              <a href="#" className="social-link">WhatsApp</a>
+              <a href="https://www.facebook.com/raccoons_oax" target="_blank" rel="noopener noreferrer" className="social-link">Facebook</a>
+              <a href="https://www.tiktok.com/@raccoons_oax" target="_blank" rel="noopener noreferrer" className="social-link">TikTok</a>
+              <a href="https://www.youtube.com/@raccoons_oax" target="_blank" rel="noopener noreferrer" className="social-link">YouTube</a>
+              <a href="https://wa.me/12345678900" target="_blank" rel="noopener noreferrer" className="social-link">WhatsApp</a>
             </div>
           </div>
           <div className="footer-bottom">

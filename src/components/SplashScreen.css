@@ -61,6 +61,13 @@
   position: relative;
 }
 
+.splash_logo_text .trademark {
+  font-size: 18px;
+  font-weight: 600;
+  margin-left: 3px;
+  vertical-align: super;
+}
+
 .splash_logo_text:before {
   display: block;
   position: absolute;
@@ -152,13 +159,13 @@
   opacity: 0;
   position: absolute;
   z-index: 7;
-  text-align: left;
-  margin: -50px 0 0 -150px;
-  width: 300px;
-  height: 100px;
+  text-align: center;
+  margin: -40px 0 0 -320px;
+  width: 640px;
+  height: 80px;
   top: 50%;
   left: 50%;
-  font-size: 48px;
+  font-size: 68px;
   font-weight: 700;
   color: var(--color-bg-primary);
   -webkit-animation: on 0.6s ease-in-out 3.7s forwards;
@@ -172,17 +179,10 @@
   overflow: hidden;
   width: 100%;
   margin: 0;
-  -webkit-animation: type 0.3s steps(60, end) 3.7s;
-  -moz-animation: type 0.3s steps(60, end) 3.7s;
-  -o-animation: type 0.3s steps(60, end) 3.7s;
-  animation: type 0.3s steps(60, end) 3.7s;
-}
-
-.text p:nth-child(2) {
-  -webkit-animation: type2 0.5s steps(60, end) 3.7s;
-  -moz-animation: type2 0.5s steps(60, end) 3.7s;
-  -o-animation: type2 0.5s steps(60, end) 3.7s;
-  animation: type2 0.5s steps(60, end) 3.7s;
+  -webkit-animation: type 1.2s steps(20, end) 3.7s;
+  -moz-animation: type 1.2s steps(20, end) 3.7s;
+  -o-animation: type 1.2s steps(20, end) 3.7s;
+  animation: type 1.2s steps(20, end) 3.7s;
 }
 
 /* Keyframes */
@@ -513,9 +513,10 @@
 /* Responsive - Tablets */
 @media (max-width: 1024px) {
   .text {
-    font-size: 42px;
-    margin: -45px 0 0 -140px;
-    width: 280px;
+    font-size: 56px;
+    margin: -30px 0 0 -260px;
+    width: 520px;
+    height: 70px;
   }
 
   .splash_logo_img {
@@ -537,9 +538,10 @@
 /* Responsive - Tablets pequeñas */
 @media (max-width: 768px) {
   .text {
-    font-size: 36px;
-    margin: -40px 0 0 -120px;
-    width: 240px;
+    font-size: 48px;
+    margin: -25px 0 0 -220px;
+    width: 440px;
+    height: 60px;
   }
 
   .splash_logo {
@@ -565,9 +567,10 @@
 /* Responsive - Móviles */
 @media (max-width: 480px) {
   .text {
-    font-size: 28px;
-    margin: -35px 0 0 -100px;
-    width: 200px;
+    font-size: 38px;
+    margin: -20px 0 0 -175px;
+    width: 350px;
+    height: 50px;
   }
 
   .splash_logo {
@@ -595,9 +598,10 @@
 /* Responsive - Móviles pequeños */
 @media (max-width: 360px) {
   .text {
-    font-size: 24px;
-    margin: -30px 0 0 -90px;
-    width: 180px;
+    font-size: 28px;
+    margin: -15px 0 0 -145px;
+    width: 290px;
+    height: 40px;
   }
 
   .splash_logo {
