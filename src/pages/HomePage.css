@@ -86,7 +86,7 @@
 /* Título principal - RACCOONS - Minimalista */
 .home-page .hero-title-main {
   display: block;
-  font-size: 5.5rem;
+  font-size: 6.5rem;
   font-weight: 700;
   letter-spacing: -1px;
   color: #ffffff;
@@ -97,7 +97,7 @@
 /* Subtítulo - Especialistas en Motocicletas - Minimalista */
 .home-page .hero-title-sub {
   display: block;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   font-weight: 400;
   color: rgba(255, 255, 255, 0.85);
   letter-spacing: 2px;
@@ -108,9 +108,9 @@
 }
 
 .home-page .hero-description {
-  font-size: 1.1rem;
+  font-size: 1.35rem;
   color: rgba(255, 255, 255, 0.75);
-  max-width: 550px;
+  max-width: 600px;
   margin: 0 auto 2.5rem;
   line-height: 1.6;
   font-weight: 300;
