@@ -8,6 +8,26 @@ gsap.registerPlugin(ScrollTrigger);
 function MosaicGallery() {
   const galleryRef = useRef(null);
 
+  // Configuración de imágenes de la galería
+  // Combina imágenes del taller con trabajos realizados
+  // Puedes agregar más imágenes en la carpeta /public/gallery/ con nombres: trabajo-1.jpg, trabajo-2.jpg, etc.
+  const galleryImages = [
+    '/workshop/taller-1.jpg',
+    '/workshop/taller-2.jpg',
+    '/workshop/taller-3.jpg',
+    '/workshop/taller-4.jpg',
+    '/workshop/taller-5.jpg',
+    '/gallery/trabajo-1.jpg',
+    '/gallery/trabajo-2.jpg',
+    '/gallery/trabajo-3.jpg',
+    '/gallery/trabajo-4.jpg',
+    '/gallery/trabajo-5.jpg',
+    '/gallery/trabajo-6.jpg',
+    '/gallery/trabajo-7.jpg',
+    '/gallery/trabajo-8.jpg',
+    '/gallery/trabajo-9.jpg'
+  ];
+
   useEffect(() => {
     if (!galleryRef.current) return;
 
@@ -132,30 +152,30 @@ function MosaicGallery() {
       <div className="gallery-grid__container">
         <div className="gallery-grid__featured">
           <div className="gallery-grid__featured-inner">
-            <img className="gallery-grid__featured-image" src="/workshop/taller-1.jpg" alt="Taller Raccoons" />
+            <img className="gallery-grid__featured-image" src={galleryImages[0]} alt="Taller Raccoons" />
           </div>
         </div>
         <div className="gallery-grid__images">
           <svg className="gallery-grid__svg" viewBox="0 0 2800 1900" fill="none" preserveAspectRatio="xMidYMid slice">
             <g className="gallery-grid__group" clipPath="url(#image-grid-clip-path)" style={{ transformOrigin: '1400px 950px', transform: 'scale(0.425)' }}>
-              <image x="0" y="0" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref="/workshop/taller-1.jpg"></image>
-              <image x="2400" y="0" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref="/workshop/taller-2.jpg"></image>
-              <image x="0" y="700" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref="/workshop/taller-3.jpg"></image>
-              <image x="2400" y="700" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref="/workshop/taller-4.jpg"></image>
-              <image x="0" y="1400" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref="/workshop/taller-5.jpg"></image>
-              <image x="2400" y="1400" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref="/workshop/taller-1.jpg"></image>
+              <image x="0" y="0" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref={galleryImages[0]}></image>
+              <image x="2400" y="0" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref={galleryImages[1]}></image>
+              <image x="0" y="700" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref={galleryImages[2]}></image>
+              <image x="2400" y="700" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref={galleryImages[3]}></image>
+              <image x="0" y="1400" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref={galleryImages[4]}></image>
+              <image x="2400" y="1400" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref={galleryImages[5]}></image>
             </g>
             <g className="gallery-grid__group" clipPath="url(#image-grid-clip-path)" style={{ transformOrigin: '1400px 950px', transform: 'scale(0.575)' }}>
-              <image x="600" y="0" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref="/workshop/taller-2.jpg"></image>
-              <image x="1800" y="0" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref="/workshop/taller-3.jpg"></image>
-              <image x="600" y="700" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref="/workshop/taller-4.jpg"></image>
-              <image x="1800" y="700" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref="/workshop/taller-5.jpg"></image>
-              <image x="600" y="1400" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref="/workshop/taller-1.jpg"></image>
-              <image x="1800" y="1400" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref="/workshop/taller-2.jpg"></image>
+              <image x="600" y="0" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref={galleryImages[6]}></image>
+              <image x="1800" y="0" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref={galleryImages[7]}></image>
+              <image x="600" y="700" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref={galleryImages[8]}></image>
+              <image x="1800" y="700" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref={galleryImages[9]}></image>
+              <image x="600" y="1400" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref={galleryImages[10]}></image>
+              <image x="1800" y="1400" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref={galleryImages[11]}></image>
             </g>
             <g className="gallery-grid__group" clipPath="url(#image-grid-clip-path)" style={{ transformOrigin: '1400px 950px', transform: 'scale(0.725)' }}>
-              <image x="1200" y="0" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref="/workshop/taller-3.jpg"></image>
-              <image x="1200" y="1400" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref="/workshop/taller-4.jpg"></image>
+              <image x="1200" y="0" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref={galleryImages[12]}></image>
+              <image x="1200" y="1400" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref={galleryImages[13]}></image>
             </g>
             <defs>
               <clipPath id="image-grid-clip-path">

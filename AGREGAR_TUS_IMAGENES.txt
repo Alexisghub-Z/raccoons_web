@@ -1,0 +1,43 @@
+========================================
+  IMPORTANTE: AGREGA TUS IMÁGENES AQUÍ
+========================================
+
+El sistema está listo, pero necesita TUS imágenes para funcionar correctamente.
+
+PASO 1: IMÁGENES ANTES Y DESPUÉS
+---------------------------------
+Carpeta: /public/before-after/
+
+Necesitas agregar pares de imágenes:
+- before-1.jpg + after-1.jpg
+- before-2.jpg + after-2.jpg
+- before-3.jpg + after-3.jpg
+
+PASO 2: GALERÍA DE TRABAJOS
+----------------------------
+Carpeta: /public/gallery/
+
+Necesitas agregar imágenes de trabajos:
+- trabajo-1.jpg
+- trabajo-2.jpg
+- trabajo-3.jpg
+- trabajo-4.jpg
+- trabajo-5.jpg
+- trabajo-6.jpg
+- trabajo-7.jpg
+- trabajo-8.jpg
+- trabajo-9.jpg
+
+INSTRUCCIONES COMPLETAS
+------------------------
+Lee el archivo: IMAGENES_INSTRUCCIONES.md
+Tiene toda la información detallada.
+
+PARA PROBAR
+-----------
+1. Agrega tus imágenes en las carpetas correspondientes
+2. Ejecuta: npm run dev
+3. Abre: http://localhost:5173
+4. Navega hasta ver las nuevas secciones
+
+========================================

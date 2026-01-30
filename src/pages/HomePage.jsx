@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Stats from '../components/Stats';
 import MosaicGallery from '../components/MosaicGallery';
+import BeforeAfterGallery from '../components/BeforeAfterGallery';
 import {
   Wrench,
   Settings,
@@ -311,6 +312,9 @@ function HomePage() {
 
       {/* Workshop Gallery Section */}
       <MosaicGallery />
+
+      {/* Before After Gallery Section */}
+      <BeforeAfterGallery />
 
       {/* Service Tracking Section */}
       <section className="tracking-section">

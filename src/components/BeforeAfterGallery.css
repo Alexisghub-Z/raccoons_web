@@ -1,0 +1,350 @@
+/* Before After Gallery - White Minimalist Theme */
+.before-after-gallery {
+  padding: 6rem 0;
+  background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.before-after-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Work Info */
+.before-after-info {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.work-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.5px;
+}
+
+.work-description {
+  font-size: 1.1rem;
+  color: #4a5568;
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Image Slider Container */
+.before-after-slider {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  border-radius: 24px;
+  overflow: hidden;
+  cursor: ew-resize;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* After image (background) */
+.after-image {
+  z-index: 1;
+}
+
+/* Before image (overlay with clip) */
+.before-image {
+  z-index: 2;
+  transition: clip-path 0.05s ease-out;
+}
+
+/* Image Labels */
+.image-label {
+  position: absolute;
+  top: 2rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: white;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  z-index: 10;
+}
+
+.label-before {
+  left: 2rem;
+}
+
+.label-after {
+  right: 2rem;
+}
+
+/* Slider Divider */
+.slider-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: white;
+  z-index: 3;
+  pointer-events: none;
+  transform: translateX(-50%);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.slider-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  pointer-events: auto;
+  cursor: ew-resize;
+  transition: all 0.3s ease;
+}
+
+.slider-button:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+}
+
+.slider-button svg {
+  color: #1e40af;
+  flex-shrink: 0;
+}
+
+/* Navigation Controls */
+.before-after-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 3rem;
+  gap: 2rem;
+}
+
+.control-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.control-btn:hover {
+  background: #f8f9fa;
+  border-color: #1e40af;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.control-btn:active {
+  transform: translateY(0);
+}
+
+/* Pagination Dots */
+.pagination-dots {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #cbd5e0;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.dot:hover {
+  background: #a0aec0;
+  transform: scale(1.2);
+}
+
+.dot.active {
+  background: #1e40af;
+  width: 32px;
+  border-radius: 6px;
+  transform: scale(1);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .before-after-slider {
+    height: 550px;
+  }
+
+  .work-title {
+    font-size: 1.75rem;
+  }
+
+  .work-description {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .before-after-gallery {
+    padding: 4rem 0;
+  }
+
+  .before-after-slider {
+    height: 450px;
+    border-radius: 16px;
+  }
+
+  .work-title {
+    font-size: 1.5rem;
+  }
+
+  .work-description {
+    font-size: 0.95rem;
+  }
+
+  .image-label {
+    top: 1.5rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+  }
+
+  .label-before {
+    left: 1.5rem;
+  }
+
+  .label-after {
+    right: 1.5rem;
+  }
+
+  .slider-button {
+    width: 50px;
+    height: 50px;
+  }
+
+  .before-after-controls {
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .control-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 1rem 1.5rem;
+  }
+
+  .pagination-dots {
+    order: -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .before-after-slider {
+    height: 400px;
+    border-radius: 12px;
+  }
+
+  .work-title {
+    font-size: 1.3rem;
+  }
+
+  .work-description {
+    font-size: 0.9rem;
+  }
+
+  .image-label {
+    top: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+  }
+
+  .label-before {
+    left: 1rem;
+  }
+
+  .label-after {
+    right: 1rem;
+  }
+
+  .slider-button {
+    width: 45px;
+    height: 45px;
+  }
+
+  .slider-button svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .control-btn {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.9rem;
+  }
+
+  .control-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+  }
+
+  .dot.active {
+    width: 28px;
+  }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+  .slider-button {
+    width: 70px;
+    height: 70px;
+  }
+
+  .control-btn {
+    padding: 1.25rem 2rem;
+    font-size: 1.1rem;
+  }
+}
