@@ -1,16 +1,9 @@
-/* Tracking Page - White Theme */
+/* Tracking Page - Variables removidas, ahora usa las globales de index.css */
 .tracking-page {
-  --color-bg-primary: #ffffff;
-  --color-bg-secondary: #f8f9fa;
-  --color-bg-tertiary: #e9ecef;
-  --color-text-primary: #1a1a1a;
-  --color-text-secondary: #4a5568;
-  --color-text-muted: #718096;
-  --color-border: #e2e8f0;
-  --color-shadow: rgba(0, 0, 0, 0.08);
   min-height: 100vh;
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Hero Section */
@@ -31,8 +24,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at 20% 50%, rgba(30, 64, 175, 0.015) 0%, transparent 50%),
-              radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.01) 0%, transparent 50%);
+  background: var(--color-bg-primary);
   opacity: 1;
 }
 

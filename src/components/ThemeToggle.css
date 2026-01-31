@@ -1,0 +1,130 @@
+/* Theme Toggle Button - Minimalista y Optimizado */
+
+.theme-toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+
+  /* Optimización: GPU acceleration */
+  transform: translateZ(0);
+  will-change: transform, background-color;
+}
+
+.theme-toggle:hover {
+  background: var(--color-bg-tertiary);
+  border-color: var(--color-text-muted);
+  transform: translateY(-2px) translateZ(0);
+  box-shadow: 0 4px 12px var(--color-shadow);
+}
+
+.theme-toggle:active {
+  transform: translateY(0) translateZ(0);
+  transition: transform 0.1s ease;
+}
+
+/* Icono con animación rotativa suave */
+.theme-toggle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-primary);
+
+  /* Transición suave y optimizada */
+  transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* GPU acceleration */
+  transform: translateZ(0) rotate(0deg);
+  will-change: transform;
+}
+
+/* Rotación cuando cambia a modo oscuro */
+.theme-toggle-icon.rotate {
+  transform: translateZ(0) rotate(360deg);
+}
+
+/* Efecto de brillo al cambiar */
+.theme-toggle::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: all 0.4s ease-out;
+  pointer-events: none;
+}
+
+.theme-toggle:active::before {
+  width: 80px;
+  height: 80px;
+  opacity: 1;
+  transition: all 0s;
+}
+
+/* Responsive - Botón más grande en móvil (touch-friendly) */
+@media (max-width: 768px) {
+  .theme-toggle {
+    width: 44px;
+    height: 44px;
+  }
+
+  .theme-toggle-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* Modo oscuro - Ajustes sutiles */
+[data-theme="dark"] .theme-toggle {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Animación de entrada inicial */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.theme-toggle {
+  animation: fadeInScale 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reducir motion para usuarios con preferencias de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle,
+  .theme-toggle-icon,
+  .theme-toggle::before {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .theme-toggle-icon.rotate {
+    transform: none;
+  }
+}

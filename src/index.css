@@ -1,5 +1,35 @@
-:root {
-  /* Color Palette - Raccoons Theme */
+/* Modo Claro (Default) */
+:root,
+:root[data-theme="light"] {
+  /* Color Palette - Light Mode */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8f9fa;
+  --color-bg-tertiary: #e9ecef;
+
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #4a5568;
+  --color-text-muted: #718096;
+
+  --color-blue-dark: #1e3a8a;
+  --color-blue: #2563eb;
+  --color-blue-light: #3b82f6;
+
+  --color-red: #1e40af;
+  --color-red-light: #3b82f6;
+
+  --color-cyan: #06b6d4;
+  --color-cyan-light: #22d3ee;
+
+  /* Borders */
+  --color-border: #e2e8f0;
+  --color-shadow: rgba(0, 0, 0, 0.08);
+
+  color-scheme: light;
+}
+
+/* Modo Oscuro */
+:root[data-theme="dark"] {
+  /* Color Palette - Dark Mode */
   --color-bg-primary: #1a1a1a;
   --color-bg-secondary: #2a2a2a;
   --color-bg-tertiary: #333333;
@@ -20,7 +50,13 @@
 
   /* Borders */
   --color-border: rgba(255, 255, 255, 0.1);
-  --color-shadow: rgba(0, 0, 0, 0.2);
+  --color-shadow: rgba(0, 0, 0, 0.5);
+
+  color-scheme: dark;
+}
+
+/* Variables comunes (ambos temas) */
+:root {
 
   /* Transitions - Optimized */
   --transition-fast: 0.15s ease;
@@ -37,10 +73,6 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: dark;
-  color: var(--color-text-primary);
-  background-color: var(--color-bg-primary);
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -52,6 +84,15 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+/* Transición suave para cambio de tema */
+*,
+*::before,
+*::after {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
 }
 
 html {
@@ -84,6 +125,7 @@ body {
   width: 100%;
   position: relative;
   -webkit-overflow-scrolling: touch;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1 {

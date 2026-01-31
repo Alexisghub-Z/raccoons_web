@@ -1,20 +1,11 @@
-/* HomePage - White Minimalist Theme */
-.home-page {
-  --color-bg-primary: #ffffff;
-  --color-bg-secondary: #f8f9fa;
-  --color-bg-tertiary: #e9ecef;
-  --color-text-primary: #1a1a1a;
-  --color-text-secondary: #4a5568;
-  --color-text-muted: #718096;
-  --color-border: #e2e8f0;
-  --color-shadow: rgba(0, 0, 0, 0.08);
-}
+/* HomePage - Variables removidas, ahora usa las globales de index.css */
 
 .home-page {
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
   margin: 0;
   padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Hero Section - Modern with Image */

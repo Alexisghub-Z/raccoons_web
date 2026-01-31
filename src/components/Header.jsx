@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Instagram, Facebook, Youtube } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
 import './Header.css';
 
 function Header() {
@@ -132,6 +133,7 @@ function Header() {
         </nav>
 
         <div className="header-social-buttons">
+          <ThemeToggle />
           <button
             className="social-icon-btn instagram"
             onClick={() => window.open('https://www.instagram.com/raccoons_oax/', '_blank')}

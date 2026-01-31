@@ -1,7 +1,7 @@
 /* Before After Gallery - White Minimalist Theme */
 .before-after-gallery {
   padding: 6rem 0;
-  background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+  background: linear-gradient(180deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);
   position: relative;
   overflow: hidden;
 }
@@ -20,14 +20,14 @@
 .work-title {
   font-size: 2rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--color-text-primary);
   margin-bottom: 0.75rem;
   letter-spacing: -0.5px;
 }
 
 .work-description {
   font-size: 1.1rem;
-  color: #4a5568;
+  color: var(--color-text-secondary);
   line-height: 1.6;
   max-width: 600px;
   margin: 0 auto;
@@ -157,22 +157,22 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.875rem 1.75rem;
-  background: white;
-  border: 2px solid #e2e8f0;
+  background: var(--color-bg-primary);
+  border: 2px solid var(--color-border);
   border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--color-text-primary);
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px var(--color-shadow);
 }
 
 .control-btn:hover {
-  background: #f8f9fa;
-  border-color: #1e40af;
+  background: var(--color-bg-secondary);
+  border-color: var(--color-blue-dark);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px var(--color-shadow);
 }
 
 .control-btn:active {
@@ -190,23 +190,25 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #cbd5e0;
+  background: var(--color-text-muted);
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
   padding: 0;
+  opacity: 0.5;
 }
 
 .dot:hover {
-  background: #a0aec0;
+  opacity: 0.8;
   transform: scale(1.2);
 }
 
 .dot.active {
-  background: #1e40af;
+  background: var(--color-blue-dark);
   width: 32px;
   border-radius: 6px;
   transform: scale(1);
+  opacity: 1;
 }
 
 /* Responsive Design */
