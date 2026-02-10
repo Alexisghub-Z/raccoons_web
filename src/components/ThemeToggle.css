@@ -27,6 +27,27 @@
   box-shadow: 0 4px 12px var(--color-shadow);
 }
 
+/* Modo oscuro — glass effect */
+[data-theme="dark"] .theme-toggle {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+[data-theme="dark"] .theme-toggle-icon {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+[data-theme="dark"] .theme-toggle:hover .theme-toggle-icon {
+  color: #ffffff;
+}
+
 .theme-toggle:active {
   transform: translateY(0) translateZ(0);
   transition: transform 0.1s ease;
@@ -37,7 +58,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-primary);
+  color: var(--color-text-secondary);
 
   /* Transición suave y optimizada */
   transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55),
@@ -112,15 +133,9 @@
   }
 }
 
-/* Modo oscuro - Ajustes sutiles */
-[data-theme="dark"] .theme-toggle {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-[data-theme="dark"] .theme-toggle:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
+/* Hover modo claro — ícono más oscuro */
+.theme-toggle:hover .theme-toggle-icon {
+  color: var(--color-text-primary);
 }
 
 /* Animación de entrada inicial */

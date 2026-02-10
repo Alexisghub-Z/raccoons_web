@@ -57,10 +57,11 @@
 }
 
 .logo-text {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 400;
+  letter-spacing: 3px;
   color: var(--color-text-primary);
-  letter-spacing: 1px;
   background: linear-gradient(135deg, var(--color-red) 0%, var(--color-red-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -69,7 +70,8 @@
 }
 
 .logo-text .trademark {
-  font-size: 1rem;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
   font-weight: 600;
   margin-left: 2px;
   vertical-align: super;
@@ -95,9 +97,12 @@
 }
 
 .nav-link {
+  font-family: var(--font-body);
   color: var(--color-text-primary);
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 0.88rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
   position: relative;
   padding: 0.5rem 0;
   background: none !important;
@@ -105,6 +110,21 @@
   cursor: pointer;
   text-decoration: none;
   transition: color 0.2s ease;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: linear-gradient(90deg, #1e40af 0%, #3b82f6 100%);
+  transition: width 0.25s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
 }
 
 .nav-link:hover {
@@ -128,90 +148,68 @@
 
 /* Social Icon Buttons - Desktop */
 .social-icon-btn {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
+  width: auto;
+  height: auto;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0;
+  padding: 0.3rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: none;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.25s ease;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
+  color: rgba(255, 255, 255, 0.65);
 }
 
 .social-icon-btn svg {
-  width: 28px;
-  height: 28px;
-}
-
-.social-icon-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.1);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.social-icon-btn:hover::before {
-  opacity: 1;
+  width: 34px;
+  height: 34px;
 }
 
 .social-icon-btn:hover {
-  transform: translateY(-3px) scale(1.1);
+  transform: translateY(-2px);
 }
 
 .social-icon-btn:active {
-  transform: translateY(-1px) scale(1.05);
+  transform: translateY(0);
 }
 
-/* Instagram Button */
-.social-icon-btn.instagram {
-  background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-  color: white;
-  box-shadow: 0 4px 15px rgba(188, 24, 136, 0.3);
-}
-
-.social-icon-btn.instagram:hover {
-  box-shadow: 0 6px 20px rgba(188, 24, 136, 0.5);
-}
-
-/* Facebook Button */
-.social-icon-btn.facebook {
-  background: linear-gradient(135deg, #1877f2 0%, #0d65d9 100%);
-  color: white;
-  box-shadow: 0 4px 15px rgba(24, 119, 242, 0.3);
-}
-
-.social-icon-btn.facebook:hover {
-  box-shadow: 0 6px 20px rgba(24, 119, 242, 0.5);
-}
-
-/* TikTok Button */
-.social-icon-btn.tiktok {
-  background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
-  color: white;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-.social-icon-btn.tiktok:hover {
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
-}
-
-/* YouTube Button */
+/* Todos los social icon buttons — solo ícono, sin fondo */
+.social-icon-btn.instagram,
+.social-icon-btn.facebook,
+.social-icon-btn.tiktok,
 .social-icon-btn.youtube {
-  background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
-  color: white;
-  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: var(--color-text-secondary);
 }
 
+.social-icon-btn.instagram:hover,
+.social-icon-btn.facebook:hover,
+.social-icon-btn.tiktok:hover,
 .social-icon-btn.youtube:hover {
-  box-shadow: 0 6px 20px rgba(255, 0, 0, 0.5);
+  color: var(--color-text-primary);
+}
+
+/* Sobre el hero (fondo oscuro) — íconos blancos */
+.hero ~ * .social-icon-btn,
+[data-theme="dark"] .social-icon-btn.instagram,
+[data-theme="dark"] .social-icon-btn.facebook,
+[data-theme="dark"] .social-icon-btn.tiktok,
+[data-theme="dark"] .social-icon-btn.youtube {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+[data-theme="dark"] .social-icon-btn.instagram:hover,
+[data-theme="dark"] .social-icon-btn.facebook:hover,
+[data-theme="dark"] .social-icon-btn.tiktok:hover,
+[data-theme="dark"] .social-icon-btn.youtube:hover {
+  color: #ffffff;
 }
 
 /* Instagram Button - Mejorado y moderno */

@@ -78,6 +78,7 @@ function HomePage() {
       {/* Hero Section */}
       <section id="inicio" className="hero">
         <div className="hero-content" ref={heroRef}>
+          <div className="hero-badge">Taller Especializado · Oaxaca, México</div>
           <h1 className="hero-title">
             <span className="hero-title-main">RACCOONS</span>
             <span className="hero-title-sub">Especialistas en Motocicletas</span>
@@ -96,6 +97,10 @@ function HomePage() {
               <span>Seguimiento de Servicio</span>
             </button>
           </div>
+        </div>
+        <div className="hero-scroll">
+          <span className="hero-scroll-line"></span>
+          <span>Scroll</span>
         </div>
       </section>
 
@@ -413,6 +418,7 @@ function HomePage() {
 
       {/* Contact Section */}
       <section id="contacto" className="contact fade-in">
+        <div className="contact-radar"></div>
         <div className="container">
           <h2 className="section-title">Contáctanos y Encuéntranos</h2>
 

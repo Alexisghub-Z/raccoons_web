@@ -1,3 +1,10 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&display=swap');
+
+/* ============================================
+   RACCOONS — DESIGN SYSTEM
+   ============================================ */
+
 /* Modo Claro (Default) */
 :root,
 :root[data-theme="light"] {
@@ -55,21 +62,21 @@
   color-scheme: dark;
 }
 
-/* Variables comunes (ambos temas) */
+/* Variables comunes */
 :root {
-
-  /* Transitions - Optimized */
   --transition-fast: 0.15s ease;
   --transition-normal: 0.3s ease;
   --transition-slow: 0.5s ease;
 
-  /* Shadows */
   --shadow-sm: 0 2px 4px var(--color-shadow);
   --shadow-md: 0 4px 16px var(--color-shadow);
-  --shadow-lg: 0 8px 24px var(--color-shadow);
+  --shadow-lg: 0 8px 32px var(--color-shadow);
 
   /* Typography */
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --font-display: 'Bebas Neue', 'Impact', sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+
+  font-family: var(--font-body);
   line-height: 1.5;
   font-weight: 400;
 
@@ -77,7 +84,7 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-display: swap; /* Optimización de carga de fuentes */
+  font-display: swap;
 }
 
 * {
