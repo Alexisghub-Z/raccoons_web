@@ -8,7 +8,7 @@
   display: flex;
   overflow: hidden;
   z-index: 9999;
-  background-color: var(--color-bg-primary);
+  background-color: #0a0a0a;
   opacity: 1;
   -webkit-transition: opacity 1s ease-in-out;
   -moz-transition: opacity 1s ease-in-out;
@@ -45,7 +45,7 @@
   width: 120px;
   height: 120px;
   object-fit: contain;
-  filter: drop-shadow(0 0 20px rgba(220, 38, 38, 0.6));
+  filter: drop-shadow(0 0 20px rgba(37, 99, 235, 0.6));
   -webkit-animation: logoFloat 2s ease-in-out infinite;
   -moz-animation: logoFloat 2s ease-in-out infinite;
   -o-animation: logoFloat 2s ease-in-out infinite;
@@ -56,7 +56,7 @@
   font-size: 32px;
   font-weight: 700;
   letter-spacing: 4px;
-  color: var(--color-text-primary);
+  color: #ffffff;
   text-align: center;
   position: relative;
 }
@@ -76,7 +76,7 @@
   bottom: -10px;
   width: 50px;
   height: 2px;
-  background-color: var(--color-text-muted);
+  background-color: rgba(255, 255, 255, 0.5);
   content: "";
 }
 
@@ -88,7 +88,7 @@
   top: -10px;
   width: 50px;
   height: 2px;
-  background-color: var(--color-text-muted);
+  background-color: rgba(255, 255, 255, 0.5);
   content: "";
 }
 
@@ -114,7 +114,7 @@
 .splash_svg rect {
   width: 100%;
   height: 100%;
-  fill: var(--color-red);
+  fill: #2563eb;
   stroke: 0;
   -webkit-clip-path: polygon(40% 35%, 60% 35%, 60% 65%, 40% 65%);
   clip-path: polygon(40% 35%, 60% 35%, 60% 65%, 40% 65%);
@@ -145,7 +145,7 @@
 .splash_minimize rect {
   width: 100%;
   height: 100%;
-  fill: var(--color-bg-primary);
+  fill: #0a0a0a;
   -webkit-clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
   clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
   -webkit-animation: scale 0.2s ease-out forwards 1s, hide 1.3s ease-out forwards 1.2s;
@@ -167,7 +167,7 @@
   left: 50%;
   font-size: 68px;
   font-weight: 300;
-  color: var(--color-bg-primary);
+  color: #ffffff;
   -webkit-animation: on 0.6s ease-in-out 3.7s forwards;
   -moz-animation: on 0.6s ease-in-out 3.7s forwards;
   -o-animation: on 0.6s ease-in-out 3.7s forwards;
@@ -287,25 +287,25 @@
 
 @-webkit-keyframes logoColor {
   100% {
-    color: var(--color-bg-primary);
+    color: #ffffff;
   }
 }
 
 @-moz-keyframes logoColor {
   100% {
-    color: var(--color-bg-primary);
+    color: #ffffff;
   }
 }
 
 @-o-keyframes logoColor {
   100% {
-    color: var(--color-bg-primary);
+    color: #ffffff;
   }
 }
 
 @keyframes logoColor {
   100% {
-    color: var(--color-bg-primary);
+    color: #ffffff;
   }
 }
 
@@ -386,22 +386,22 @@
   25% {
     -webkit-clip-path: polygon(0% 0%, 60% 35%, 60% 65%, 40% 65%);
     clip-path: polygon(0% 0%, 60% 35%, 60% 65%, 40% 65%);
-    fill: var(--color-text-primary);
+    fill: #ffffff;
   }
   50% {
     -webkit-clip-path: polygon(0% 0%, 100% 0%, 60% 65%, 40% 65%);
     clip-path: polygon(0% 0%, 100% 0%, 60% 65%, 40% 65%);
-    fill: var(--color-red);
+    fill: #2563eb;
   }
   75% {
     -webkit-clip-path: polygon(0% 0%, 100% 0%, 60% 65%, 0% 100%);
     clip-path: polygon(0% 0%, 100% 0%, 60% 65%, 0% 100%);
-    fill: var(--color-text-primary);
+    fill: #ffffff;
   }
   100% {
     -webkit-clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
     clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
-    fill: var(--color-red);
+    fill: #2563eb;
   }
 }
 
@@ -410,22 +410,22 @@
   25% {
     -moz-clip-path: polygon(0% 0%, 60% 35%, 60% 65%, 40% 65%);
     clip-path: polygon(0% 0%, 60% 35%, 60% 65%, 40% 65%);
-    fill: var(--color-text-primary);
+    fill: #ffffff;
   }
   50% {
     -moz-clip-path: polygon(0% 0%, 100% 0%, 60% 65%, 40% 65%);
     clip-path: polygon(0% 0%, 100% 0%, 60% 65%, 40% 65%);
-    fill: var(--color-red);
+    fill: #2563eb;
   }
   75% {
     -moz-clip-path: polygon(0% 0%, 100% 0%, 60% 65%, 0% 100%);
     clip-path: polygon(0% 0%, 100% 0%, 60% 65%, 0% 100%);
-    fill: var(--color-text-primary);
+    fill: #ffffff;
   }
   100% {
     -moz-clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
     clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
-    fill: var(--color-red);
+    fill: #2563eb;
   }
 }
 
@@ -433,19 +433,19 @@
   0% {}
   25% {
     clip-path: polygon(0% 0%, 60% 35%, 60% 65%, 40% 65%);
-    fill: var(--color-text-primary);
+    fill: #ffffff;
   }
   50% {
     clip-path: polygon(0% 0%, 100% 0%, 60% 65%, 40% 65%);
-    fill: var(--color-red);
+    fill: #2563eb;
   }
   75% {
     clip-path: polygon(0% 0%, 100% 0%, 60% 65%, 0% 100%);
-    fill: var(--color-text-primary);
+    fill: #ffffff;
   }
   100% {
     clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
-    fill: var(--color-red);
+    fill: #2563eb;
   }
 }
 
@@ -454,22 +454,22 @@
   25% {
     -webkit-clip-path: polygon(0% 0%, 60% 35%, 60% 65%, 40% 65%);
     clip-path: polygon(0% 0%, 60% 35%, 60% 65%, 40% 65%);
-    fill: var(--color-text-primary);
+    fill: #ffffff;
   }
   50% {
     -webkit-clip-path: polygon(0% 0%, 100% 0%, 60% 65%, 40% 65%);
     clip-path: polygon(0% 0%, 100% 0%, 60% 65%, 40% 65%);
-    fill: var(--color-red);
+    fill: #2563eb;
   }
   75% {
     -webkit-clip-path: polygon(0% 0%, 100% 0%, 60% 65%, 0% 100%);
     clip-path: polygon(0% 0%, 100% 0%, 60% 65%, 0% 100%);
-    fill: var(--color-text-primary);
+    fill: #ffffff;
   }
   100% {
     -webkit-clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
     clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
-    fill: var(--color-red);
+    fill: #2563eb;
   }
 }
 
@@ -580,7 +580,7 @@
   .splash_logo_img {
     width: 60px;
     height: 60px;
-    filter: drop-shadow(0 0 15px rgba(220, 38, 38, 0.6));
+    filter: drop-shadow(0 0 15px rgba(37, 99, 235, 0.6));
   }
 
   .splash_logo_text {

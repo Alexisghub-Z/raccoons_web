@@ -28,6 +28,7 @@ html.lenis body {
 
 .main-content {
   opacity: 0;
+  min-height: 100vh;
   -webkit-transition: opacity 1s ease-in-out;
   -moz-transition: opacity 1s ease-in-out;
   -ms-transition: opacity 1s ease-in-out;

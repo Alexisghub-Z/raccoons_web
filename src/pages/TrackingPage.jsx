@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { Download, Search, Inbox, Cog, CheckCircle, Bike, Package } from 'lucide-react';
+import { Download, Search, Inbox, Cog, CheckCircle, Bike, Package, Wrench, Image as ImageIcon, FileText as FilePdfIcon, ExternalLink } from 'lucide-react';
 import Header from '../components/Header';
 import InteractiveGrid from '../components/InteractiveGrid';
 import { getStatusColor, getStatusText } from '../utils/statusHelpers';
 import { useCookie } from '../hooks/useCookie';
+import { serviceService } from '../api/service.service';
 import './TrackingPage.css';
 
 function TrackingPage() {
@@ -40,17 +41,33 @@ function TrackingPage() {
   // Cargar automáticamente el servicio si hay un código guardado en la cookie
   useEffect(() => {
     if (lastTrackingCode && !serviceData) {
-      const services = JSON.parse(localStorage.getItem('raccoons_services') || '[]');
-      const service = services.find(s => s.code === lastTrackingCode);
-
-      if (service) {
-        setServiceData(service);
-        setTrackingCode(lastTrackingCode);
-      }
+      loadServiceByCode(lastTrackingCode);
     }
   }, [lastTrackingCode]);
 
-  const handleSearch = (e) => {
+  const loadServiceByCode = async (code) => {
+    try {
+      setIsSearching(true);
+      setError('');
+      const service = await serviceService.getByCode(code);
+      setServiceData(service);
+      setTrackingCode(code);
+    } catch (err) {
+      console.error('Error loading service:', err);
+
+      if (err.message.includes('not found') || err.message.includes('no encontrado')) {
+        setError('Código de seguimiento no encontrado');
+      } else if (err.message.includes('network') || err.message.includes('Failed to fetch')) {
+        setError('Error de conexión. Verifica tu conexión a internet.');
+      } else {
+        setError('No se pudo cargar el servicio. Por favor intenta nuevamente.');
+      }
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleSearch = async (e) => {
     e.preventDefault();
     setError('');
     setIsSearching(true);
@@ -61,58 +78,67 @@ function TrackingPage() {
       return;
     }
 
-    // Simular búsqueda con delay para mejor UX
-    setTimeout(() => {
-      const services = JSON.parse(localStorage.getItem('raccoons_services') || '[]');
-      const service = services.find(s => s.code === trackingCode.toUpperCase());
+    try {
+      const service = await serviceService.getByCode(trackingCode.toUpperCase());
+      setServiceData(service);
+      setLastTrackingCode(trackingCode.toUpperCase());
+    } catch (err) {
+      console.error('Error searching service:', err);
 
-      if (service) {
-        setServiceData(service);
-        // Guardar el código en la cookie para uso futuro
-        setLastTrackingCode(trackingCode.toUpperCase());
+      // Manejar diferentes tipos de error
+      if (err.message.includes('not found') || err.message.includes('no encontrado')) {
+        setError('Código de seguimiento no encontrado. Verifica el código e intenta de nuevo.');
+      } else if (err.message.includes('network') || err.message.includes('Failed to fetch')) {
+        setError('Error de conexión. Verifica tu conexión a internet e intenta nuevamente.');
+      } else if (err.message.includes('formato')) {
+        setError('El formato del código de seguimiento es inválido. Usa el formato RCN-XXXXXXXXX');
       } else {
-        setError('Código de seguimiento no encontrado. Verifica e intenta de nuevo.');
-        setServiceData(null);
+        setError(err.message || 'Error al buscar el servicio. Por favor intenta nuevamente.');
       }
+      setServiceData(null);
+    } finally {
       setIsSearching(false);
-    }, 500);
+    }
   };
 
   const getStatusIcon = (status) => {
     const icons = {
-      'recibido': <Inbox size={28} />,
-      'en_diagnostico': <Search size={28} />,
-      'en_reparacion': <Cog size={28} />,
-      'listo': <CheckCircle size={28} />,
-      'entregado': <Bike size={28} />
+      'RECEIVED': <Inbox size={28} />,
+      'IN_DIAGNOSIS': <Search size={28} />,
+      'IN_REPAIR': <Cog size={28} />,
+      'READY_FOR_PICKUP': <CheckCircle size={28} />,
+      'DELIVERED': <Bike size={28} />,
+      'CANCELLED': <Package size={28} />
     };
     return icons[status] || <Package size={28} />;
   };
 
   const getStatusDescription = (status) => {
     const descriptions = {
-      'recibido': 'Tu motocicleta ha sido recibida en nuestro taller',
-      'en_diagnostico': 'Nuestros mecánicos están evaluando tu moto',
-      'en_reparacion': 'Estamos trabajando en tu motocicleta',
-      'listo': 'Tu moto está lista para ser recogida',
-      'entregado': 'Servicio completado y entregado'
+      'RECEIVED': 'Tu motocicleta ha sido recibida en nuestro taller',
+      'IN_DIAGNOSIS': 'Nuestros mecánicos están evaluando tu moto',
+      'IN_REPAIR': 'Estamos trabajando en tu motocicleta',
+      'READY_FOR_PICKUP': 'Tu moto está lista para ser recogida',
+      'DELIVERED': 'Servicio completado y entregado',
+      'CANCELLED': 'Servicio cancelado'
     };
     return descriptions[status] || 'Estado actualizado';
   };
 
   const getProgressPercentage = (status) => {
     const percentages = {
-      'recibido': 20,
-      'en_diagnostico': 40,
-      'en_reparacion': 60,
-      'listo': 80,
-      'entregado': 100
+      'RECEIVED': 20,
+      'IN_DIAGNOSIS': 40,
+      'IN_REPAIR': 60,
+      'READY_FOR_PICKUP': 80,
+      'DELIVERED': 100,
+      'CANCELLED': 0
     };
     return percentages[status] || 0;
   };
 
-  const getDaysElapsed = (dateCreated) => {
-    const created = new Date(dateCreated);
+  const getDaysElapsed = (createdAt) => {
+    const created = new Date(createdAt);
     const now = new Date();
     const diff = Math.floor((now - created) / (1000 * 60 * 60 * 24));
     return diff;
@@ -221,7 +247,7 @@ function TrackingPage() {
               <div className="info-grid">
                 <div className="info-item">
                   <span className="info-label">Cliente</span>
-                  <span className="info-value">{serviceData.clientName}</span>
+                  <span className="info-value">{serviceData.customer?.firstName} {serviceData.customer?.lastName}</span>
                 </div>
                 <div className="info-item">
                   <span className="info-label">Moto</span>
@@ -234,29 +260,105 @@ function TrackingPage() {
                 <div className="info-item">
                   <span className="info-label">Ingreso</span>
                   <span className="info-value">
-                    {new Date(serviceData.dateCreated).toLocaleDateString('es-MX')}
+                    {new Date(serviceData.createdAt).toLocaleDateString('es-MX')}
                   </span>
                 </div>
               </div>
 
               {serviceData.notes && (
                 <div className="notes">
-                  <h4>Notas</h4>
+                  <h4>Notas del Servicio</h4>
                   <p>{serviceData.notes}</p>
                 </div>
               )}
 
               <div className="timeline">
-                {['recibido', 'en_diagnostico', 'en_reparacion', 'listo', 'entregado'].map((step, index) => {
-                  const stepIndex = ['recibido', 'en_diagnostico', 'en_reparacion', 'listo', 'entregado'].indexOf(serviceData.status);
-                  const isActive = stepIndex >= index;
+                {['RECEIVED', 'IN_DIAGNOSIS', 'IN_REPAIR', 'READY_FOR_PICKUP', 'DELIVERED'].map((step, index) => {
+                  const statusOrder = ['RECEIVED', 'IN_DIAGNOSIS', 'IN_REPAIR', 'READY_FOR_PICKUP', 'DELIVERED'];
+                  const currentIndex = statusOrder.indexOf(serviceData.status);
+                  const isActive = currentIndex >= index;
+                  const isCurrentStep = step === serviceData.status; // Verificar si es el estado actual
+
+                  // Buscar la nota correspondiente a este estado en el historial
+                  const historyEntry = serviceData.statusHistory?.find(h => h.status === step);
 
                   return (
                     <div key={step} className={`timeline-step ${isActive ? 'active' : ''}`}>
                       <div className="timeline-icon-wrapper">
                         {getStatusIcon(step)}
                       </div>
-                      <span className="timeline-step-label">{getStatusText(step)}</span>
+                      <div className="timeline-step-content">
+                        <span className="timeline-step-label">{getStatusText(step)}</span>
+
+                        {/* Mostrar notas del historial si existen */}
+                        {isActive && historyEntry && historyEntry.notes && (
+                          <div className="timeline-step-notes">
+                            <p>{historyEntry.notes}</p>
+                            <span className="timeline-step-date">
+                              {new Date(historyEntry.changedAt).toLocaleDateString('es-MX', {
+                                day: '2-digit',
+                                month: 'short',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </span>
+
+                            {/* Evidencias: SOLO mostrar en READY_FOR_PICKUP cuando hay notas */}
+                            {step === 'READY_FOR_PICKUP' &&
+                             serviceData.evidence && serviceData.evidence.length > 0 && (
+                              <div className="tracking-evidences">
+                                <h4 className="evidences-title">
+                                  <ImageIcon size={16} />
+                                  Evidencias ({serviceData.evidence.length})
+                                </h4>
+                                <p className="evidences-subtitle">
+                                  Fotos y documentos del trabajo realizado
+                                </p>
+                                <div className="evidences-grid">
+                                  {serviceData.evidence.map((evidence, idx) => (
+                                    <div key={evidence.id || idx} className="evidence-card">
+                                      {evidence.type === 'IMAGE' ? (
+                                        <div className="evidence-image-container">
+                                          <img
+                                            src={`${import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${evidence.url}`}
+                                            alt={evidence.description || `Evidencia ${idx + 1}`}
+                                            className="evidence-image"
+                                            loading="lazy"
+                                          />
+                                          <a
+                                            href={`${import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${evidence.url}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="evidence-overlay"
+                                          >
+                                            <ExternalLink size={18} />
+                                            <span>Ver completa</span>
+                                          </a>
+                                        </div>
+                                      ) : (
+                                        <a
+                                          href={`${import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${evidence.url}`}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="evidence-pdf-link"
+                                        >
+                                          <FilePdfIcon size={28} />
+                                          <span className="pdf-label">PDF</span>
+                                          <span className="pdf-action">Abrir</span>
+                                        </a>
+                                      )}
+                                      {evidence.description && (
+                                        <p className="evidence-description">{evidence.description}</p>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   );
                 })}

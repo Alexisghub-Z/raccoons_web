@@ -1,0 +1,111 @@
+/**
+ * Application Constants
+ */
+
+export const USER_ROLES = {
+  ADMIN: 'ADMIN',
+  MECHANIC: 'MECHANIC',
+  CUSTOMER: 'CUSTOMER'
+};
+
+export const SERVICE_STATUS = {
+  RECEIVED: 'RECEIVED',
+  IN_DIAGNOSIS: 'IN_DIAGNOSIS',
+  IN_REPAIR: 'IN_REPAIR',
+  READY_FOR_PICKUP: 'READY_FOR_PICKUP',
+  DELIVERED: 'DELIVERED',
+  CANCELLED: 'CANCELLED'
+};
+
+export const SERVICE_STATUS_LABELS = {
+  RECEIVED: 'Recibido',
+  IN_DIAGNOSIS: 'En Diagnóstico',
+  IN_REPAIR: 'En Reparación',
+  READY_FOR_PICKUP: 'Listo para Entrega',
+  DELIVERED: 'Entregado',
+  CANCELLED: 'Cancelado'
+};
+
+export const APPOINTMENT_STATUS = {
+  PENDING: 'PENDING',
+  CONFIRMED: 'CONFIRMED',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+  NO_SHOW: 'NO_SHOW'
+};
+
+export const NOTIFICATION_TYPE = {
+  SERVICE_CREATED: 'SERVICE_CREATED',
+  SERVICE_STATUS_UPDATED: 'SERVICE_STATUS_UPDATED',
+  SERVICE_READY_FOR_PICKUP: 'SERVICE_READY_FOR_PICKUP',
+  SERVICE_DELIVERED: 'SERVICE_DELIVERED',
+  APPOINTMENT_CREATED: 'APPOINTMENT_CREATED',
+  APPOINTMENT_REMINDER: 'APPOINTMENT_REMINDER',
+  APPOINTMENT_CONFIRMED: 'APPOINTMENT_CONFIRMED',
+  APPOINTMENT_CANCELLED: 'APPOINTMENT_CANCELLED',
+  GENERAL: 'GENERAL'
+};
+
+export const NOTIFICATION_CHANNEL = {
+  SMS: 'SMS',
+  EMAIL: 'EMAIL',
+  PUSH: 'PUSH',
+  IN_APP: 'IN_APP'
+};
+
+export const NOTIFICATION_STATUS = {
+  PENDING: 'PENDING',
+  SENT: 'SENT',
+  FAILED: 'FAILED',
+  READ: 'READ'
+};
+
+export const HTTP_STATUS = {
+  OK: 200,
+  CREATED: 201,
+  NO_CONTENT: 204,
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  CONFLICT: 409,
+  UNPROCESSABLE_ENTITY: 422,
+  INTERNAL_SERVER_ERROR: 500
+};
+
+export const ERROR_CODES = {
+  VALIDATION_ERROR: 'VALIDATION_ERROR',
+  AUTHENTICATION_ERROR: 'AUTHENTICATION_ERROR',
+  AUTHORIZATION_ERROR: 'AUTHORIZATION_ERROR',
+  NOT_FOUND: 'NOT_FOUND',
+  CONFLICT: 'CONFLICT',
+  INTERNAL_ERROR: 'INTERNAL_ERROR',
+  DATABASE_ERROR: 'DATABASE_ERROR',
+  EXTERNAL_SERVICE_ERROR: 'EXTERNAL_SERVICE_ERROR'
+};
+
+export const SERVICE_TYPES = [
+  'Mantenimiento preventivo',
+  'Cambio de aceite',
+  'Reparación de motor',
+  'Reparación eléctrica',
+  'Reparación de frenos',
+  'Cambio de llantas',
+  'Ajuste de suspensión',
+  'Diagnóstico general',
+  'Personalización',
+  'Otro'
+];
+
+export const MOTORCYCLE_BRANDS = [
+  'Honda',
+  'Yamaha',
+  'Suzuki',
+  'Kawasaki',
+  'Ducati',
+  'BMW',
+  'Harley-Davidson',
+  'Bajaj',
+  'CFMoto',
+  'Otra'
+];

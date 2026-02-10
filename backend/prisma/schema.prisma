@@ -1,0 +1,225 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// USER MANAGEMENT
+// ============================================
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  password      String
+  firstName     String
+  lastName      String
+  phone         String?
+  role          Role     @default(CUSTOMER)
+  isActive      Boolean  @default(true)
+  emailVerified Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  services      Service[]      @relation("CustomerServices")
+  appointments  Appointment[]
+  notifications Notification[]
+  refreshTokens RefreshToken[]
+
+  @@map("users")
+}
+
+enum Role {
+  ADMIN
+  MECHANIC
+  CUSTOMER
+}
+
+// ============================================
+// REFRESH TOKENS
+// ============================================
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+// ============================================
+// SERVICES
+// ============================================
+model Service {
+  id             String        @id @default(uuid())
+  code           String        @unique
+  customerId     String
+  motorcycle     String
+  brand          String?
+  model          String?
+  year           Int?
+  plate          String?
+  serviceType    String
+  description    String?
+  status         ServiceStatus @default(RECEIVED)
+  estimatedCost  Float?
+  finalCost      Float?
+  estimatedDate  DateTime?
+  deliveryDate   DateTime?
+  notes          String?
+  internalNotes  String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  // Relations
+  customer       User              @relation("CustomerServices", fields: [customerId], references: [id])
+  evidence       ServiceEvidence[]
+  statusHistory  ServiceHistory[]
+  notifications  Notification[]
+
+  @@index([code])
+  @@index([customerId])
+  @@index([status])
+  @@map("services")
+}
+
+enum ServiceStatus {
+  RECEIVED
+  IN_DIAGNOSIS
+  IN_REPAIR
+  READY_FOR_PICKUP
+  DELIVERED
+  CANCELLED
+}
+
+// ============================================
+// SERVICE EVIDENCE
+// ============================================
+model ServiceEvidence {
+  id          String   @id @default(uuid())
+  serviceId   String
+  type        String
+  url         String
+  description String?
+  uploadedAt  DateTime @default(now())
+
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@map("service_evidence")
+}
+
+// ============================================
+// SERVICE HISTORY
+// ============================================
+model ServiceHistory {
+  id          String        @id @default(uuid())
+  serviceId   String
+  status      ServiceStatus
+  notes       String?
+  changedBy   String?
+  changedAt   DateTime      @default(now())
+
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@map("service_history")
+}
+
+// ============================================
+// APPOINTMENTS
+// ============================================
+model Appointment {
+  id              String            @id @default(uuid())
+  customerId      String
+  scheduledDate   DateTime
+  motorcycle      String
+  serviceType     String
+  description     String?
+  status          AppointmentStatus @default(PENDING)
+  reminderSent    Boolean           @default(false)
+  googleEventId   String?
+  notes           String?
+  cancellationReason String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  // Relations
+  customer        User              @relation(fields: [customerId], references: [id])
+  notifications   Notification[]
+
+  @@index([customerId])
+  @@index([scheduledDate])
+  @@index([status])
+  @@map("appointments")
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+// ============================================
+// NOTIFICATIONS
+// ============================================
+model Notification {
+  id            String             @id @default(uuid())
+  userId        String
+  type          NotificationType
+  channel       NotificationChannel
+  title         String
+  message       String
+  status        NotificationStatus @default(PENDING)
+  sentAt        DateTime?
+  readAt        DateTime?
+  metadata      Json?
+  serviceId     String?
+  appointmentId String?
+  retryCount    Int                @default(0)
+  errorMessage  String?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  // Relations
+  user        User         @relation(fields: [userId], references: [id])
+  service     Service?     @relation(fields: [serviceId], references: [id])
+  appointment Appointment? @relation(fields: [appointmentId], references: [id])
+
+  @@index([userId])
+  @@index([status])
+  @@index([type])
+  @@map("notifications")
+}
+
+enum NotificationType {
+  SERVICE_CREATED
+  SERVICE_STATUS_UPDATED
+  SERVICE_READY_FOR_PICKUP
+  SERVICE_DELIVERED
+  APPOINTMENT_CREATED
+  APPOINTMENT_REMINDER
+  APPOINTMENT_CONFIRMED
+  APPOINTMENT_CANCELLED
+  GENERAL
+}
+
+enum NotificationChannel {
+  SMS
+  EMAIL
+  PUSH
+  IN_APP
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+  READ
+}

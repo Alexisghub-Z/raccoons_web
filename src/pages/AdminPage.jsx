@@ -1,43 +1,36 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { sendTrackingCodeWhatsApp } from '../services/whatsappService';
-import { sendTrackingCodeBackend } from '../services/backendWhatsappService';
-import { getStatusColor, getStatusText } from '../utils/statusHelpers';
+import {
+  Settings,
+  User,
+  LogOut,
+  Plus,
+  Search as SearchIcon,
+  X,
+  ClipboardList
+} from 'lucide-react';
+import { authService } from '../api/auth.service';
+import { serviceService } from '../api/service.service';
+import { userService } from '../api/user.service';
+import LoginForm from '../components/LoginForm';
+import ServiceCard from '../components/admin/ServiceCard';
+import ServiceFormModal from '../components/admin/ServiceFormModal';
+import Toast from '../components/admin/Toast';
 import './AdminPage.css';
 
 function AdminPage() {
   const navigate = useNavigate();
-  const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [activeTab, setActiveTab] = useState('services');
   const [services, setServices] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [editingService, setEditingService] = useState(null);
-  const [autoSendWhatsApp, setAutoSendWhatsApp] = useState(
-    localStorage.getItem('raccoons_auto_whatsapp') === 'true'
-  );
-  const [useBackendWhatsApp, setUseBackendWhatsApp] = useState(
-    localStorage.getItem('raccoons_use_backend_whatsapp') !== 'false' // Por defecto: true
-  );
-  const [formData, setFormData] = useState({
-    clientName: '',
-    clientPhone: '',
-    motorcycle: '',
-    serviceType: '',
-    status: 'recibido',
-    notes: '',
-    evidence: [],
-    pdfFile: null,
-    pdfFileName: ''
-  });
-
-  // Password simple para demo (en producción usar autenticación real)
-  const ADMIN_PASSWORD = 'admin123';
+  const [filteredServices, setFilteredServices] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('ALL');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
-    // Verificar si ya está autenticado en la sesión
-    const isAuth = sessionStorage.getItem('admin_authenticated');
-    if (isAuth === 'true') {
+    if (authService.isAuthenticated()) {
       setIsAuthenticated(true);
     }
   }, []);
@@ -48,606 +41,369 @@ function AdminPage() {
     }
   }, [isAuthenticated]);
 
-  const loadServices = () => {
-    const storedServices = JSON.parse(localStorage.getItem('raccoons_services') || '[]');
-    setServices(storedServices);
-  };
+  useEffect(() => {
+    filterServices();
+  }, [services, searchTerm, statusFilter]);
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true);
-      sessionStorage.setItem('admin_authenticated', 'true');
-    } else {
-      alert('Contraseña incorrecta');
+  const loadServices = async () => {
+    try {
+      const data = await serviceService.getAll();
+      setServices(data);
+    } catch (error) {
+      console.error('Error loading services:', error);
+
+      // Manejar errores específicos
+      if (error.message === 'SESSION_EXPIRED' || error.message === 'NO_AUTH') {
+        showToast('Tu sesión ha expirado. Por favor inicia sesión nuevamente.', 'error');
+        setTimeout(() => {
+          setIsAuthenticated(false);
+        }, 2000);
+      } else {
+        showToast(error.message || 'Error al cargar los servicios', 'error');
+      }
     }
   };
 
-  const handleLogout = () => {
+  const filterServices = () => {
+    let filtered = [...services];
+
+    // Filtrar por búsqueda
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(service => {
+        const clientName = service.customer
+          ? `${service.customer.firstName} ${service.customer.lastName}`.toLowerCase()
+          : '';
+        return (
+          service.code.toLowerCase().includes(term) ||
+          service.motorcycle.toLowerCase().includes(term) ||
+          clientName.includes(term)
+        );
+      });
+    }
+
+    // Filtrar por estado
+    if (statusFilter !== 'ALL') {
+      filtered = filtered.filter(service => service.status === statusFilter);
+    }
+
+    setFilteredServices(filtered);
+  };
+
+  const handleLoginSuccess = () => {
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = async () => {
+    await authService.logout();
     setIsAuthenticated(false);
-    sessionStorage.removeItem('admin_authenticated');
     navigate('/');
   };
 
-  const generateCode = () => {
-    return 'RCN-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-  };
+  const handleCreateService = async (formData) => {
+    setIsLoading(true);
+    try {
+      // Crear cliente
+      const nameParts = formData.clientName.trim().split(' ');
+      const firstName = nameParts[0] || 'Cliente';
+      const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : 'General';
+      const timestamp = Date.now();
+      const emailToUse = formData.clientEmail || `cliente.${timestamp}@temp.com`;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+      const customerData = {
+        firstName,
+        lastName,
+        email: emailToUse,
+        phone: formData.clientPhone || null,
+        password: 'Temp1234!',
+        role: 'CUSTOMER'
+      };
 
-    const isNewService = !editingService;
-    const serviceData = {
-      ...formData,
-      code: editingService ? editingService.code : generateCode(),
-      dateCreated: editingService ? editingService.dateCreated : new Date().toISOString(),
-      dateUpdated: new Date().toISOString()
-    };
-
-    let updatedServices;
-    if (editingService) {
-      updatedServices = services.map(s => s.code === editingService.code ? serviceData : s);
-    } else {
-      updatedServices = [...services, serviceData];
-    }
-
-    localStorage.setItem('raccoons_services', JSON.stringify(updatedServices));
-    setServices(updatedServices);
-
-    // Si es un nuevo servicio y tiene teléfono, manejar WhatsApp
-    if (isNewService && serviceData.clientPhone) {
-      const sendWhatsAppMessage = async () => {
-        if (useBackendWhatsApp) {
-          // Enviar a través del backend (envío REAL automático)
-          const result = await sendTrackingCodeBackend(
-            serviceData.clientPhone,
-            serviceData.code,
-            serviceData.clientName,
-            serviceData.motorcycle,
-            serviceData.serviceType
-          );
-
-          if (result.success) {
-            alert(`✅ WhatsApp enviado automáticamente a ${serviceData.clientName}\nCódigo: ${serviceData.code}`);
-          } else {
-            alert(`❌ Error al enviar WhatsApp: ${result.error}\n\nVerifica que el backend esté corriendo.`);
-          }
+      let customerId;
+      try {
+        const response = await userService.create(customerData);
+        customerId = response.user.id;
+      } catch (error) {
+        if (error.message.includes('already exists')) {
+          customerData.email = `cliente.${Date.now()}.${Math.random().toString(36).substr(2, 5)}@temp.com`;
+          const response = await userService.create(customerData);
+          customerId = response.user.id;
         } else {
-          // Método anterior (abrir WhatsApp Web)
-          sendTrackingCodeWhatsApp(
-            serviceData.clientPhone,
-            serviceData.code,
-            serviceData.clientName,
-            serviceData.motorcycle,
-            serviceData.serviceType
-          );
+          throw error;
         }
+      }
+
+      // Crear servicio
+      const serviceData = {
+        customerId,
+        motorcycle: formData.motorcycle,
+        serviceType: formData.serviceType,
+        status: 'RECEIVED'
       };
 
-      if (autoSendWhatsApp) {
-        // Enviar automáticamente
-        sendWhatsAppMessage();
+      if (formData.notes && formData.notes.trim()) {
+        serviceData.notes = formData.notes;
+      }
+
+      const service = await serviceService.create(serviceData);
+
+      showToast(
+        `Servicio ${service.code} creado exitosamente${formData.clientPhone ? '. SMS enviado automáticamente' : ''}`,
+        'success'
+      );
+
+      setIsModalOpen(false);
+      loadServices();
+    } catch (error) {
+      console.error('Error creating service:', error);
+      showToast('Error al crear el servicio: ' + error.message, 'error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleStatusChange = async (serviceId, newStatus, notes) => {
+    try {
+      await serviceService.updateStatus(serviceId, newStatus, notes);
+      showToast('Estado actualizado. SMS enviado al cliente', 'success');
+      loadServices();
+    } catch (error) {
+      console.error('Error updating status:', error);
+
+      // Manejar errores específicos
+      if (error.message === 'SESSION_EXPIRED') {
+        showToast('Tu sesión ha expirado. Por favor inicia sesión nuevamente.', 'error');
+        setTimeout(() => {
+          setIsAuthenticated(false);
+        }, 2000);
+      } else if (error.message === 'NO_AUTH') {
+        showToast('No estás autenticado. Por favor inicia sesión.', 'error');
+        setTimeout(() => {
+          setIsAuthenticated(false);
+        }, 2000);
       } else {
-        // Preguntar antes de enviar
-        const sendWhatsApp = window.confirm(
-          `¿Deseas enviar el código de seguimiento ${serviceData.code} por WhatsApp a ${serviceData.clientName}?`
-        );
-
-        if (sendWhatsApp) {
-          sendWhatsAppMessage();
-        }
+        showToast(error.message || 'Error al actualizar el estado', 'error');
       }
     }
-
-    resetForm();
   };
 
-  const resetForm = () => {
-    setFormData({
-      clientName: '',
-      clientPhone: '',
-      motorcycle: '',
-      serviceType: '',
-      status: 'recibido',
-      notes: '',
-      evidence: [],
-      pdfFile: null,
-      pdfFileName: ''
-    });
-    setEditingService(null);
-    setShowForm(false);
-  };
+  const handleDeleteService = async (serviceId) => {
+    try {
+      await serviceService.delete(serviceId);
+      showToast('Servicio eliminado correctamente', 'success');
+      loadServices();
+    } catch (error) {
+      console.error('Error deleting service:', error);
 
-  const handleEdit = (service) => {
-    setFormData({
-      ...service,
-      pdfFile: service.pdfFile || null,
-      pdfFileName: service.pdfFileName || ''
-    });
-    setEditingService(service);
-    setShowForm(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handlePDFUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (file.type !== 'application/pdf') {
-        alert('Por favor selecciona un archivo PDF');
-        e.target.value = '';
-        return;
+      // Manejar errores específicos
+      if (error.message === 'SESSION_EXPIRED') {
+        showToast('Tu sesión ha expirado. Por favor inicia sesión nuevamente.', 'error');
+        setTimeout(() => {
+          setIsAuthenticated(false);
+        }, 2000);
+      } else if (error.message === 'NO_AUTH') {
+        showToast('No estás autenticado. Por favor inicia sesión.', 'error');
+        setTimeout(() => {
+          setIsAuthenticated(false);
+        }, 2000);
+      } else {
+        showToast(error.message || 'Error al eliminar el servicio', 'error');
       }
+    }
+  };
 
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
-        alert('El archivo PDF no debe superar 5MB');
-        e.target.value = '';
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData({
-          ...formData,
-          pdfFile: reader.result,
-          pdfFileName: file.name
-        });
+  const handleUpdateService = async (serviceId, formData) => {
+    try {
+      // Preparar datos del servicio
+      const serviceData = {
+        motorcycle: formData.motorcycle,
+        serviceType: formData.serviceType,
+        notes: formData.notes || null
       };
-      reader.readAsDataURL(file);
-    }
-  };
 
-  const handleRemovePDF = () => {
-    setFormData({
-      ...formData,
-      pdfFile: null,
-      pdfFileName: ''
-    });
-  };
-
-  const handleDelete = (code) => {
-    if (window.confirm('¿Estás seguro de eliminar este servicio?')) {
-      const updatedServices = services.filter(s => s.code !== code);
-      localStorage.setItem('raccoons_services', JSON.stringify(updatedServices));
-      setServices(updatedServices);
-    }
-  };
-
-  const handleImageUpload = (e) => {
-    const files = Array.from(e.target.files);
-
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const newEvidence = {
-          url: reader.result,
-          description: '',
-          timestamp: new Date().toISOString()
-        };
-        setFormData(prev => ({
-          ...prev,
-          evidence: [...(prev.evidence || []), newEvidence]
-        }));
+      // Preparar datos del cliente
+      const customerData = {
+        firstName: formData.customerFirstName,
+        lastName: formData.customerLastName,
+        phone: formData.customerPhone || null,
+        email: formData.customerEmail || null
       };
-      reader.readAsDataURL(file);
-    });
-  };
 
-  const handleEvidenceDescriptionChange = (index, description) => {
-    setFormData(prev => ({
-      ...prev,
-      evidence: prev.evidence.map((ev, i) =>
-        i === index ? { ...ev, description } : ev
-      )
-    }));
-  };
+      // Actualizar servicio
+      await serviceService.update(serviceId, serviceData);
 
-  const handleRemoveEvidence = (index) => {
-    setFormData(prev => ({
-      ...prev,
-      evidence: prev.evidence.filter((_, i) => i !== index)
-    }));
-  };
+      // Actualizar cliente (necesitamos el customerId del servicio)
+      const service = services.find(s => s.id === serviceId);
+      if (service && service.customer) {
+        await userService.update(service.customer.id, customerData);
+      }
 
-  const handleDownloadPDF = (service) => {
-    if (!service.pdfFile) {
-      alert('Este servicio no tiene un PDF adjuntado. Edita el servicio para adjuntar un PDF.');
-      return;
+      showToast('Servicio actualizado correctamente', 'success');
+      loadServices();
+    } catch (error) {
+      console.error('Error updating service:', error);
+
+      // Manejar errores específicos
+      if (error.message === 'SESSION_EXPIRED') {
+        showToast('Tu sesión ha expirado. Por favor inicia sesión nuevamente.', 'error');
+        setTimeout(() => {
+          setIsAuthenticated(false);
+        }, 2000);
+      } else if (error.message === 'NO_AUTH') {
+        showToast('No estás autenticado. Por favor inicia sesión.', 'error');
+        setTimeout(() => {
+          setIsAuthenticated(false);
+        }, 2000);
+      } else {
+        showToast(error.message || 'Error al actualizar el servicio', 'error');
+      }
+
+      // Re-lanzar el error para que el modal lo maneje
+      throw error;
     }
-
-    // Convertir base64 a blob y descargar
-    const base64Data = service.pdfFile.split(',')[1];
-    const byteCharacters = atob(base64Data);
-    const byteNumbers = new Array(byteCharacters.length);
-
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: 'application/pdf' });
-    const url = window.URL.createObjectURL(blob);
-
-    // Crear link y descargar
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = service.pdfFileName || `Servicio_${service.code}.pdf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
   };
 
-  const handleSendWhatsApp = (service) => {
-    if (!service.clientPhone) {
-      alert('Este servicio no tiene un número de teléfono registrado');
-      return;
-    }
-
-    sendTrackingCodeWhatsApp(
-      service.clientPhone,
-      service.code,
-      service.clientName,
-      service.motorcycle,
-      service.serviceType
-    );
+  const showToast = (message, type = 'info') => {
+    setToast({ message, type });
   };
 
-  const toggleAutoSendWhatsApp = () => {
-    const newValue = !autoSendWhatsApp;
-    setAutoSendWhatsApp(newValue);
-    localStorage.setItem('raccoons_auto_whatsapp', newValue.toString());
+  const closeToast = () => {
+    setToast(null);
   };
-
-  const toggleBackendWhatsApp = () => {
-    const newValue = !useBackendWhatsApp;
-    setUseBackendWhatsApp(newValue);
-    localStorage.setItem('raccoons_use_backend_whatsapp', newValue.toString());
-  };
-
 
   if (!isAuthenticated) {
-    return (
-      <div className="admin-page-login">
-        <div className="admin-login-container">
-          <div className="admin-login-header">
-            <h1>🦝 RACCOONS</h1>
-            <p>Panel de Administración</p>
-          </div>
-
-          <form onSubmit={handleLogin} className="admin-login-form">
-            <div className="admin-input-group">
-              <label>Contraseña de Administrador</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Ingresa la contraseña"
-                required
-                autoFocus
-              />
-            </div>
-            <button type="submit" className="admin-login-btn">Ingresar</button>
-            <button
-              type="button"
-              className="admin-back-btn"
-              onClick={() => navigate('/')}
-            >
-              Volver al sitio
-            </button>
-          </form>
-        </div>
-      </div>
-    );
+    return <LoginForm onLoginSuccess={handleLoginSuccess} />;
   }
 
   return (
-    <div className="admin-page">
-      <div className="admin-page-header">
-        <div className="admin-page-title">
-          <h1>RACCOONS - Panel de Administración</h1>
-          <p>Gestiona los servicios del taller</p>
+    <div className="admin-container">
+      {/* Header */}
+      <header className="admin-header">
+        <div className="header-left">
+          <h1 className="header-title">
+            <Settings size={24} />
+            Raccoons Taller
+          </h1>
+          <span className="header-subtitle">Panel de Administración</span>
         </div>
-        <div className="admin-page-actions">
-          {activeTab === 'services' && (
-            <button
-              className="admin-new-btn"
-              onClick={() => setShowForm(!showForm)}
-            >
-              {showForm ? 'Cancelar' : '+ Nuevo Servicio'}
-            </button>
-          )}
-          <button className="admin-logout-btn" onClick={handleLogout}>
-            Cerrar Sesión
+        <div className="header-right">
+          <span className="user-info">
+            <User size={18} />
+            Admin
+          </span>
+          <button className="logout-btn" onClick={handleLogout}>
+            <LogOut size={18} />
+            Salir
           </button>
         </div>
-      </div>
+      </header>
 
-      <div className="admin-tabs">
-        <button
-          className={`admin-tab ${activeTab === 'services' ? 'active' : ''}`}
-          onClick={() => setActiveTab('services')}
-        >
-          Servicios
+      {/* Toolbar */}
+      <div className="admin-toolbar">
+        <button className="btn-new-service" onClick={() => setIsModalOpen(true)}>
+          <Plus size={18} />
+          Nuevo Servicio
         </button>
+
+        <div className="toolbar-filters">
+          <div className="search-box">
+            <SearchIcon className="search-icon" size={18} />
+            <input
+              type="text"
+              placeholder="Buscar por código, cliente o moto..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+            {searchTerm && (
+              <button className="search-clear" onClick={() => setSearchTerm('')}>
+                <X size={18} />
+              </button>
+            )}
+          </div>
+
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="status-filter"
+          >
+            <option value="ALL">Todos los estados</option>
+            <option value="RECEIVED">Recibido</option>
+            <option value="IN_DIAGNOSIS">En Diagnóstico</option>
+            <option value="IN_REPAIR">En Reparación</option>
+            <option value="READY_FOR_PICKUP">Listo para Entrega</option>
+            <option value="DELIVERED">Entregado</option>
+          </select>
+        </div>
       </div>
 
-      <div className="admin-page-content">
-        {showForm && (
-          <div className="admin-form-container">
-            <div className="admin-form-header">
-              <h2>{editingService ? 'Editar Servicio' : 'Nuevo Servicio'}</h2>
-              <div className="whatsapp-toggles">
-                <div className="whatsapp-toggle">
-                  <label className="toggle-label">
-                    <input
-                      type="checkbox"
-                      checked={useBackendWhatsApp}
-                      onChange={toggleBackendWhatsApp}
-                      className="toggle-checkbox"
-                    />
-                    <span className="toggle-switch"></span>
-                    <span className="toggle-text">
-                      {useBackendWhatsApp ? '🚀 Backend API' : '🌐 Web Link'}
-                    </span>
-                  </label>
-                </div>
-                <div className="whatsapp-toggle">
-                  <label className="toggle-label">
-                    <input
-                      type="checkbox"
-                      checked={autoSendWhatsApp}
-                      onChange={toggleAutoSendWhatsApp}
-                      className="toggle-checkbox"
-                    />
-                    <span className="toggle-switch"></span>
-                    <span className="toggle-text">
-                      Auto-enviar {autoSendWhatsApp ? '✓' : '✗'}
-                    </span>
-                  </label>
-                </div>
-              </div>
-            </div>
-            <form onSubmit={handleSubmit} className="admin-form">
-              <div className="admin-form-grid">
-                <div className="admin-input-group">
-                  <label>Nombre del Cliente *</label>
-                  <input
-                    type="text"
-                    value={formData.clientName}
-                    onChange={(e) => setFormData({...formData, clientName: e.target.value})}
-                    required
-                  />
-                </div>
+      {/* Stats */}
+      <div className="stats-bar">
+        <div className="stat-item">
+          <span className="stat-label">Total Servicios</span>
+          <span className="stat-value">{services.length}</span>
+        </div>
+        <div className="stat-item">
+          <span className="stat-label">Resultados</span>
+          <span className="stat-value">{filteredServices.length}</span>
+        </div>
+        <div className="stat-item">
+          <span className="stat-label">Activos</span>
+          <span className="stat-value">
+            {services.filter(s => s.status !== 'DELIVERED' && s.status !== 'CANCELLED').length}
+          </span>
+        </div>
+      </div>
 
-                <div className="admin-input-group">
-                  <label>Teléfono del Cliente</label>
-                  <input
-                    type="tel"
-                    value={formData.clientPhone}
-                    onChange={(e) => setFormData({...formData, clientPhone: e.target.value})}
-                    placeholder="10 dígitos"
-                  />
-                </div>
-
-                <div className="admin-input-group">
-                  <label>Motocicleta *</label>
-                  <input
-                    type="text"
-                    value={formData.motorcycle}
-                    onChange={(e) => setFormData({...formData, motorcycle: e.target.value})}
-                    placeholder="Ej: Yamaha R15 2023"
-                    required
-                  />
-                </div>
-
-                <div className="admin-input-group">
-                  <label>Tipo de Servicio *</label>
-                  <input
-                    type="text"
-                    value={formData.serviceType}
-                    onChange={(e) => setFormData({...formData, serviceType: e.target.value})}
-                    placeholder="Ej: Mantenimiento General"
-                    required
-                  />
-                </div>
-
-                <div className="admin-input-group">
-                  <label>Estado *</label>
-                  <select
-                    value={formData.status}
-                    onChange={(e) => setFormData({...formData, status: e.target.value})}
-                  >
-                    <option value="recibido">Recibido</option>
-                    <option value="en_diagnostico">En Diagnóstico</option>
-                    <option value="en_reparacion">En Reparación</option>
-                    <option value="listo">Listo para Entrega</option>
-                    <option value="entregado">Entregado</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="admin-input-group">
-                <label>Notas (Opcional)</label>
-                <textarea
-                  value={formData.notes}
-                  onChange={(e) => setFormData({...formData, notes: e.target.value})}
-                  rows="4"
-                  placeholder="Notas adicionales sobre el servicio..."
-                />
-              </div>
-
-              <div className="admin-input-group">
-                <label>Evidencias del Trabajo (Fotos)</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleImageUpload}
-                  style={{ marginBottom: '1rem' }}
-                />
-                {formData.evidence && formData.evidence.length > 0 && (
-                  <div className="evidence-preview">
-                    {formData.evidence.map((ev, index) => (
-                      <div key={index} className="evidence-item">
-                        <img src={ev.url} alt={`Evidencia ${index + 1}`} />
-                        <input
-                          type="text"
-                          placeholder="Descripción de la evidencia"
-                          value={ev.description}
-                          onChange={(e) => handleEvidenceDescriptionChange(index, e.target.value)}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveEvidence(index)}
-                          className="remove-evidence-btn"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              <div className="admin-input-group">
-                <label>Adjuntar PDF (Opcional)</label>
-                <div className="admin-pdf-upload">
-                  {formData.pdfFile ? (
-                    <div className="admin-pdf-preview">
-                      <span className="pdf-icon">📄</span>
-                      <span className="pdf-name">{formData.pdfFileName}</span>
-                      <button
-                        type="button"
-                        onClick={handleRemovePDF}
-                        className="admin-remove-pdf-btn"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="admin-pdf-upload-area">
-                      <input
-                        type="file"
-                        accept="application/pdf"
-                        onChange={handlePDFUpload}
-                        className="admin-pdf-input"
-                        id="pdf-upload-adminpage"
-                      />
-                      <label htmlFor="pdf-upload-adminpage" className="admin-pdf-label">
-                        <span className="upload-icon">📎</span>
-                        <span>Seleccionar archivo PDF (máx. 5MB)</span>
-                      </label>
-                    </div>
-                  )}
-                </div>
-                <small className="admin-help-text">
-                  Este PDF estará disponible para descarga cuando el cliente consulte el seguimiento
-                </small>
-              </div>
-
-              <div className="admin-form-actions">
-                <button type="submit" className="admin-submit-btn">
-                  {editingService ? 'Actualizar Servicio' : 'Crear Servicio'}
-                </button>
-                <button type="button" className="admin-cancel-btn" onClick={resetForm}>
-                  Cancelar
-                </button>
-              </div>
-            </form>
+      {/* Services Grid */}
+      <div className="services-container">
+        {filteredServices.length === 0 ? (
+          <div className="empty-state">
+            <ClipboardList className="empty-icon" size={48} />
+            <h3>No hay servicios</h3>
+            <p>
+              {searchTerm || statusFilter !== 'ALL'
+                ? 'No se encontraron servicios con los filtros aplicados'
+                : 'Crea tu primer servicio para comenzar'}
+            </p>
+            {!searchTerm && statusFilter === 'ALL' && (
+              <button className="btn-new-service" onClick={() => setIsModalOpen(true)}>
+                <Plus size={18} />
+                Crear Primer Servicio
+              </button>
+            )}
           </div>
-        )}
-
-        {activeTab === 'services' && (
-          <div className="admin-services-section">
-            <div className="admin-services-header">
-              <h2>Servicios Activos</h2>
-              <span className="admin-services-count">{services.length} servicios</span>
-            </div>
-
-            {services.length === 0 ? (
-              <div className="admin-empty">
-              <p>📋 No hay servicios registrados</p>
-              <p>Crea el primer servicio usando el botón "+ Nuevo Servicio"</p>
-            </div>
-          ) : (
-            <div className="admin-services-grid">
-              {services.map((service) => (
-                <div key={service.code} className="admin-service-card">
-                  <div className="admin-service-header">
-                    <div>
-                      <h3>{service.code}</h3>
-                      <p className="admin-service-client">{service.clientName}</p>
-                    </div>
-                    <span
-                      className="admin-status-badge"
-                      style={{ backgroundColor: getStatusColor(service.status) }}
-                    >
-                      {getStatusText(service.status)}
-                    </span>
-                  </div>
-
-                  <div className="admin-service-body">
-                    <div className="admin-service-info">
-                      <strong>Moto:</strong> {service.motorcycle}
-                    </div>
-                    <div className="admin-service-info">
-                      <strong>Servicio:</strong> {service.serviceType}
-                    </div>
-                    <div className="admin-service-info">
-                      <strong>Fecha:</strong> {new Date(service.dateCreated).toLocaleDateString()}
-                    </div>
-                    {service.notes && (
-                      <div className="admin-service-info">
-                        <strong>Notas:</strong> {service.notes}
-                      </div>
-                    )}
-                    {service.pdfFile && (
-                      <div className="admin-service-info admin-pdf-indicator">
-                        <strong>PDF:</strong>
-                        <span className="pdf-badge">📄 {service.pdfFileName || 'Adjunto disponible'}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="admin-service-actions">
-                    <button
-                      onClick={() => handleEdit(service)}
-                      className="admin-edit-btn"
-                    >
-                      ✏️ Editar
-                    </button>
-                    {service.pdfFile && (
-                      <button
-                        onClick={() => handleDownloadPDF(service)}
-                        className="admin-pdf-btn"
-                        title="Descargar PDF adjunto"
-                      >
-                        📄 PDF
-                      </button>
-                    )}
-                    {service.clientPhone && (
-                      <button
-                        onClick={() => handleSendWhatsApp(service)}
-                        className="admin-whatsapp-btn"
-                        title="Enviar por WhatsApp"
-                      >
-                        💬 WhatsApp
-                      </button>
-                    )}
-                    <button
-                      onClick={() => handleDelete(service.code)}
-                      className="admin-delete-btn"
-                    >
-                      🗑️ Eliminar
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+        ) : (
+          <div className="services-grid">
+            {filteredServices.map(service => (
+              <ServiceCard
+                key={service.id}
+                service={service}
+                onStatusChange={handleStatusChange}
+                onDelete={handleDeleteService}
+                onUpdate={handleUpdateService}
+              />
+            ))}
           </div>
         )}
       </div>
+
+      {/* Modal */}
+      <ServiceFormModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleCreateService}
+        isLoading={isLoading}
+      />
+
+      {/* Toast */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={closeToast}
+        />
+      )}
     </div>
   );
 }

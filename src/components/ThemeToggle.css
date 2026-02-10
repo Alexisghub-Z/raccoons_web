@@ -40,16 +40,40 @@
   color: var(--color-text-primary);
 
   /* Transición suave y optimizada */
-  transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+              filter 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
   /* GPU acceleration */
   transform: translateZ(0) rotate(0deg);
-  will-change: transform;
+  will-change: transform, filter;
+  filter: blur(0px);
 }
 
 /* Rotación cuando cambia a modo oscuro */
 .theme-toggle-icon.rotate {
   transform: translateZ(0) rotate(360deg);
+  animation: rotateWithBlur 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Animación con blur durante la rotación */
+@keyframes rotateWithBlur {
+  0% {
+    transform: translateZ(0) rotate(0deg);
+    filter: blur(0px);
+  }
+  25% {
+    filter: blur(2px);
+  }
+  50% {
+    filter: blur(3px);
+  }
+  75% {
+    filter: blur(2px);
+  }
+  100% {
+    transform: translateZ(0) rotate(360deg);
+    filter: blur(0px);
+  }
 }
 
 /* Efecto de brillo al cambiar */
@@ -126,5 +150,6 @@
 
   .theme-toggle-icon.rotate {
     transform: none;
+    filter: none !important;
   }
 }

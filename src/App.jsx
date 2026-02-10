@@ -10,10 +10,13 @@ const AdminPage = lazy(() => import('./pages/AdminPage'))
 const TrackingPage = lazy(() => import('./pages/TrackingPage'))
 
 function App() {
-  const [showSplash, setShowSplash] = useState(true);
-  const [showContent, setShowContent] = useState(false);
+  // Verificar si el splash ya se mostró en esta sesión
+  const splashShown = sessionStorage.getItem('splashShown') === 'true';
+  const [showSplash, setShowSplash] = useState(!splashShown);
+  const [showContent, setShowContent] = useState(splashShown);
 
   const handleSplashFinish = () => {
+    sessionStorage.setItem('splashShown', 'true');
     setShowSplash(false);
     setTimeout(() => {
       setShowContent(true);

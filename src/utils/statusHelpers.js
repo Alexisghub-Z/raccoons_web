@@ -4,27 +4,42 @@
  */
 
 export const SERVICE_STATUSES = {
-  RECIBIDO: 'recibido',
-  EN_DIAGNOSTICO: 'en_diagnostico',
-  EN_REPARACION: 'en_reparacion',
-  LISTO: 'listo',
-  ENTREGADO: 'entregado'
+  RECEIVED: 'RECEIVED',
+  IN_DIAGNOSIS: 'IN_DIAGNOSIS',
+  IN_REPAIR: 'IN_REPAIR',
+  READY_FOR_PICKUP: 'READY_FOR_PICKUP',
+  DELIVERED: 'DELIVERED',
+  CANCELLED: 'CANCELLED'
 };
 
 const STATUS_COLORS = {
-  [SERVICE_STATUSES.RECIBIDO]: '#06b6d4',
-  [SERVICE_STATUSES.EN_DIAGNOSTICO]: '#f59e0b',
-  [SERVICE_STATUSES.EN_REPARACION]: '#ef4444',
-  [SERVICE_STATUSES.LISTO]: '#10b981',
-  [SERVICE_STATUSES.ENTREGADO]: '#6366f1'
+  'RECEIVED': '#06b6d4',
+  'IN_DIAGNOSIS': '#f59e0b',
+  'IN_REPAIR': '#ef4444',
+  'READY_FOR_PICKUP': '#10b981',
+  'DELIVERED': '#6366f1',
+  'CANCELLED': '#94a3b8',
+  // Mantener compatibilidad con formato antiguo
+  'recibido': '#06b6d4',
+  'en_diagnostico': '#f59e0b',
+  'en_reparacion': '#ef4444',
+  'listo': '#10b981',
+  'entregado': '#6366f1'
 };
 
 const STATUS_TEXTS = {
-  [SERVICE_STATUSES.RECIBIDO]: 'Recibido',
-  [SERVICE_STATUSES.EN_DIAGNOSTICO]: 'En Diagnóstico',
-  [SERVICE_STATUSES.EN_REPARACION]: 'En Reparación',
-  [SERVICE_STATUSES.LISTO]: 'Listo para Entrega',
-  [SERVICE_STATUSES.ENTREGADO]: 'Entregado'
+  'RECEIVED': 'Recibido',
+  'IN_DIAGNOSIS': 'En Diagnóstico',
+  'IN_REPAIR': 'En Reparación',
+  'READY_FOR_PICKUP': 'Listo para Entrega',
+  'DELIVERED': 'Entregado',
+  'CANCELLED': 'Cancelado',
+  // Mantener compatibilidad con formato antiguo
+  'recibido': 'Recibido',
+  'en_diagnostico': 'En Diagnóstico',
+  'en_reparacion': 'En Reparación',
+  'listo': 'Listo para Entrega',
+  'entregado': 'Entregado'
 };
 
 export const getStatusColor = (status) => {
