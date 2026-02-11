@@ -188,11 +188,11 @@ function Stats() {
               <Users className="stat-icon" size={48} />
             </div>
             <div className="stat-number">
-              {clientesSatisfechos}%
+              +{clientesSatisfechos.toLocaleString()}
             </div>
             <div className="stat-label">Clientes Satisfechos</div>
             <div className="stat-description">
-              Índice de satisfacción
+              Clientes que confían en nosotros
             </div>
           </div>
 
