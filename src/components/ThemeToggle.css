@@ -8,8 +8,10 @@
   width: 40px;
   height: 40px;
   padding: 0;
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
+  background: rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.18);
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -21,32 +23,23 @@
 }
 
 .theme-toggle:hover {
-  background: var(--color-bg-tertiary);
-  border-color: var(--color-text-muted);
+  background: rgba(0, 0, 0, 0.2);
+  border-color: rgba(0, 0, 0, 0.28);
   transform: translateY(-2px) translateZ(0);
-  box-shadow: 0 4px 12px var(--color-shadow);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
-/* Modo oscuro — glass effect */
+/* Modo oscuro — glass claro */
 [data-theme="dark"] .theme-toggle {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 [data-theme="dark"] .theme-toggle:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
-[data-theme="dark"] .theme-toggle-icon {
-  color: rgba(255, 255, 255, 0.75);
-}
-
-[data-theme="dark"] .theme-toggle:hover .theme-toggle-icon {
-  color: #ffffff;
-}
 
 .theme-toggle:active {
   transform: translateY(0) translateZ(0);
@@ -58,7 +51,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-text-secondary);
+  color: rgba(0, 0, 0, 0.75);
 
   /* Transición suave y optimizada */
   transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55),
@@ -133,9 +126,18 @@
   }
 }
 
-/* Hover modo claro — ícono más oscuro */
+/* Hover modo claro */
 .theme-toggle:hover .theme-toggle-icon {
-  color: var(--color-text-primary);
+  color: rgba(0, 0, 0, 0.9);
+}
+
+/* Modo oscuro — ícono blanco */
+[data-theme="dark"] .theme-toggle-icon {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+[data-theme="dark"] .theme-toggle:hover .theme-toggle-icon {
+  color: #ffffff;
 }
 
 /* Animación de entrada inicial */

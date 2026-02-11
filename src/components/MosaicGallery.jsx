@@ -8,24 +8,27 @@ gsap.registerPlugin(ScrollTrigger);
 function MosaicGallery() {
   const galleryRef = useRef(null);
 
-  // Configuración de imágenes de la galería
-  // Combina imágenes del taller con trabajos realizados
-  // Puedes agregar más imágenes en la carpeta /public/gallery/ con nombres: trabajo-1.jpg, trabajo-2.jpg, etc.
+  // ─────────────────────────────────────────────────────────
+  // AGREGA TUS FOTOS AQUÍ
+  // Coloca los archivos en la carpeta: /public/clientes/
+  // Nombra los archivos: cliente-1.jpg, cliente-2.jpg, etc.
+  // La galería usa 14 imágenes en total (índices 0 al 13).
+  // ─────────────────────────────────────────────────────────
   const galleryImages = [
-    '/workshop/taller-1.jpg',
-    '/workshop/taller-2.jpg',
-    '/workshop/taller-3.jpg',
-    '/workshop/taller-4.jpg',
-    '/workshop/taller-5.jpg',
-    '/gallery/trabajo-1.jpg',
-    '/gallery/trabajo-2.jpg',
-    '/gallery/trabajo-3.jpg',
-    '/gallery/trabajo-4.jpg',
-    '/gallery/trabajo-5.jpg',
-    '/gallery/trabajo-6.jpg',
-    '/gallery/trabajo-7.jpg',
-    '/gallery/trabajo-8.jpg',
-    '/gallery/trabajo-9.jpg'
+    '/clientes/cliente-featured.jpeg',
+    '/clientes/cliente-2.jpeg',
+    '/clientes/cliente-3.jpeg',
+    '/clientes/cliente-4.jpeg',
+    '/clientes/cliente-1.jpeg',
+    '/clientes/cliente-6.jpeg',
+    '/clientes/cliente-7.jpeg',
+    '/clientes/cliente-8.jpeg',
+    '/clientes/cliente-9.jpeg',
+    '/clientes/cliente-10.jpeg',
+    '/clientes/cliente-11.jpeg',
+    '/clientes/cliente-12.jpeg',
+    '/clientes/cliente-13.jpeg',
+    '/clientes/cliente-14.jpeg',
   ];
 
   useEffect(() => {
@@ -148,7 +151,7 @@ function MosaicGallery() {
 
   return (
     <section className="gallery-grid" ref={galleryRef}>
-      <h2 className="gallery-grid__title">Más de 100 Clientes Satisfechos</h2>
+      <h2 className="gallery-grid__title">Más de 1,000 Clientes Satisfechos</h2>
       <div className="gallery-grid__container">
         <div className="gallery-grid__featured">
           <div className="gallery-grid__featured-inner">

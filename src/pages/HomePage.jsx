@@ -418,7 +418,6 @@ function HomePage() {
 
       {/* Contact Section */}
       <section id="contacto" className="contact fade-in">
-        <div className="contact-radar"></div>
         <div className="container">
           <h2 className="section-title">Contáctanos y Encuéntranos</h2>
 
