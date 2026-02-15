@@ -481,9 +481,9 @@ function HomePage() {
 
             <div className="footer-social">
               <a href="https://www.instagram.com/raccoons_oax/" target="_blank" rel="noopener noreferrer" className="social-link">Instagram</a>
-              <a href="https://www.facebook.com/raccoons_oax" target="_blank" rel="noopener noreferrer" className="social-link">Facebook</a>
-              <a href="https://www.tiktok.com/@raccoons_oax" target="_blank" rel="noopener noreferrer" className="social-link">TikTok</a>
-              <a href="https://www.youtube.com/@raccoons_oax" target="_blank" rel="noopener noreferrer" className="social-link">YouTube</a>
+              <a href="https://www.facebook.com/profile.php?id=100092034219719" target="_blank" rel="noopener noreferrer" className="social-link">Facebook</a>
+              <a href="https://www.tiktok.com/@raccoons.oax" target="_blank" rel="noopener noreferrer" className="social-link">TikTok</a>
+              <a href="https://www.youtube.com/@RaccoonsOax/videos" target="_blank" rel="noopener noreferrer" className="social-link">YouTube</a>
               <a href="https://wa.me/12345678900" target="_blank" rel="noopener noreferrer" className="social-link">WhatsApp</a>
             </div>
           </div>

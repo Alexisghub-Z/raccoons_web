@@ -100,7 +100,7 @@ function Header() {
             <button
               className="mobile-social-btn facebook"
               onClick={() => {
-                window.open('https://www.facebook.com/raccoons_oax', '_blank');
+                window.open('https://www.facebook.com/profile.php?id=100092034219719', '_blank');
                 closeMenu();
               }}
             >
@@ -110,7 +110,7 @@ function Header() {
             <button
               className="mobile-social-btn tiktok"
               onClick={() => {
-                window.open('https://www.tiktok.com/@raccoons_oax', '_blank');
+                window.open('https://www.tiktok.com/@raccoons.oax', '_blank');
                 closeMenu();
               }}
             >
@@ -122,7 +122,7 @@ function Header() {
             <button
               className="mobile-social-btn youtube"
               onClick={() => {
-                window.open('https://www.youtube.com/@raccoons_oax', '_blank');
+                window.open('https://www.youtube.com/@RaccoonsOax/videos', '_blank');
                 closeMenu();
               }}
             >
@@ -143,14 +143,14 @@ function Header() {
           </button>
           <button
             className="social-icon-btn facebook"
-            onClick={() => window.open('https://www.facebook.com/raccoons_oax', '_blank')}
+            onClick={() => window.open('https://www.facebook.com/profile.php?id=100092034219719', '_blank')}
             aria-label="Facebook"
           >
             <Facebook size={34} />
           </button>
           <button
             className="social-icon-btn tiktok"
-            onClick={() => window.open('https://www.tiktok.com/@raccoons_oax', '_blank')}
+            onClick={() => window.open('https://www.tiktok.com/@raccoons.oax', '_blank')}
             aria-label="TikTok"
           >
             <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor">
@@ -159,7 +159,7 @@ function Header() {
           </button>
           <button
             className="social-icon-btn youtube"
-            onClick={() => window.open('https://www.youtube.com/@raccoons_oax', '_blank')}
+            onClick={() => window.open('https://www.youtube.com/@RaccoonsOax/videos', '_blank')}
             aria-label="YouTube"
           >
             <Youtube size={34} />
