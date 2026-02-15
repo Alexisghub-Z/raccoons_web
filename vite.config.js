@@ -59,6 +59,7 @@ export default defineConfig({
   // Optimizaciones de desarrollo
   server: {
     port: 5173,
+    strictPort: true,
     host: true,
     open: false,
   },

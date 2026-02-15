@@ -1,4 +1,3 @@
-import twilioSMSService from './sms/twilio-sms.service.js';
 import emailService from './email/nodemailer-email.service.js';
 import logger from '../../shared/logger/index.js';
 
@@ -7,18 +6,19 @@ export class NotificationStrategy {
     const results = [];
 
     try {
-      if (notification.channel === 'SMS' && user.phone) {
-        const smsResult = await this.sendSMS(notification, user);
-        results.push(smsResult);
-      } else if (notification.channel === 'EMAIL' && user.email) {
-        const emailResult = await this.sendEmail(notification, user);
-        results.push(emailResult);
+      if (notification.channel === 'EMAIL' && user.email) {
+        const result = await this.sendEmail(notification, user);
+        results.push(result);
       } else if (notification.channel === 'IN_APP') {
         results.push({ success: true, channel: 'IN_APP', message: 'Stored in database' });
+      } else if (notification.channel === 'SMS') {
+        // SMS desactivado — se registra como advertencia pero no falla
+        logger.warn(`SMS channel is disabled. Notification ${notification.id} not sent via SMS.`);
+        results.push({ success: false, channel: 'SMS', skipped: true, reason: 'SMS channel disabled' });
       }
 
       return {
-        success: results.every(r => r.success),
+        success: results.some(r => r.success),
         results
       };
     } catch (error) {
@@ -31,70 +31,84 @@ export class NotificationStrategy {
     }
   }
 
-  async sendSMS(notification, user) {
+  async sendEmail(notification, user) {
     try {
       let result;
+      const firstName = user.firstName || user.name || 'Cliente';
 
       switch (notification.type) {
         case 'SERVICE_CREATED':
-          result = await twilioSMSService.sendServiceCreatedSMS(
-            user.phone,
+          result = await emailService.sendServiceCreatedEmail(
+            user.email,
             notification.metadata?.serviceCode,
-            user.firstName
+            firstName,
+            {
+              motorcycle:  notification.metadata?.motorcycle,
+              serviceType: notification.metadata?.serviceType,
+              description: notification.metadata?.description,
+            }
           );
           break;
 
         case 'SERVICE_STATUS_UPDATED':
-          result = await twilioSMSService.sendStatusUpdateSMS(
-            user.phone,
+          result = await emailService.sendStatusUpdateEmail(
+            user.email,
             notification.metadata?.serviceCode,
             notification.metadata?.newStatus,
-            user.firstName
+            firstName,
+            notification.metadata?.motorcycle
           );
           break;
 
         case 'SERVICE_READY_FOR_PICKUP':
-          result = await twilioSMSService.sendReadyForPickupSMS(
-            user.phone,
+          result = await emailService.sendStatusUpdateEmail(
+            user.email,
             notification.metadata?.serviceCode,
-            user.firstName
+            'READY_FOR_PICKUP',
+            firstName,
+            notification.metadata?.motorcycle
+          );
+          break;
+
+        case 'APPOINTMENT_CREATED':
+          result = await emailService.sendAppointmentCreatedEmail(
+            user.email,
+            firstName,
+            notification.metadata?.appointmentData || {}
           );
           break;
 
         case 'APPOINTMENT_CONFIRMED':
-          result = await twilioSMSService.sendAppointmentConfirmedSMS(
-            user.phone,
-            notification.metadata?.appointmentDate,
-            user.firstName
+          result = await emailService.sendAppointmentConfirmedEmail(
+            user.email,
+            firstName,
+            notification.metadata?.appointmentData || {}
+          );
+          break;
+
+        case 'APPOINTMENT_CANCELLED':
+          result = await emailService.sendAppointmentCancelledEmail(
+            user.email,
+            firstName,
+            notification.metadata?.appointmentData || {}
           );
           break;
 
         case 'APPOINTMENT_REMINDER':
-          result = await twilioSMSService.sendAppointmentReminderSMS(
-            user.phone,
-            notification.metadata?.appointmentDate,
-            user.firstName
+          result = await emailService.sendAppointmentReminderEmail(
+            user.email,
+            firstName,
+            notification.metadata?.appointmentData || {}
           );
           break;
 
         default:
-          result = await twilioSMSService.sendSMS(user.phone, notification.message);
+          result = await emailService.sendEmail(
+            user.email,
+            notification.title,
+            `<p>${notification.message}</p>`
+          );
       }
-
-      return { success: true, channel: 'SMS', ...result };
-    } catch (error) {
-      logger.error('Error sending SMS notification:', error);
-      return { success: false, channel: 'SMS', error: error.message };
-    }
-  }
-
-  async sendEmail(notification, user) {
-    try {
-      const result = await emailService.sendEmail(
-        user.email,
-        notification.title,
-        `<p>${notification.message}</p>`
-      );
 
       return { success: true, channel: 'EMAIL', ...result };
     } catch (error) {
@@ -103,7 +117,7 @@ export class NotificationStrategy {
     }
   }
 
-  async sendMultiChannel(notification, user, channels = ['SMS', 'EMAIL']) {
+  async sendMultiChannel(notification, user, channels = ['EMAIL']) {
     const results = [];
 
     for (const channel of channels) {

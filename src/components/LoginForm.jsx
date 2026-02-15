@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Mail, Lock, LogIn, ArrowLeft, Shield } from 'lucide-react';
 import { authService } from '../api/auth.service';
 import './LoginForm.css';
 
@@ -40,59 +41,110 @@ function LoginForm({ onLoginSuccess }) {
 
   return (
     <div className="admin-page-login">
+      <div className="login-background-pattern"></div>
+
       <div className="admin-login-container">
+        {/* Logo y Header */}
         <div className="admin-login-header">
-          <h1>🦝 RACCOONS</h1>
-          <p>Panel de Administración</p>
+          <div className="login-logo-wrapper">
+            <div className="login-logo-icon">
+              <img src="/logo.png" alt="Raccoons Taller Logo" className="login-logo-image" />
+            </div>
+          </div>
+          <h1>Raccoons Taller</h1>
+          <p className="login-subtitle">
+            <Shield size={16} />
+            Panel de Administración
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="admin-login-form">
+          {/* Email Input */}
           <div className="admin-input-group">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              required
-              placeholder="admin@raccoons.com"
-              disabled={loading}
-              autoFocus
-            />
+            <label htmlFor="email">
+              <Mail size={16} />
+              Email
+            </label>
+            <div className="input-wrapper">
+              <Mail className="input-icon" size={18} />
+              <input
+                id="email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                required
+                placeholder="admin@raccoons.com"
+                disabled={loading}
+                autoFocus
+              />
+            </div>
           </div>
 
+          {/* Password Input */}
           <div className="admin-input-group">
-            <label htmlFor="password">Contraseña</label>
-            <input
-              id="password"
-              type="password"
-              value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              required
-              placeholder="••••••••"
-              disabled={loading}
-            />
+            <label htmlFor="password">
+              <Lock size={16} />
+              Contraseña
+            </label>
+            <div className="input-wrapper">
+              <Lock className="input-icon" size={18} />
+              <input
+                id="password"
+                type="password"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                required
+                placeholder="••••••••"
+                disabled={loading}
+              />
+            </div>
           </div>
 
-          {error && <div className="admin-error-message">{error}</div>}
+          {/* Error Message */}
+          {error && (
+            <div className="admin-error-message">
+              <span className="error-icon">⚠️</span>
+              {error}
+            </div>
+          )}
 
+          {/* Submit Button */}
           <button type="submit" className="admin-login-btn" disabled={loading}>
-            {loading ? 'Iniciando sesión...' : 'Ingresar'}
+            {loading ? (
+              <>
+                <span className="loading-spinner"></span>
+                Iniciando sesión...
+              </>
+            ) : (
+              <>
+                <LogIn size={18} />
+                Ingresar al Panel
+              </>
+            )}
           </button>
+
+          {/* Back Button */}
           <button
             type="button"
             className="admin-back-btn"
             onClick={() => navigate('/')}
             disabled={loading}
           >
-            Volver al sitio
+            <ArrowLeft size={18} />
+            Volver al Sitio
           </button>
         </form>
 
+        {/* Hint */}
         <div className="admin-login-hint">
-          <p>Credenciales de prueba:</p>
-          <p>Email: admin@raccoons.com</p>
-          <p>Password: admin123</p>
+          <div className="hint-header">
+            <div className="hint-dot"></div>
+            Credenciales de Prueba
+          </div>
+          <div className="hint-content">
+            <code>admin@raccoons.com</code>
+            <code>admin123</code>
+          </div>
         </div>
       </div>
     </div>

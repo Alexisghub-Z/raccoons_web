@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
  * - Sin re-renders innecesarios
  */
 export function useTheme() {
-  // Detectar tema inicial (localStorage > sistema > light)
+  // Detectar tema inicial (localStorage > light)
   const getInitialTheme = () => {
     // 1. Verificar localStorage
     const savedTheme = localStorage.getItem('theme');
@@ -16,12 +16,7 @@ export function useTheme() {
       return savedTheme;
     }
 
-    // 2. Verificar preferencia del sistema
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
-
-    // 3. Default: light
+    // 2. Default: light (tema blanco siempre por defecto)
     return 'light';
   };
 

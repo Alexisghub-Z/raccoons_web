@@ -21,7 +21,12 @@ const app = express();
 app.use(helmet());
 
 app.use(cors({
-  origin: config.cors.origins,
+  origin: (origin, callback) => {
+    // Permitir peticiones sin origin (Postman, curl, etc.)
+    if (!origin) return callback(null, true);
+    if (config.cors.origins.includes(origin)) return callback(null, true);
+    callback(new Error(`CORS: origin ${origin} not allowed`));
+  },
   credentials: true
 }));
 

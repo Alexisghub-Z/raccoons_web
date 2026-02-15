@@ -1,3 +1,13 @@
+/* ============================================
+   FORCE LIGHT THEME FOR TOAST
+   ============================================ */
+.toast,
+.toast * {
+  --color-bg-primary: #ffffff !important;
+  --color-text-primary: #1a1a1a !important;
+  --color-text-secondary: #4a5568 !important;
+}
+
 .toast {
   position: fixed;
   top: 2rem;

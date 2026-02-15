@@ -39,30 +39,31 @@ export class CreateServiceUseCase {
 
       logger.info(`Service created: ${service.code}`);
 
-      if (this.notificationRepository && customer.phone) {
+      if (this.notificationRepository && customer.email) {
         try {
           const notification = await this.notificationRepository.create({
             userId: customer.id,
             type: 'SERVICE_CREATED',
-            channel: 'SMS',
+            channel: 'EMAIL',
             title: 'Servicio Recibido',
             message: `Tu motocicleta ha sido recibida. Código: ${service.code}`,
             serviceId: service.id,
             metadata: {
               serviceCode: service.code,
-              motorcycle: service.motorcycle
+              motorcycle: service.motorcycle,
+              serviceType: service.serviceType,
+              description: service.description,
             }
           });
           logger.info(`Notification created for service: ${service.code}`);
 
-          // Enviar la notificación inmediatamente
           try {
             const sendResult = await notificationStrategy.sendNotification(notification, customer);
             if (sendResult.success) {
-              logger.info(`SMS sent successfully for service: ${service.code}`);
+              logger.info(`Email sent successfully for service: ${service.code}`);
               await this.notificationRepository.update(notification.id, { status: 'SENT', sentAt: new Date() });
             } else {
-              logger.error(`Failed to send SMS for service: ${service.code}`, sendResult);
+              logger.error(`Failed to send email for service: ${service.code}`, sendResult);
               await this.notificationRepository.update(notification.id, {
                 status: 'FAILED',
                 errorMessage: sendResult.error || 'Unknown error'

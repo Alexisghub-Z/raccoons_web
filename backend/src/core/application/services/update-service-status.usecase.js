@@ -35,13 +35,17 @@ export class UpdateServiceStatusUseCase {
       // Debug: verificar si tenemos customer
       logger.info(`Customer data:`, { hasCustomer: !!service.customer, customerId: service.customerId });
 
-      // Enviar notificación SMS al cliente si tiene teléfono
-      if (this.notificationRepository && service.customer?.phone) {
+      // Enviar notificación por email al cliente
+      if (this.notificationRepository && service.customer?.email) {
         try {
+          const notifType = newStatus === 'READY_FOR_PICKUP'
+            ? 'SERVICE_READY_FOR_PICKUP'
+            : 'SERVICE_STATUS_UPDATED';
+
           const notification = await this.notificationRepository.create({
             userId: service.customer.id,
-            type: 'SERVICE_STATUS_UPDATED',
-            channel: 'SMS',
+            type: notifType,
+            channel: 'EMAIL',
             title: 'Estado Actualizado',
             message: `Tu servicio ${service.code} ha sido actualizado`,
             serviceId: service.id,
@@ -53,17 +57,16 @@ export class UpdateServiceStatusUseCase {
           });
           logger.info(`Notification created for status update: ${service.code} -> ${newStatus}`);
 
-          // Enviar la notificación inmediatamente
           try {
             const sendResult = await notificationStrategy.sendNotification(notification, service.customer);
             if (sendResult.success) {
-              logger.info(`SMS sent successfully for status update: ${service.code} -> ${newStatus}`);
+              logger.info(`Email sent successfully for status update: ${service.code} -> ${newStatus}`);
               await this.notificationRepository.update(notification.id, {
                 status: 'SENT',
                 sentAt: new Date()
               });
             } else {
-              logger.error(`Failed to send SMS for status update: ${service.code}`, sendResult);
+              logger.error(`Failed to send email for status update: ${service.code}`, sendResult);
               await this.notificationRepository.update(notification.id, {
                 status: 'FAILED',
                 errorMessage: sendResult.error || 'Unknown error'

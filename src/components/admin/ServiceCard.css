@@ -1,3 +1,15 @@
+/* ============================================
+   FORCE LIGHT THEME FOR SERVICE CARDS
+   ============================================ */
+.service-card,
+.service-card * {
+  --color-bg-primary: #ffffff !important;
+  --color-bg-secondary: #f8f9fa !important;
+  --color-text-primary: #1a1a1a !important;
+  --color-text-secondary: #4a5568 !important;
+  --color-border: #e2e8f0 !important;
+}
+
 .service-card {
   background: white;
   border-radius: 12px;
@@ -96,57 +108,265 @@
   line-height: 1.5;
 }
 
+/* ============================================
+   STATUS STEPPER
+   ============================================ */
+
+.status-stepper {
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  border: 1px solid #e5e7eb;
+}
+
+/* Pista de pasos */
+.stepper-track {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  position: relative;
+}
+
+.stepper-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  position: relative;
+  flex: 1;
+}
+
+/* Línea conectora */
+.stepper-line {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: #e5e7eb;
+  z-index: 0;
+  transition: background 0.3s;
+}
+
+.stepper-line.completed {
+  background: #10b981;
+}
+
+/* Círculo del paso */
+.stepper-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #d1d5db;
+  background: white;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.stepper-dot:hover:not(:disabled):not(.current) {
+  border-color: #3b82f6;
+  background: #eff6ff;
+  color: #3b82f6;
+  transform: scale(1.15);
+}
+
+.stepper-dot.completed {
+  background: #10b981;
+  border-color: #10b981;
+  color: white;
+  cursor: pointer;
+}
+
+.stepper-dot.completed:hover {
+  background: #059669;
+  border-color: #059669;
+  transform: scale(1.1);
+}
+
+.stepper-dot.current {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+  cursor: default;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+  transform: scale(1.15);
+}
+
+.stepper-dot.future {
+  background: white;
+  border-color: #e5e7eb;
+  color: #d1d5db;
+}
+
+.stepper-dot-num {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Etiqueta del paso */
+.stepper-label {
+  font-size: 0.625rem;
+  color: #9ca3af;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+  max-width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.stepper-label--current {
+  color: #3b82f6;
+  font-weight: 700;
+}
+
+/* Botones de acción de estado */
+.status-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.status-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.status-action-btn--next {
+  flex: 1;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  justify-content: center;
+}
+
+.status-action-btn--next:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+}
+
+.status-action-btn--prev {
+  background: white;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+}
+
+.status-action-btn--prev:hover:not(:disabled) {
+  background: #f9fafb;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.status-action-btn--cancel {
+  background: white;
+  color: #ef4444;
+  border: 1px solid #fee2e2;
+  padding: 0.5rem;
+  width: 36px;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.status-action-btn--cancel:hover:not(:disabled) {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.status-action-btn--restore {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+  margin-left: auto;
+}
+
+.status-action-btn--restore:hover:not(:disabled) {
+  background: #d1fae5;
+}
+
+.status-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Banner de servicio cancelado */
+.status-cancelled-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  color: #ef4444;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+/* Tarjeta cancelada */
+.service-card--cancelled {
+  opacity: 0.75;
+  border-color: #fecaca;
+  background: #fffafa;
+}
+
+.service-card--cancelled .service-card-header {
+  border-bottom-color: #fee2e2;
+}
+
+/* Footer de tarjeta */
 .service-card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  padding-top: 1rem;
+  padding-top: 0.75rem;
   border-top: 1px solid #e5e7eb;
 }
 
-.status-selector {
+/* Modal de notas - header mejorado */
+.notes-modal-header {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex: 1;
-  min-width: 0;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
-.status-selector label {
-  font-size: 0.8125rem;
-  color: #6b7280;
-  font-weight: 500;
-  white-space: nowrap;
+.notes-modal-icon {
+  font-size: 2rem;
+  line-height: 1;
   flex-shrink: 0;
 }
 
-.status-select {
-  flex: 1;
-  min-width: 0;
-  padding: 0.5rem 0.625rem;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 0.8125rem;
+.notes-modal-header h3 {
+  margin: 0 0 0.25rem 0;
   color: #1f2937;
-  background: white;
-  cursor: pointer;
-  transition: all 0.2s;
+  font-size: 1.125rem;
 }
 
-.status-select:hover {
-  border-color: #9ca3af;
-}
-
-.status-select:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.status-select:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.btn-confirm--danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
 }
 
 .loading-spinner {
@@ -479,18 +699,27 @@
     gap: 0.625rem;
   }
 
-  .status-selector {
-    width: 100%;
-    flex-wrap: wrap;
+  .status-stepper {
+    padding: 0.75rem;
   }
 
-  .status-selector label {
-    width: 100%;
-    font-size: 0.75rem;
+  .stepper-label {
+    font-size: 0.5rem;
+    max-width: 44px;
   }
 
-  .status-select {
+  .stepper-dot {
+    width: 24px;
+    height: 24px;
+  }
+
+  .stepper-line {
+    top: 12px;
+  }
+
+  .status-action-btn--next {
     font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
   }
 
   .card-actions {

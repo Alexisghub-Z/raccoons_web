@@ -1,3 +1,13 @@
+/* ============================================
+   FORCE LIGHT THEME FOR STATUS BADGE
+   ============================================ */
+.status-badge,
+.status-badge * {
+  --color-bg-primary: #ffffff !important;
+  --color-text-primary: #1a1a1a !important;
+  --color-border: #e2e8f0 !important;
+}
+
 .status-badge {
   display: inline-flex;
   align-items: center;

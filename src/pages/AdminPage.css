@@ -1,7 +1,25 @@
+/* ============================================
+   FORCE LIGHT THEME FOR ADMIN PANEL
+   El panel de admin siempre usa tema claro
+   ============================================ */
+.admin-container,
+.admin-container * {
+  /* Forzar variables de tema claro */
+  --color-bg-primary: #ffffff !important;
+  --color-bg-secondary: #f8f9fa !important;
+  --color-bg-tertiary: #e9ecef !important;
+  --color-text-primary: #1a1a1a !important;
+  --color-text-secondary: #4a5568 !important;
+  --color-text-muted: #718096 !important;
+  --color-border: #e2e8f0 !important;
+  --color-shadow: rgba(0, 0, 0, 0.08) !important;
+}
+
 /* Admin Container */
 .admin-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  color: #1a1a1a;
 }
 
 /* Header */
@@ -200,6 +218,69 @@
   background: white;
 }
 
+/* Tabs Container */
+.tabs-container {
+  display: flex;
+  gap: 0;
+  background: white;
+  border-bottom: 2px solid #e5e7eb;
+  padding: 0 2rem;
+}
+
+.tab-btn {
+  flex: 1;
+  max-width: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #6b7280;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.tab-btn:hover {
+  background: #f9fafb;
+  color: #374151;
+}
+
+.tab-btn.active {
+  color: #3b82f6;
+  border-bottom-color: #3b82f6;
+  background: linear-gradient(to bottom, #eff6ff 0%, transparent 100%);
+}
+
+.tab-btn span:first-of-type {
+  font-weight: 600;
+}
+
+.tab-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 0.5rem;
+  border-radius: 14px;
+  background: #e5e7eb;
+  color: #374151;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.tab-btn.active .tab-count {
+  background: #3b82f6;
+  color: white;
+}
+
 /* Stats Bar */
 .stats-bar {
   padding: 1.5rem 2rem;
@@ -345,6 +426,29 @@
     min-width: 100%;
   }
 
+  .tabs-container {
+    padding: 0 1.5rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tab-btn {
+    min-width: 150px;
+    padding: 0.875rem 1rem;
+    font-size: 0.875rem;
+    gap: 0.5rem;
+  }
+
+  .tab-btn span:first-of-type {
+    display: none;
+  }
+
+  .tab-count {
+    min-width: 24px;
+    height: 24px;
+    font-size: 0.75rem;
+  }
+
   .stats-bar {
     padding: 1rem 1.5rem;
     gap: 1.5rem;
@@ -396,4 +500,218 @@
   .stat-value {
     font-size: 1.25rem;
   }
+
+  .view-btn {
+    font-size: 0.875rem;
+    padding: 0.875rem 1rem;
+  }
+
+  .customers-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================
+   VIEW SWITCHER
+   ============================================ */
+
+.view-switcher {
+  display: flex;
+  gap: 0;
+  background: white;
+  border-bottom: 2px solid #e5e7eb;
+  padding: 0 2rem;
+}
+
+.view-btn {
+  flex: 1;
+  max-width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  padding: 1rem 1.5rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #6b7280;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.view-btn:hover {
+  background: #f9fafb;
+  color: #374151;
+}
+
+.view-btn.active {
+  color: #3b82f6;
+  border-bottom-color: #3b82f6;
+  background: linear-gradient(to bottom, #eff6ff 0%, transparent 100%);
+}
+
+/* ============================================
+   CUSTOMERS GRID
+   ============================================ */
+
+.customers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.customer-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+.customer-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.customer-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.customer-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.customer-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.customer-info h3 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.customer-email {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.customer-phone {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.8125rem;
+  color: #9ca3af;
+}
+
+.customer-stats {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.customer-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.customer-stat .stat-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.customer-stat .stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.customer-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.btn-create-service-for-customer {
+  width: 100%;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-create-service-for-customer:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.customer-secondary-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-icon-action {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #6b7280;
+}
+
+.btn-icon-action:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-edit:hover {
+  background: #eff6ff;
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.btn-delete:hover {
+  background: #fef2f2;
+  border-color: #ef4444;
+  color: #ef4444;
 }

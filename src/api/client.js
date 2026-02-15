@@ -58,17 +58,23 @@ class ApiClient {
       if (!response.ok) {
         // Manejar diferentes tipos de errores
         if (response.status === 401) {
-          this.setToken(null);
-          localStorage.removeItem('refreshToken');
-          localStorage.removeItem('user');
+          // En endpoints de auth (login/register) no limpiar ni redirigir
+          if (!options.skipAuth) {
+            this.setToken(null);
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('user');
+            localStorage.removeItem('admin_authenticated');
 
-          const errorMessage = data.error?.message || '';
-          if (errorMessage.includes('expired') || errorMessage.includes('Invalid')) {
-            throw new Error('SESSION_EXPIRED');
-          } else if (errorMessage.includes('No token')) {
-            throw new Error('NO_AUTH');
+            const errorMessage = data.error?.message || '';
+            if (errorMessage.includes('expired') || errorMessage.includes('Invalid')) {
+              throw new Error('SESSION_EXPIRED');
+            } else if (errorMessage.includes('No token')) {
+              throw new Error('NO_AUTH');
+            }
+            throw new Error('UNAUTHORIZED');
           }
-          throw new Error('UNAUTHORIZED');
+          // Login/register con credenciales incorrectas
+          throw new Error(data.error?.message || 'Credenciales incorrectas');
         }
 
         if (response.status === 403) {

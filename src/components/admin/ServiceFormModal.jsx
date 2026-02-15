@@ -1,8 +1,9 @@
-import { useState } from 'react';
-import { Wrench, User, Bike, CheckCircle2, Loader2, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Wrench, User, Bike, CheckCircle2, Loader2, X, UserCheck } from 'lucide-react';
+import { userService } from '../../api/user.service';
 import './ServiceFormModal.css';
 
-function ServiceFormModal({ isOpen, onClose, onSubmit, isLoading }) {
+function ServiceFormModal({ isOpen, onClose, onSubmit, isLoading, selectedCustomer }) {
   const [formData, setFormData] = useState({
     clientName: '',
     clientPhone: '',
@@ -11,6 +12,72 @@ function ServiceFormModal({ isOpen, onClose, onSubmit, isLoading }) {
     serviceType: '',
     notes: ''
   });
+
+  const [existingCustomer, setExistingCustomer] = useState(null);
+  const [searchingCustomer, setSearchingCustomer] = useState(false);
+
+  // Cargar datos del cliente seleccionado
+  useEffect(() => {
+    if (selectedCustomer && isOpen) {
+      setFormData(prev => ({
+        ...prev,
+        clientName: `${selectedCustomer.firstName} ${selectedCustomer.lastName}`.trim(),
+        clientEmail: selectedCustomer.email || '',
+        clientPhone: selectedCustomer.phone || ''
+      }));
+      setExistingCustomer(selectedCustomer);
+    }
+  }, [selectedCustomer, isOpen]);
+
+  // Buscar cliente existente cuando cambie email o teléfono
+  useEffect(() => {
+    // No buscar si ya tenemos un cliente seleccionado
+    if (selectedCustomer) return;
+
+    const searchCustomer = async () => {
+      if (!formData.clientEmail && !formData.clientPhone) {
+        setExistingCustomer(null);
+        return;
+      }
+
+      setSearchingCustomer(true);
+      try {
+        const allUsers = await userService.getAll();
+        const found = allUsers.find(user => {
+          if (formData.clientEmail && user.email === formData.clientEmail) {
+            return true;
+          }
+          if (formData.clientPhone && user.phone === formData.clientPhone) {
+            return true;
+          }
+          return false;
+        });
+
+        if (found) {
+          setExistingCustomer(found);
+          // Autocompletar nombre si está vacío
+          if (!formData.clientName) {
+            setFormData(prev => ({
+              ...prev,
+              clientName: `${found.firstName} ${found.lastName}`.trim(),
+              clientEmail: found.email || prev.clientEmail,
+              clientPhone: found.phone || prev.clientPhone
+            }));
+          }
+        } else {
+          setExistingCustomer(null);
+        }
+      } catch (error) {
+        console.error('Error buscando cliente:', error);
+        setExistingCustomer(null);
+      } finally {
+        setSearchingCustomer(false);
+      }
+    };
+
+    const timeoutId = setTimeout(searchCustomer, 500);
+    return () => clearTimeout(timeoutId);
+  }, [formData.clientEmail, formData.clientPhone]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,6 +115,7 @@ function ServiceFormModal({ isOpen, onClose, onSubmit, isLoading }) {
       serviceType: '',
       notes: ''
     });
+    setExistingCustomer(null);
   };
 
   const handleClose = () => {
@@ -59,6 +127,7 @@ function ServiceFormModal({ isOpen, onClose, onSubmit, isLoading }) {
       serviceType: '',
       notes: ''
     });
+    setExistingCustomer(null);
     onClose();
   };
 
@@ -79,10 +148,18 @@ function ServiceFormModal({ isOpen, onClose, onSubmit, isLoading }) {
 
         <form onSubmit={handleSubmit} className="service-form">
           <div className="form-section">
-            <h3>
-              <User size={20} />
-              Información del Cliente
-            </h3>
+            <div className="section-header-with-badge">
+              <h3>
+                <User size={20} />
+                Información del Cliente
+              </h3>
+              {existingCustomer && (
+                <div className="customer-found-badge">
+                  <UserCheck size={16} />
+                  Cliente Existente
+                </div>
+              )}
+            </div>
             <div className="form-grid">
               <div className="form-group">
                 <label htmlFor="clientName">

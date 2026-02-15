@@ -1261,8 +1261,28 @@
   overflow: hidden;
 }
 
-/* Sin efectos animados en contacto */
-.home-page .contact::before,
+/* Logo decorativo — mitad izquierda */
+.home-page .contact::before {
+  content: '';
+  position: absolute;
+  left: -160px;
+  top: 3rem;
+  transform: none;
+  width: 560px;
+  height: 560px;
+  background: url('/logo.png') no-repeat center center;
+  background-size: contain;
+  opacity: 0.18;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-theme="dark"] .home-page .contact::before {
+  mix-blend-mode: screen;
+  opacity: 0.08;
+}
+
 .home-page .contact::after {
   display: none;
 }
@@ -1480,6 +1500,28 @@
   background-color: var(--color-bg-secondary);
   border-top: 1px solid var(--color-border);
   color: var(--color-text-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.home-page .footer::before {
+  content: '';
+  position: absolute;
+  left: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 120px;
+  height: 120px;
+  background: url('/logo.png') no-repeat center center;
+  background-size: contain;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.home-page .footer > .container {
+  position: relative;
+  z-index: 1;
 }
 
 .home-page .footer-brand h3 {

@@ -1,3 +1,15 @@
+/* ============================================
+   FORCE LIGHT THEME FOR EVIDENCE UPLOAD
+   ============================================ */
+.evidence-upload,
+.evidence-upload * {
+  --color-bg-primary: #ffffff !important;
+  --color-bg-secondary: #f8f9fa !important;
+  --color-text-primary: #1a1a1a !important;
+  --color-text-secondary: #4a5568 !important;
+  --color-border: #e2e8f0 !important;
+}
+
 .evidence-upload {
   background: #f9fafb;
   border-radius: 12px;

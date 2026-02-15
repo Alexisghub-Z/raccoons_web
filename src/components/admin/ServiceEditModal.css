@@ -1,3 +1,17 @@
+/* ============================================
+   FORCE LIGHT THEME FOR SERVICE EDIT MODAL
+   ============================================ */
+.modal-overlay,
+.modal-overlay *,
+.modal-container,
+.modal-container * {
+  --color-bg-primary: #ffffff !important;
+  --color-bg-secondary: #f8f9fa !important;
+  --color-text-primary: #1a1a1a !important;
+  --color-text-secondary: #4a5568 !important;
+  --color-border: #e2e8f0 !important;
+}
+
 .modal-overlay {
   position: fixed;
   top: 0;

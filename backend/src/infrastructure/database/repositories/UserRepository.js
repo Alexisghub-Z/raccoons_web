@@ -100,14 +100,27 @@ export class UserRepository extends IUserRepository {
 
   async delete(id) {
     try {
-      await prisma.user.delete({
-        where: { id }
+      // Usar una transacción para eliminar el usuario y sus notificaciones
+      await prisma.$transaction(async (tx) => {
+        // 1. Eliminar todas las notificaciones del usuario
+        await tx.notification.deleteMany({
+          where: { userId: id }
+        });
+
+        // 2. Eliminar el usuario (los refresh tokens se eliminan automáticamente por CASCADE)
+        await tx.user.delete({
+          where: { id }
+        });
       });
+
       return true;
     } catch (error) {
       logger.error('Error deleting user:', error);
       if (error.code === 'P2025') {
         throw new NotFoundError('User');
+      }
+      if (error.code === 'P2003') {
+        throw new DatabaseError('Cannot delete user with associated services or appointments');
       }
       throw new DatabaseError('Error deleting user', error.message);
     }
