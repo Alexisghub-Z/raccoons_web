@@ -1,0 +1,333 @@
+/* ============================================================
+   WorkMotoFleet — Sección motos de trabajo / flota profesional
+   ============================================================ */
+
+.work-fleet {
+  position: relative;
+  padding: 7rem 0;
+  background: #0d0d0d;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* ── Fondo industrial ── */
+.work-fleet__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.work-fleet__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(59, 130, 246, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+  animation: wfGridDrift 24s linear infinite;
+}
+
+@keyframes wfGridDrift {
+  0%   { background-position: 0 0; }
+  100% { background-position: 48px 48px; }
+}
+
+.work-fleet__orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+}
+
+.work-fleet__orb--1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.18) 0%, transparent 70%);
+  top: -120px;
+  left: -100px;
+  animation: wfFloatOrb 12s ease-in-out infinite;
+}
+
+.work-fleet__orb--2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.12) 0%, transparent 70%);
+  bottom: -80px;
+  right: -60px;
+  animation: wfFloatOrb 16s ease-in-out infinite reverse;
+}
+
+/* ── Motos decorativas de fondo ── */
+.work-fleet__moto {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.22;
+  /* multiply: el blanco desaparece, los colores se mezclan con el fondo */
+  mix-blend-mode: multiply;
+  filter: invert(1) hue-rotate(180deg) brightness(1.1) saturate(1.4);
+}
+
+.work-fleet__moto--1 {
+  width: 820px;
+  bottom: -30px;
+  left: -100px;
+  transform: scaleX(-1);
+}
+
+.work-fleet__moto--2 {
+  width: 740px;
+  top: 50%;
+  right: -120px;
+  transform: translateY(-50%);
+}
+
+.work-fleet__moto--3 {
+  width: 620px;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0.14;
+}
+
+@keyframes wfFloatOrb {
+  0%, 100% { transform: translate(0, 0); }
+  50%       { transform: translate(20px, -24px); }
+}
+
+/* ── Layout ── */
+.work-fleet__container {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Header ── */
+.work-fleet__header {
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto 4rem;
+}
+
+.work-fleet__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--color-blue-light);
+  margin-bottom: 1.2rem;
+  opacity: 0.85;
+}
+
+.work-fleet__title {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: 2px;
+  color: #ffffff;
+  margin: 0 0 1.4rem;
+}
+
+.work-fleet__title--accent {
+  background: linear-gradient(90deg, var(--color-blue-light) 0%, var(--color-cyan-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.work-fleet__subtitle {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.75;
+  margin: 0;
+}
+
+/* ── Tarjetas de servicio ── */
+.work-fleet__services {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 4rem;
+}
+
+.work-fleet__card {
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;
+  backdrop-filter: blur(8px);
+}
+
+.work-fleet__card:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(59, 130, 246, 0.35);
+  transform: translateY(-4px);
+}
+
+.work-fleet__card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: rgba(59, 130, 246, 0.12);
+  color: var(--color-blue-light);
+  margin-bottom: 1.2rem;
+}
+
+.work-fleet__card-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  color: #ffffff;
+  margin: 0 0 0.75rem;
+}
+
+.work-fleet__card-desc {
+  font-size: 0.92rem;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.7;
+  margin: 0 0 1.2rem;
+}
+
+.work-fleet__card-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.work-fleet__card-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.work-fleet__card-list li svg {
+  color: var(--color-blue-light);
+  flex-shrink: 0;
+}
+
+/* ── Galería de unidades ── */
+.work-fleet__gallery-wrap {
+  margin-bottom: 3.5rem;
+}
+
+.work-fleet__gallery-label {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  text-align: center;
+  margin: 0 0 1.8rem;
+}
+
+.work-fleet__gallery {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+}
+
+.work-fleet__gallery-item {
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.work-fleet__gallery-item:hover {
+  border-color: rgba(59, 130, 246, 0.4);
+  transform: scale(1.04);
+}
+
+.work-fleet__gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  padding: 0.5rem;
+  /* PNG transparente se ve bien sobre fondo oscuro */
+}
+
+/* ── CTA ── */
+.work-fleet__cta-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.work-fleet__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.95rem 2rem;
+  background: linear-gradient(135deg, var(--color-blue) 0%, var(--color-blue-light) 100%);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.35);
+}
+
+.work-fleet__cta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(37, 99, 235, 0.5);
+  color: #ffffff;
+}
+
+.work-fleet__cta svg {
+  transition: transform 0.2s ease;
+}
+
+.work-fleet__cta:hover svg {
+  transform: translateX(3px);
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .work-fleet__gallery {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .work-fleet {
+    padding: 5rem 0;
+  }
+
+  .work-fleet__services {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .work-fleet__gallery {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .work-fleet__title {
+    font-size: clamp(2.5rem, 12vw, 3.5rem);
+  }
+
+  .work-fleet__gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
