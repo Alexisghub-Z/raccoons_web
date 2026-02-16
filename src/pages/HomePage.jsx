@@ -259,6 +259,9 @@ function HomePage() {
 
                 <ul className="carousel__items">
                   <li className="carousel__item">
+                    <img src="/workshop/taller-4.jpg" alt="Taller Raccoons 4" />
+                  </li>
+                  <li className="carousel__item">
                     <img src="/workshop/taller-1.jpg" alt="Taller Raccoons 1" />
                   </li>
                   <li className="carousel__item">
@@ -266,9 +269,6 @@ function HomePage() {
                   </li>
                   <li className="carousel__item">
                     <img src="/workshop/taller-3.jpg" alt="Taller Raccoons 3" />
-                  </li>
-                  <li className="carousel__item">
-                    <img src="/workshop/taller-4.jpg" alt="Taller Raccoons 4" />
                   </li>
                   <li className="carousel__item">
                     <img src="/workshop/taller-5.jpg" alt="Taller Raccoons 5" />
