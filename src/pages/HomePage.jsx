@@ -72,6 +72,31 @@ function HomePage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Scroll animations con Intersection Observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-in');
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      }
+    );
+
+    // Observar todas las secciones
+    const sections = document.querySelectorAll('.scroll-animate');
+    sections.forEach((section) => observer.observe(section));
+
+    return () => {
+      sections.forEach((section) => observer.unobserve(section));
+    };
+  }, []);
+
   return (
     <div className="home-page">
       <Header />
@@ -109,7 +134,7 @@ function HomePage() {
       <Stats />
 
       {/* Servicios Section */}
-      <section id="servicios" className="services fade-in">
+      <section id="servicios" className="services fade-in scroll-animate">
         <div className="container">
           <h2 className="section-title">Nuestros Servicios</h2>
           <p className="section-subtitle">
@@ -157,7 +182,7 @@ function HomePage() {
       </section>
 
       {/* Brands Carousel Section */}
-      <section className="brands-section fade-in">
+      <section className="brands-section fade-in scroll-animate">
         <div className="container">
           <h2 className="section-title">Marcas con las que Trabajamos</h2>
           <p className="section-subtitle">
@@ -227,7 +252,7 @@ function HomePage() {
       </section>
 
       {/* About Section */}
-      <section id="nosotros" className="about fade-in">
+      <section id="nosotros" className="about fade-in scroll-animate">
         <div className="container">
           <div className="about-content">
             <div className="about-text">
@@ -314,7 +339,7 @@ function HomePage() {
       <WorkMotoFleet />
 
       {/* Service Tracking Section */}
-      <section className="tracking-section">
+      <section className="tracking-section scroll-animate">
         <div className="container">
           <h2 className="section-title">Rastrea tu Servicio 24/7</h2>
           <p className="section-subtitle">
@@ -409,7 +434,7 @@ function HomePage() {
       </section>
 
       {/* Contact Section */}
-      <section id="contacto" className="contact fade-in">
+      <section id="contacto" className="contact fade-in scroll-animate">
         <div className="container">
           <h2 className="section-title">Contáctanos y Encuéntranos</h2>
 
