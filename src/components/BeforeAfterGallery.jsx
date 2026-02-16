@@ -15,8 +15,8 @@ function BeforeAfterGallery() {
   //   - antes-mantenimiento.jpg  (foto vertical ANTES)
   //   - despues-mantenimiento.jpg (foto vertical DESPUÉS)
   // ─────────────────────────────────────────────────────────────────
-  const beforeImage = "/before-after/antes-mantenimiento.jpg";
-  const afterImage = "/before-after/despues-mantenimiento.jpg";
+  const beforeImage = "/before-after/antes-mantenimiento.jpeg";
+  const afterImage = "/before-after/despues-mantenimiento.jpeg";
   const title = "Mantenimiento Preventivo";
   const description = "Servicio completo de mantenimiento con revisión de motor, cambio de aceite, ajuste de frenos y limpieza profunda. Tu moto queda como nueva.";
   const tags = ["Mantenimiento", "Motor", "Aceite"];
