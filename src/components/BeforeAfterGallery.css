@@ -31,7 +31,7 @@
 .before-after-slider-vertical {
   position: relative;
   width: 100%;
-  aspect-ratio: 3 / 4; /* Vertical */
+  height: 700px; /* Altura fija para que llegue casi a los bordes del panel */
   border-radius: 20px;
   overflow: hidden;
   cursor: ew-resize;
@@ -61,6 +61,11 @@
 .before-image {
   z-index: 2;
   transition: clip-path 0.05s ease-out;
+}
+
+/* Hacer la imagen "antes" un poco más chiquita/alejada */
+.before-image img {
+  transform: scale(0.85);
 }
 
 /* Labels */
@@ -204,6 +209,7 @@
 
   .before-after-slider-vertical {
     max-width: 480px;
+    height: 580px;
     margin: 0 auto;
   }
 
@@ -229,7 +235,8 @@
   }
 
   .before-after-slider-vertical {
-    max-width: 320px;
+    max-width: 360px;
+    height: 480px;
     border-radius: 16px;
   }
 
@@ -262,7 +269,8 @@
   }
 
   .before-after-slider-vertical {
-    max-width: 280px;
+    max-width: 300px;
+    height: 420px;
   }
 
   .ba-panel-title-single {
