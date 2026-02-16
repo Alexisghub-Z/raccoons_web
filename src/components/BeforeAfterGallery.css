@@ -22,7 +22,7 @@
   display: grid;
   grid-template-columns: minmax(400px, 800px) 1fr;
   gap: 4rem;
-  align-items: center;
+  align-items: start;
   max-width: 1400px;
   margin: 0 auto;
 }
