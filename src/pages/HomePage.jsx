@@ -427,11 +427,6 @@ function HomePage() {
               <p>+52 951 651 2065</p>
             </div>
             <div className="contact-item">
-              <div className="contact-icon"><Mail size={32} /></div>
-              <h3>Email</h3>
-              <p>info@raccoons.com</p>
-            </div>
-            <div className="contact-item">
               <div className="contact-icon"><Clock size={32} /></div>
               <h3>Horario</h3>
               <p>Lun - Vie: 8:00 - 18:00</p>

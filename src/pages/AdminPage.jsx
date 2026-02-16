@@ -174,8 +174,7 @@ function AdminPage() {
       const nameParts = formData.clientName.trim().split(' ');
       const firstName = nameParts[0] || 'Cliente';
       const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : 'General';
-      const timestamp = Date.now();
-      const emailToUse = formData.clientEmail || `cliente.${timestamp}@temp.com`;
+      const emailToUse = formData.clientEmail || null;
       const phoneToUse = formData.clientPhone || null;
 
       let customerId;
