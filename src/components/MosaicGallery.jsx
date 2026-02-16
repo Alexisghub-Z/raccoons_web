@@ -19,6 +19,7 @@ function MosaicGallery() {
     '/clientes/cliente-2.jpeg',
     '/clientes/cliente-3.jpeg',
     '/clientes/cliente-4.jpeg',
+    '/clientes/cliente-5.jpeg',
     '/clientes/cliente-1.jpeg',
     '/clientes/cliente-6.jpeg',
     '/clientes/cliente-7.jpeg',
