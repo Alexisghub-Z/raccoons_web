@@ -1,4 +1,4 @@
-import { Shield, Zap, Wrench, Clock, ChevronRight } from 'lucide-react';
+import { Shield, Zap, Package, Clock, ChevronRight } from 'lucide-react';
 import './WorkMotoFleet.css';
 
 // ─────────────────────────────────────────────────────────────────
@@ -32,11 +32,11 @@ const services = [
     items: ['Servicio prioritario para flota', 'Diagnóstico en el día', 'Repuestos disponibles en stock'],
   },
   {
-    icon: <Wrench size={32} />,
-    title: 'Adaptaciones de Trabajo',
+    icon: <Package size={32} />,
+    title: 'Insumos de Calidad',
     description:
-      'Instalación de accesorios y modificaciones pensadas para motos de carga o reparto: baúles, parrillas, protecciones y más.',
-    items: ['Instalación de baúles y cajas', 'Protecciones de motor', 'Sistemas de carga reforzados'],
+      'Utilizamos únicamente materiales originales y de primera calidad para garantizar la durabilidad y rendimiento de tu moto de trabajo.',
+    items: ['Refacciones originales', 'Aceites y lubricantes certificados', 'Componentes de marcas reconocidas'],
   },
 ];
 
