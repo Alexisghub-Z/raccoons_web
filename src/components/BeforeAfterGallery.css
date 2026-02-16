@@ -1,15 +1,9 @@
-/* Before After Gallery */
+/* Before After Gallery — Layout Single (foto vertical izquierda + texto derecha) */
 .before-after-gallery {
   padding: 7rem 0;
   background: linear-gradient(180deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);
   position: relative;
   overflow: hidden;
-}
-
-/* Header */
-.ba-header {
-  text-align: center;
-  margin-bottom: 3.5rem;
 }
 
 .ba-eyebrow {
@@ -23,25 +17,25 @@
   margin-bottom: 1rem;
 }
 
-/* Layout principal — comparador + panel lateral */
-.ba-layout {
+/* Layout: comparador izquierda + panel derecha */
+.ba-layout-single {
   display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: 3rem;
+  grid-template-columns: minmax(320px, 450px) 1fr;
+  gap: 4rem;
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-/* ─── Comparador ─── */
-.before-after-slider {
+/* ─── Comparador vertical ─── */
+.before-after-slider-vertical {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 3 / 4; /* Vertical */
   border-radius: 20px;
   overflow: hidden;
   cursor: ew-resize;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.15);
   user-select: none;
   -webkit-user-select: none;
   touch-action: none;
@@ -98,14 +92,22 @@
   transform: translateX(-50%);
   font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 2px;
-  color: rgba(255, 255, 255, 0.7);
-  background: rgba(0, 0, 0, 0.4);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: white;
+  padding: 0.5rem 1rem;
+  background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(8px);
-  padding: 0.4rem 1rem;
+  -webkit-backdrop-filter: blur(8px);
   border-radius: 20px;
   z-index: 10;
-  pointer-events: none;
+  opacity: 0;
+  animation: hintFade 3s ease-in-out infinite;
+}
+
+@keyframes hintFade {
+  0%, 100% { opacity: 0; }
+  30%, 70% { opacity: 1; }
 }
 
 /* Slider divider */
@@ -115,10 +117,10 @@
   bottom: 0;
   width: 3px;
   background: white;
-  z-index: 3;
-  pointer-events: none;
-  transform: translateX(-50%);
-  box-shadow: 0 0 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+  z-index: 15;
+  transition: left 0.05s ease-out;
+  cursor: ew-resize;
 }
 
 .slider-button {
@@ -126,183 +128,91 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   background: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  pointer-events: auto;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
   cursor: ew-resize;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.slider-button:hover {
-  transform: translate(-50%, -50%) scale(1.1);
-  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.3);
+.slider-button svg {
+  color: #1a1a1a;
 }
 
-.slider-button svg { color: #1e40af; }
-
-/* ─── Panel editorial ─── */
-.ba-panel {
+/* ─── Panel editorial derecha ─── */
+.ba-panel-single {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  padding: 2.5rem;
-  background: var(--color-bg-primary);
-  border: 1px solid var(--color-border);
-  border-radius: 20px;
-  box-shadow: 0 4px 24px var(--color-shadow);
+  padding: 2rem 0;
 }
 
-.ba-case-number {
+.ba-panel-title-single {
   font-family: var(--font-display);
-  font-size: 1rem;
-  letter-spacing: 4px;
-  color: var(--color-red-light);
-}
-
-.ba-panel-title {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 3vw, 2.8rem);
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
   font-weight: 400;
-  letter-spacing: 2px;
-  color: var(--color-text-primary);
   line-height: 1.1;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
 .ba-divider {
-  width: 40px;
+  width: 48px;
   height: 3px;
-  background: linear-gradient(90deg, var(--color-red) 0%, var(--color-red-light) 100%);
+  background: var(--color-red);
   border-radius: 2px;
 }
 
 .ba-panel-description {
-  font-size: 1rem;
-  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: 1.05rem;
   line-height: 1.75;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
 .ba-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .ba-tag {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 0.35rem 0.85rem;
-  border-radius: 6px;
-  background: rgba(30, 64, 175, 0.08);
-  color: var(--color-red-light);
-  border: 1px solid rgba(30, 64, 175, 0.15);
-}
-
-/* Navegación dentro del panel */
-.ba-nav {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-top: auto;
-}
-
-.ba-nav-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  border: 1px solid var(--color-border);
-  background: var(--color-bg-secondary);
-  color: var(--color-text-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-}
-
-.ba-nav-btn:hover {
+  display: inline-block;
+  padding: 0.5rem 1rem;
   background: var(--color-bg-tertiary);
-  border-color: var(--color-red-light);
-  color: var(--color-red-light);
-  transform: translateY(-1px);
-}
-
-.ba-dots {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  flex: 1;
-  justify-content: center;
-}
-
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--color-text-muted);
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  padding: 0;
-  opacity: 0.4;
-}
-
-.dot:hover { opacity: 0.7; }
-
-.dot.active {
-  background: var(--color-red-light);
-  width: 24px;
-  border-radius: 4px;
-  opacity: 1;
-}
-
-/* CTA */
-.ba-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.85rem 1.5rem;
-  background: linear-gradient(135deg, var(--color-red) 0%, var(--color-red-light) 100%);
-  color: white;
-  font-size: 0.88rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 0.8125rem;
   font-weight: 600;
+  color: var(--color-text-primary);
+  text-transform: uppercase;
   letter-spacing: 0.5px;
-  border-radius: 10px;
-  text-decoration: none;
-  transition: all 0.25s ease;
-  box-shadow: 0 4px 14px rgba(30, 64, 175, 0.3);
-}
-
-.ba-cta:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(30, 64, 175, 0.4);
-  color: white;
-}
-
-.ba-cta svg {
-  transition: transform 0.2s ease;
-}
-
-.ba-cta:hover svg {
-  transform: translateX(3px);
 }
 
 /* ─── Responsive ─── */
 @media (max-width: 1024px) {
-  .ba-layout {
-    grid-template-columns: 1fr 320px;
-    gap: 2rem;
+  .ba-layout-single {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .before-after-slider-vertical {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .ba-panel-single {
+    text-align: center;
+    align-items: center;
+  }
+
+  .ba-divider {
+    margin: 0 auto;
   }
 }
 
@@ -311,55 +221,57 @@
     padding: 5rem 0;
   }
 
-  .ba-layout {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+  .ba-layout-single {
+    gap: 2.5rem;
   }
 
-  .before-after-slider {
-    aspect-ratio: 4 / 3;
+  .before-after-slider-vertical {
+    max-width: 320px;
     border-radius: 16px;
   }
 
-  .ba-panel {
-    padding: 2rem;
-  }
-
-  .ba-panel-title {
+  .ba-panel-title-single {
     font-size: 2rem;
   }
-}
 
-@media (max-width: 480px) {
-  .before-after-slider {
-    aspect-ratio: 1 / 1;
-    border-radius: 12px;
+  .ba-panel-description {
+    font-size: 1rem;
   }
 
   .image-label {
     font-size: 0.65rem;
-    padding: 0.4rem 0.75rem;
+    padding: 0.4rem 0.8rem;
+    top: 1rem;
   }
 
-  .slider-button {
-    width: 44px;
-    height: 44px;
-  }
+  .label-before { left: 1rem; }
+  .label-after { right: 1rem; }
 
-  .ba-panel {
-    padding: 1.5rem;
-    gap: 1.2rem;
+  .drag-hint {
+    font-size: 0.65rem;
+    bottom: 1rem;
   }
 }
 
-/* Touch devices */
-@media (hover: none) and (pointer: coarse) {
-  .slider-button {
-    width: 60px;
-    height: 60px;
+@media (max-width: 480px) {
+  .ba-layout-single {
+    gap: 2rem;
   }
 
-  .drag-hint {
-    display: none;
+  .before-after-slider-vertical {
+    max-width: 280px;
+  }
+
+  .ba-panel-title-single {
+    font-size: 1.75rem;
+  }
+
+  .ba-tags {
+    justify-content: center;
+  }
+
+  .ba-tag {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
   }
 }

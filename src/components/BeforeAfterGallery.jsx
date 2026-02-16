@@ -1,41 +1,25 @@
 import { useState, useRef, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import './BeforeAfterGallery.css';
 
 function BeforeAfterGallery() {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [sliderPosition, setSliderPosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef(null);
 
-  const beforeAfterData = [
-    {
-      id: 1,
-      title: "Restauración Completa",
-      description: "Reparación integral de motor, suspensión y sistema eléctrico. La moto entró con daños graves y salió lista para rodar como nueva.",
-      tags: ["Motor", "Suspensión", "Eléctrico"],
-      beforeImage: "/before-after/before-1.jpg",
-      afterImage: "/before-after/after-1.jpg"
-    },
-    {
-      id: 2,
-      title: "Personalización de Pintura",
-      description: "Diseño personalizado con acabado profesional. Cada detalle fue trabajado a mano para lograr un resultado único.",
-      tags: ["Pintura", "Carrocería", "Acabados"],
-      beforeImage: "/before-after/before-2.jpg",
-      afterImage: "/before-after/after-2.jpg"
-    },
-    {
-      id: 3,
-      title: "Reparación de Carrocería",
-      description: "Restauración completa de daños por accidente. Estructura, pintura y detalles recuperados al 100%.",
-      tags: ["Carrocería", "Estructura", "Pintura"],
-      beforeImage: "/before-after/before-3.jpg",
-      afterImage: "/before-after/after-3.jpg"
-    }
-  ];
-
-  const currentData = beforeAfterData[currentIndex];
+  // ─────────────────────────────────────────────────────────────────
+  // 🔧 AGREGA TUS FOTOS AQUÍ (verticales, de mantenimiento)
+  // ─────────────────────────────────────────────────────────────────
+  // Sube tus fotos a la carpeta: /public/before-after/
+  // Nombres sugeridos:
+  //   - antes-mantenimiento.jpg  (foto vertical ANTES)
+  //   - despues-mantenimiento.jpg (foto vertical DESPUÉS)
+  // ─────────────────────────────────────────────────────────────────
+  const beforeImage = "/before-after/antes-mantenimiento.jpg";
+  const afterImage = "/before-after/despues-mantenimiento.jpg";
+  const title = "Mantenimiento Preventivo";
+  const description = "Servicio completo de mantenimiento con revisión de motor, cambio de aceite, ajuste de frenos y limpieza profunda. Tu moto queda como nueva.";
+  const tags = ["Mantenimiento", "Motor", "Aceite"];
 
   const handleMouseDown = () => setIsDragging(true);
   const handleMouseUp = () => setIsDragging(false);
@@ -68,32 +52,15 @@ function BeforeAfterGallery() {
     };
   }, [isDragging]);
 
-  const goToPrevious = () => {
-    setCurrentIndex((prev) => (prev === 0 ? beforeAfterData.length - 1 : prev - 1));
-    setSliderPosition(50);
-  };
-
-  const goToNext = () => {
-    setCurrentIndex((prev) => (prev === beforeAfterData.length - 1 ? 0 : prev + 1));
-    setSliderPosition(50);
-  };
-
   return (
     <section className="before-after-gallery">
       <div className="container">
+        {/* Layout: comparador izquierda + panel derecha */}
+        <div className="ba-layout-single">
 
-        {/* Header minimalista */}
-        <div className="ba-header">
-          <span className="ba-eyebrow">Resultados reales</span>
-          <h2 className="section-title">Transformaciones Increíbles</h2>
-        </div>
-
-        {/* Layout principal: comparador + panel */}
-        <div className="ba-layout">
-
-          {/* Comparador */}
+          {/* Comparador vertical izquierda */}
           <div
-            className="before-after-slider"
+            className="before-after-slider-vertical"
             ref={containerRef}
             onMouseDown={handleMouseDown}
             onTouchStart={() => setIsDragging(true)}
@@ -101,7 +68,7 @@ function BeforeAfterGallery() {
             onTouchEnd={() => setIsDragging(false)}
           >
             <div className="image-container after-image">
-              <img src={currentData.afterImage} alt={`Después - ${currentData.title}`} draggable="false" />
+              <img src={afterImage} alt="Después - Mantenimiento" draggable="false" />
               <div className="image-label label-after" style={{ opacity: sliderPosition < 85 ? 1 : 0 }}>
                 Después
               </div>
@@ -111,7 +78,7 @@ function BeforeAfterGallery() {
               className="image-container before-image"
               style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
             >
-              <img src={currentData.beforeImage} alt={`Antes - ${currentData.title}`} draggable="false" />
+              <img src={beforeImage} alt="Antes - Mantenimiento" draggable="false" />
               <div className="image-label label-before" style={{ opacity: sliderPosition > 15 ? 1 : 0 }}>
                 Antes
               </div>
@@ -128,49 +95,20 @@ function BeforeAfterGallery() {
             <div className="drag-hint">← Desliza →</div>
           </div>
 
-          {/* Panel editorial */}
-          <div className="ba-panel">
-            <span className="ba-case-number">
-              {String(currentIndex + 1).padStart(2, '0')} / {String(beforeAfterData.length).padStart(2, '0')}
-            </span>
-
-            <h3 className="ba-panel-title">{currentData.title}</h3>
+          {/* Panel editorial derecha */}
+          <div className="ba-panel-single">
+            <span className="ba-eyebrow">Resultados reales</span>
+            <h2 className="ba-panel-title-single">{title}</h2>
 
             <div className="ba-divider"></div>
 
-            <p className="ba-panel-description">{currentData.description}</p>
+            <p className="ba-panel-description">{description}</p>
 
             <div className="ba-tags">
-              {currentData.tags.map((tag) => (
+              {tags.map((tag) => (
                 <span key={tag} className="ba-tag">{tag}</span>
               ))}
             </div>
-
-            <div className="ba-nav">
-              <button className="ba-nav-btn" onClick={goToPrevious} aria-label="Anterior">
-                <ChevronLeft size={20} />
-              </button>
-
-              <div className="ba-dots">
-                {beforeAfterData.map((_, index) => (
-                  <button
-                    key={index}
-                    className={`dot ${index === currentIndex ? 'active' : ''}`}
-                    onClick={() => { setCurrentIndex(index); setSliderPosition(50); }}
-                    aria-label={`Caso ${index + 1}`}
-                  />
-                ))}
-              </div>
-
-              <button className="ba-nav-btn" onClick={goToNext} aria-label="Siguiente">
-                <ChevronRight size={20} />
-              </button>
-            </div>
-
-            <a href="#contacto" className="ba-cta">
-              Solicita tu servicio
-              <ArrowRight size={16} />
-            </a>
           </div>
 
         </div>
