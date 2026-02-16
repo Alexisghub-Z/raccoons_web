@@ -142,26 +142,14 @@ function HomePage() {
             </div>
             <div className="service-card">
               <div className="service-icon-wrapper">
-                <div className="service-icon"><Palette size={40} /></div>
-              </div>
-              <h3>Personalización</h3>
-              <p>Dale a tu moto un toque único con nuestras opciones de customización profesional</p>
-              <ul className="service-features">
-                <li>Modificaciones de diseño</li>
-                <li>Mejoras de rendimiento</li>
-                <li>Pintura personalizada</li>
-              </ul>
-            </div>
-            <div className="service-card">
-              <div className="service-icon-wrapper">
                 <div className="service-icon"><Package size={40} /></div>
               </div>
-              <h3>Accesorios</h3>
-              <p>Instalación profesional de accesorios y upgrades para mejorar tu experiencia</p>
+              <h3>Insumos de Calidad</h3>
+              <p>Utilizamos únicamente materiales originales y de primera calidad para garantizar la durabilidad de tu moto</p>
               <ul className="service-features">
-                <li>Sistemas de escape</li>
-                <li>Iluminación LED</li>
-                <li>Protección y seguridad</li>
+                <li>Refacciones originales</li>
+                <li>Aceites y lubricantes certificados</li>
+                <li>Componentes de marcas reconocidas</li>
               </ul>
             </div>
           </div>
@@ -256,7 +244,7 @@ function HomePage() {
               </p>
               <ul className="about-features">
                 <li>✓ Mecánicos certificados</li>
-                <li>✓ Equipamiento profesional</li>
+                <li>✓ Equipamiento electrónico profesional</li>
                 <li>✓ Garantía en todos nuestros trabajos</li>
                 <li>✓ Atención personalizada</li>
               </ul>
