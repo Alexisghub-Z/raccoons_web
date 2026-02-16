@@ -134,18 +134,6 @@ function LoginForm({ onLoginSuccess }) {
             Volver al Sitio
           </button>
         </form>
-
-        {/* Hint */}
-        <div className="admin-login-hint">
-          <div className="hint-header">
-            <div className="hint-dot"></div>
-            Credenciales de Prueba
-          </div>
-          <div className="hint-content">
-            <code>admin@raccoons.com</code>
-            <code>admin123</code>
-          </div>
-        </div>
       </div>
     </div>
   );

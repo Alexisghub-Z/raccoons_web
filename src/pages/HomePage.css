@@ -1456,40 +1456,10 @@
   height: 600px;
   width: 100%;
   position: relative;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.home-page .map-container-large::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(30, 64, 175, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.home-page .map-container-large:hover::before {
-  opacity: 1;
-}
-
-.home-page .map-container-large:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(59, 130, 246, 0.2);
-  border-color: rgba(59, 130, 246, 0.3);
 }
 
 .home-page .map-container-large iframe {
   filter: brightness(0.95) contrast(1.05) saturate(1.1);
-  transition: filter 0.4s ease;
-}
-
-.home-page .map-container-large:hover iframe {
-  filter: brightness(1) contrast(1.1) saturate(1.15);
 }
 
 /* ============================================
