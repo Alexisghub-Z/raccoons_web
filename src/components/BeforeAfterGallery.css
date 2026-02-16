@@ -31,7 +31,7 @@
 .before-after-slider-vertical {
   position: relative;
   width: 100%;
-  height: 700px; /* Altura fija para que llegue casi a los bordes del panel */
+  height: 800px; /* Altura aumentada para comparador más grande */
   border-radius: 20px;
   overflow: hidden;
   cursor: ew-resize;
@@ -209,7 +209,7 @@
 
   .before-after-slider-vertical {
     max-width: 480px;
-    height: 580px;
+    height: 650px;
     margin: 0 auto;
   }
 
@@ -236,7 +236,7 @@
 
   .before-after-slider-vertical {
     max-width: 360px;
-    height: 480px;
+    height: 540px;
     border-radius: 16px;
   }
 
@@ -270,7 +270,7 @@
 
   .before-after-slider-vertical {
     max-width: 300px;
-    height: 420px;
+    height: 480px;
   }
 
   .ba-panel-title-single {
