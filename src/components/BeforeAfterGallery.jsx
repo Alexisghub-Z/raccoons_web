@@ -17,9 +17,9 @@ function BeforeAfterGallery() {
   // ─────────────────────────────────────────────────────────────────
   const beforeImage = "/before-after/antes-mantenimiento.jpeg";
   const afterImage = "/before-after/despues-mantenimiento.jpeg";
-  const title = "Mantenimiento Preventivo";
-  const description = "Servicio completo de mantenimiento con revisión de motor, cambio de aceite, ajuste de frenos y limpieza profunda. Tu moto queda como nueva.";
-  const tags = ["Mantenimiento", "Motor", "Aceite"];
+  const title = "Trabajo Profesional";
+  const description = "Realizamos servicios de mantenimiento de calidad que dejan tu moto en perfectas condiciones. Cada trabajo se hace con profesionalismo y dedicación para garantizar los mejores resultados.";
+  const tags = ["Calidad", "Profesional", "Confiable"];
 
   const handleMouseDown = () => setIsDragging(true);
   const handleMouseUp = () => setIsDragging(false);
