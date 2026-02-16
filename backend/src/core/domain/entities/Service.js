@@ -101,12 +101,22 @@ export class Service {
       return false;
     }
 
-    // Si ya está entregado o cancelado, no se puede cambiar
-    if (this.status === 'DELIVERED' || this.status === 'CANCELLED') {
+    // Si ya está entregado, no se puede cambiar
+    if (this.status === 'DELIVERED') {
       return false;
     }
 
-    // Siempre se puede cancelar (excepto si ya está entregado o cancelado)
+    // Permitir reactivar servicios cancelados (cambiar de CANCELLED a RECEIVED)
+    if (this.status === 'CANCELLED' && newStatus === 'RECEIVED') {
+      return true;
+    }
+
+    // Si está cancelado y no es reactivación, no permitir otros cambios
+    if (this.status === 'CANCELLED') {
+      return false;
+    }
+
+    // Siempre se puede cancelar (excepto si ya está entregado)
     if (newStatus === 'CANCELLED') {
       return true;
     }
