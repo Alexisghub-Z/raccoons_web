@@ -169,12 +169,12 @@ function HomePage() {
               <div className="service-icon-wrapper">
                 <div className="service-icon"><Package size={40} /></div>
               </div>
-              <h3>Insumos de Calidad</h3>
-              <p>Utilizamos únicamente materiales originales y de primera calidad para garantizar la durabilidad de tu moto</p>
+              <h3>Equipamiento Profesional</h3>
+              <p>Contamos con la mejor maquinaria y equipamiento electrónico profesional para diagnóstico y reparaciones de precisión</p>
               <ul className="service-features">
-                <li>Refacciones originales</li>
-                <li>Aceites y lubricantes certificados</li>
-                <li>Componentes de marcas reconocidas</li>
+                <li>Escáner de diagnóstico automotriz</li>
+                <li>Equipos de medición electrónica</li>
+                <li>Herramientas especializadas de última generación</li>
               </ul>
             </div>
           </div>
