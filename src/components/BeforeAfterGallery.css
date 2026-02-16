@@ -20,10 +20,10 @@
 /* Layout: comparador izquierda + panel derecha */
 .ba-layout-single {
   display: grid;
-  grid-template-columns: minmax(320px, 450px) 1fr;
+  grid-template-columns: minmax(400px, 600px) 1fr;
   gap: 4rem;
   align-items: center;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -149,6 +149,7 @@
   flex-direction: column;
   gap: 1.5rem;
   padding: 2rem 0;
+  max-width: 550px;
 }
 
 .ba-panel-title-single {
@@ -202,13 +203,15 @@
   }
 
   .before-after-slider-vertical {
-    max-width: 400px;
+    max-width: 480px;
     margin: 0 auto;
   }
 
   .ba-panel-single {
     text-align: center;
     align-items: center;
+    max-width: 600px;
+    margin: 0 auto;
   }
 
   .ba-divider {
