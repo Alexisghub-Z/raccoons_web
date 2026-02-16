@@ -153,7 +153,7 @@ export const generateServicePDF = async (serviceData) => {
     pdf.setFontSize(9);
     pdf.setFont('helvetica', 'normal');
     pdf.text('Raccoons Taller - Av. Principal #123, Ciudad', 105, 285, { align: 'center' });
-    pdf.text('Tel: +1 234 567 8900 | info@raccoons.com', 105, 290, { align: 'center' });
+    pdf.text('Tel: +52 951 651 2065 | info@raccoons.com', 105, 290, { align: 'center' });
     pdf.text(`Página ${i} de ${pageCount}`, 190, 290, { align: 'right' });
 
     // Fecha de generación
@@ -270,7 +270,7 @@ export const generateSimpleServicePDF = (serviceData) => {
   pdf.setFontSize(9);
   pdf.setFont('helvetica', 'normal');
   pdf.text('Raccoons Taller', 105, 285, { align: 'center' });
-  pdf.text('Tel: +1 234 567 8900 | info@raccoons.com', 105, 290, { align: 'center' });
+  pdf.text('Tel: +52 951 651 2065 | info@raccoons.com', 105, 290, { align: 'center' });
 
   const fileName = `Estado_Servicio_${serviceData.code}.pdf`;
   pdf.save(fileName);

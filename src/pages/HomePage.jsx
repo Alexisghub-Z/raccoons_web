@@ -424,7 +424,7 @@ function HomePage() {
             <div className="contact-item">
               <div className="contact-icon"><Phone size={32} /></div>
               <h3>Teléfono</h3>
-              <p>+1 234 567 8900</p>
+              <p>+52 951 651 2065</p>
             </div>
             <div className="contact-item">
               <div className="contact-icon"><Mail size={32} /></div>
