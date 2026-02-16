@@ -63,11 +63,6 @@
   transition: clip-path 0.05s ease-out;
 }
 
-/* Hacer la imagen "antes" un poco más chiquita/alejada */
-.before-image img {
-  transform: scale(0.85);
-}
-
 /* Labels */
 .image-label {
   position: absolute;
