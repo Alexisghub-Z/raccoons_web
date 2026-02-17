@@ -18,6 +18,11 @@ dotenv.config();
 
 const app = express();
 
+// Trust proxy para funcionar detras de Nginx (IP real, rate limiting correcto)
+if (config.env === 'production') {
+  app.set('trust proxy', 1);
+}
+
 app.use(helmet());
 
 app.use(cors({
@@ -86,35 +91,15 @@ app.listen(PORT, () => {
   logger.info(`API Version: ${config.apiVersion}`);
   logger.info(`Health check: http://localhost:${PORT}/api/${config.apiVersion}/health`);
   logger.info('='.repeat(50));
-  logger.info('Available endpoints:');
-  logger.info(`  POST   /api/${config.apiVersion}/auth/register`);
-  logger.info(`  POST   /api/${config.apiVersion}/auth/login`);
-  logger.info(`  POST   /api/${config.apiVersion}/auth/refresh`);
-  logger.info(`  POST   /api/${config.apiVersion}/auth/logout`);
-  logger.info(`  GET    /api/${config.apiVersion}/auth/me`);
-  logger.info(``);
-  logger.info(`  POST   /api/${config.apiVersion}/services`);
-  logger.info(`  GET    /api/${config.apiVersion}/services`);
-  logger.info(`  GET    /api/${config.apiVersion}/services/code/:code`);
-  logger.info(`  GET    /api/${config.apiVersion}/services/:id`);
-  logger.info(`  PUT    /api/${config.apiVersion}/services/:id`);
-  logger.info(`  PUT    /api/${config.apiVersion}/services/:id/status`);
-  logger.info(`  DELETE /api/${config.apiVersion}/services/:id`);
-  logger.info(``);
-  logger.info(`  POST   /api/${config.apiVersion}/appointments`);
-  logger.info(`  GET    /api/${config.apiVersion}/appointments`);
-  logger.info(`  GET    /api/${config.apiVersion}/appointments/upcoming`);
-  logger.info(`  GET    /api/${config.apiVersion}/appointments/:id`);
-  logger.info(`  PUT    /api/${config.apiVersion}/appointments/:id/confirm`);
-  logger.info(`  PUT    /api/${config.apiVersion}/appointments/:id/cancel`);
-  logger.info(`  DELETE /api/${config.apiVersion}/appointments/:id`);
-  logger.info(``);
-  logger.info(`  GET    /api/${config.apiVersion}/notifications`);
-  logger.info(`  GET    /api/${config.apiVersion}/notifications/unread`);
-  logger.info(`  GET    /api/${config.apiVersion}/notifications/:id`);
-  logger.info(`  PUT    /api/${config.apiVersion}/notifications/:id/read`);
-  logger.info(`  DELETE /api/${config.apiVersion}/notifications/:id`);
-  logger.info('='.repeat(50));
+
+  if (config.env !== 'production') {
+    logger.info('Available endpoints:');
+    logger.info(`  Auth:          /api/${config.apiVersion}/auth/*`);
+    logger.info(`  Services:      /api/${config.apiVersion}/services/*`);
+    logger.info(`  Appointments:  /api/${config.apiVersion}/appointments/*`);
+    logger.info(`  Notifications: /api/${config.apiVersion}/notifications/*`);
+    logger.info('='.repeat(50));
+  }
 });
 
 process.on('unhandledRejection', (reason, promise) => {

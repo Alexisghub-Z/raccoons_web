@@ -1,0 +1,26 @@
+# Override para desarrollo local
+# Uso: docker compose -f docker-compose.yml -f docker-compose.dev.yml up postgres redis
+#
+# Solo levanta postgres y redis para desarrollo local.
+# El frontend y backend se ejecutan con npm run dev.
+
+services:
+  postgres:
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: devpassword
+
+  redis:
+    ports:
+      - "6379:6379"
+
+  # Deshabilitar servicios que no se necesitan en dev
+  backend:
+    profiles: ["production"]
+
+  frontend:
+    profiles: ["production"]
+
+  certbot:
+    profiles: ["production"]

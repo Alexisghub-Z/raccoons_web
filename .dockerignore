@@ -1,0 +1,10 @@
+node_modules
+dist
+backend
+.git
+logs
+*.md
+.env
+.env.production
+deploy
+.github

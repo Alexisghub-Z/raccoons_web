@@ -20,7 +20,7 @@
 /* Layout: comparador izquierda + panel derecha */
 .ba-layout-single {
   display: grid;
-  grid-template-columns: minmax(400px, 800px) 1fr;
+  grid-template-columns: minmax(400px, 650px) 1fr;
   gap: 4rem;
   align-items: start;
   max-width: 1400px;
