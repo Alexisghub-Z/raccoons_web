@@ -152,7 +152,7 @@ function MosaicGallery() {
 
   return (
     <section className="gallery-grid" ref={galleryRef}>
-      <h2 className="gallery-grid__title">Más de 1,000 Clientes Satisfechos</h2>
+      <h2 className="gallery-grid__title">90% de Clientes Satisfechos</h2>
       <div className="gallery-grid__container">
         <div className="gallery-grid__featured">
           <div className="gallery-grid__featured-inner">

@@ -62,7 +62,7 @@ function Stats() {
   // Valores de las estadísticas
   const motosReparadas = useCountUp(700, 2500, isVisible);
   const anosExperiencia = useCountUp(10, 2000, isVisible);
-  const clientesSatisfechos = useCountUp(1000, 2500, isVisible);
+  const clientesSatisfechos = useCountUp(90, 2500, isVisible);
   const tiempoPromedio = useCountUp(24, 2000, isVisible);
 
   return (
@@ -188,11 +188,11 @@ function Stats() {
               <Users className="stat-icon" size={48} />
             </div>
             <div className="stat-number">
-              +{clientesSatisfechos.toLocaleString()}
+              {clientesSatisfechos}%
             </div>
             <div className="stat-label">Clientes Satisfechos</div>
             <div className="stat-description">
-              Clientes que confían en nosotros
+              Satisfacción garantizada
             </div>
           </div>
 
