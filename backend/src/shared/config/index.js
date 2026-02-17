@@ -106,7 +106,7 @@ export const config = {
   notifications: {
     retryAttempts: parseInt(process.env.NOTIFICATION_RETRY_ATTEMPTS || '3', 10),
     retryDelay: parseInt(process.env.NOTIFICATION_RETRY_DELAY || '5000', 10),
-    defaultChannels: (process.env.DEFAULT_NOTIFICATION_CHANNELS || 'sms,email').split(',')
+    defaultChannels: (process.env.DEFAULT_NOTIFICATION_CHANNELS || 'email').split(',')
   }
 };
 
