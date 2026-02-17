@@ -33,6 +33,10 @@ function TrackingPage() {
   const heroContentRef = useRef(null);
 
   useEffect(() => {
+    document.title = 'Seguimiento de Servicio | Raccoons Taller de Motocicletas';
+  }, []);
+
+  useEffect(() => {
     const handleScroll = () => {
       if (!heroContentRef.current) return;
       const scrollPosition = window.scrollY;

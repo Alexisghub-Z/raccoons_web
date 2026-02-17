@@ -27,6 +27,10 @@ import './AdminPage.css';
 function AdminPage() {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    document.title = 'Panel de Administración | Raccoons Taller';
+  }, []);
   const [currentView, setCurrentView] = useState('SERVICES'); // 'SERVICES' | 'CUSTOMERS'
   const [services, setServices] = useState([]);
   const [customers, setCustomers] = useState([]);

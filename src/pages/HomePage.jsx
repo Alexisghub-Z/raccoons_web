@@ -29,6 +29,10 @@ function HomePage() {
   const navigate = useNavigate();
   const heroRef = useRef(null);
 
+  useEffect(() => {
+    document.title = 'Raccoons Taller de Motocicletas | Taller de Motos en Oaxaca';
+  }, []);
+
   // Optimización: Memoización de handlers
   const handleWhatsAppClick = useCallback(() => {
     window.open('https://wa.me/12345678900?text=Hola,%20me%20gustaría%20agendar%20una%20cita%20para%20mi%20moto', '_blank');
