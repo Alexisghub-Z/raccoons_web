@@ -207,6 +207,25 @@
   opacity: 0.6;
 }
 
+/* Password Toggle */
+.password-toggle {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.password-toggle:hover {
+  color: #3b82f6;
+}
+
 /* ============================================
    ERROR MESSAGE
    ============================================ */

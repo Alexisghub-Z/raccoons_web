@@ -30,6 +30,7 @@ function MosaicGallery() {
     '/clientes/cliente-12.jpeg',
     '/clientes/cliente-13.jpeg',
     '/clientes/cliente-14.jpeg',
+    '/clientes/cliente-15.jpeg',
   ];
 
   useEffect(() => {
@@ -170,7 +171,7 @@ function MosaicGallery() {
               <image x="2400" y="1400" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref={galleryImages[6]}></image>
             </g>
             <g className="gallery-grid__group" clipPath="url(#image-grid-clip-path)" style={{ transformOrigin: '1400px 950px', transform: 'scale(0.575)' }}>
-              <image x="600" y="0" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref={galleryImages[6]}></image>
+              <image x="600" y="0" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref={galleryImages[15]}></image>
               <image x="1800" y="0" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref={galleryImages[7]}></image>
               <image x="600" y="700" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref={galleryImages[8]}></image>
               <image x="1800" y="700" width="400" height="500" rx="56" preserveAspectRatio="xMidYMid slice" xlinkHref={galleryImages[9]}></image>

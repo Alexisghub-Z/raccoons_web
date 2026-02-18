@@ -87,8 +87,8 @@ function HomePage() {
         });
       },
       {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
+        threshold: 0.15,
+        rootMargin: '0px 0px -100px 0px'
       }
     );
 
@@ -146,40 +146,46 @@ function HomePage() {
           </p>
           <div className="services-grid">
             <div className="service-card">
-              <div className="service-icon-wrapper">
-                <div className="service-icon"><Wrench size={40} /></div>
+              <div className="service-card-img">
+                <img src="/servicios/mantenimiento.jpg" alt="Mantenimiento de motocicletas" />
               </div>
-              <h3>Mantenimiento</h3>
-              <p>Mantenimiento preventivo y correctivo para garantizar el óptimo funcionamiento de tu motocicleta</p>
-              <ul className="service-features">
-                <li>Cambio de aceite y filtros</li>
-                <li>Ajuste de cadena y frenos</li>
-                <li>Revisión general completa</li>
-              </ul>
+              <div className="service-card-content">
+                <h3>Mantenimiento</h3>
+                <p>Mantenimiento preventivo y correctivo para garantizar el óptimo funcionamiento de tu motocicleta</p>
+                <ul className="service-features">
+                  <li>Cambio de aceite y filtros</li>
+                  <li>Ajuste de cadena y frenos</li>
+                  <li>Revisión general completa</li>
+                </ul>
+              </div>
             </div>
             <div className="service-card">
-              <div className="service-icon-wrapper">
-                <div className="service-icon"><Settings size={40} /></div>
+              <div className="service-card-img">
+                <img src="/servicios/reparacion.jpg" alt="Reparación de motocicletas" />
               </div>
-              <h3>Reparación</h3>
-              <p>Diagnóstico preciso y reparación especializada de todos los sistemas de tu moto</p>
-              <ul className="service-features">
-                <li>Reparación de motor</li>
-                <li>Sistema eléctrico</li>
-                <li>Suspensión y frenos</li>
-              </ul>
+              <div className="service-card-content">
+                <h3>Reparación</h3>
+                <p>Diagnóstico preciso y reparación especializada de todos los sistemas de tu moto</p>
+                <ul className="service-features">
+                  <li>Reparación de motor</li>
+                  <li>Sistema eléctrico</li>
+                  <li>Suspensión y frenos</li>
+                </ul>
+              </div>
             </div>
             <div className="service-card">
-              <div className="service-icon-wrapper">
-                <div className="service-icon"><Package size={40} /></div>
+              <div className="service-card-img">
+                <img src="/servicios/equipamiento.jpeg" alt="Equipamiento profesional" />
               </div>
-              <h3>Equipamiento Profesional</h3>
-              <p>Contamos con la mejor maquinaria y equipamiento electrónico profesional para diagnóstico y reparaciones de precisión</p>
-              <ul className="service-features">
-                <li>Escáner de diagnóstico automotriz</li>
-                <li>Equipos de medición electrónica</li>
-                <li>Herramientas especializadas de última generación</li>
-              </ul>
+              <div className="service-card-content">
+                <h3>Equipamiento Profesional</h3>
+                <p>Contamos con la mejor maquinaria y equipamiento electrónico profesional para diagnóstico y reparaciones de precisión</p>
+                <ul className="service-features">
+                  <li>Escáner de diagnóstico automotriz</li>
+                  <li>Equipos de medición electrónica</li>
+                  <li>Herramientas especializadas de última generación</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>

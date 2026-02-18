@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, LogIn, ArrowLeft, Shield } from 'lucide-react';
+import { Mail, Lock, LogIn, ArrowLeft, Shield, Eye, EyeOff } from 'lucide-react';
 import { authService } from '../api/auth.service';
 import './LoginForm.css';
 
@@ -12,14 +12,21 @@ function LoginForm({ onLoginSuccess }) {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
+    // Leer valores directamente del DOM para cubrir autofill que no dispara onChange
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const email = (emailInput?.value || formData.email).trim();
+    const password = passwordInput?.value || formData.password;
+
     try {
-      await authService.login(formData.email, formData.password);
+      await authService.login(email, password);
       onLoginSuccess();
     } catch (err) {
       console.error('Login error:', err);
@@ -70,6 +77,8 @@ function LoginForm({ onLoginSuccess }) {
               <input
                 id="email"
                 type="email"
+                name="email"
+                autoComplete="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
@@ -90,13 +99,23 @@ function LoginForm({ onLoginSuccess }) {
               <Lock className="input-icon" size={18} />
               <input
                 id="password"
-                type="password"
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                autoComplete="current-password"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 required
                 placeholder="••••••••"
                 disabled={loading}
               />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
           </div>
 
