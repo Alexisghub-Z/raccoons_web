@@ -26,8 +26,16 @@ export function useTheme() {
   useEffect(() => {
     const root = document.documentElement;
 
-    // Cambiar data-theme (CSS responde automáticamente)
+    // Desactivar transiciones durante el cambio de tema
+    root.classList.add('theme-switching');
     root.setAttribute('data-theme', theme);
+
+    // Reactivar transiciones después de que el repaint ocurra
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        root.classList.remove('theme-switching');
+      });
+    });
 
     // Guardar en localStorage
     localStorage.setItem('theme', theme);
