@@ -62,14 +62,6 @@
   color-scheme: dark;
 }
 
-/* Desactivar transiciones durante cambio de tema */
-.theme-switching,
-.theme-switching *,
-.theme-switching *::before,
-.theme-switching *::after {
-  transition-duration: 0s !important;
-}
-
 /* Variables comunes */
 :root {
   --transition-fast: 0.15s ease;
