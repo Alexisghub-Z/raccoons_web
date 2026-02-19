@@ -10,7 +10,7 @@ export const serviceService = {
     const queryParams = new URLSearchParams();
 
     Object.keys(filters).forEach(key => {
-      if (filters[key]) {
+      if (filters[key] !== undefined && filters[key] !== null && filters[key] !== '') {
         queryParams.append(key, filters[key]);
       }
     });
@@ -19,6 +19,11 @@ export const serviceService = {
     const endpoint = queryString ? `/services?${queryString}` : '/services';
 
     const response = await apiClient.get(endpoint);
+    return response;
+  },
+
+  async getStats() {
+    const response = await apiClient.get('/services/stats');
     return response.data;
   },
 

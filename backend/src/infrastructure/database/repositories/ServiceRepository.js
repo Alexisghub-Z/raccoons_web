@@ -211,6 +211,14 @@ export class ServiceRepository extends IServiceRepository {
         where.status = filters.status;
       }
 
+      if (filters.statusIn) {
+        where.status = { in: filters.statusIn };
+      }
+
+      if (filters.statusNotIn) {
+        where.status = { notIn: filters.statusNotIn };
+      }
+
       if (filters.customerId) {
         where.customerId = filters.customerId;
       }
@@ -219,7 +227,9 @@ export class ServiceRepository extends IServiceRepository {
         where.OR = [
           { code: { contains: filters.search, mode: 'insensitive' } },
           { motorcycle: { contains: filters.search, mode: 'insensitive' } },
-          { plate: { contains: filters.search, mode: 'insensitive' } }
+          { plate: { contains: filters.search, mode: 'insensitive' } },
+          { customer: { firstName: { contains: filters.search, mode: 'insensitive' } } },
+          { customer: { lastName: { contains: filters.search, mode: 'insensitive' } } }
         ];
       }
 
@@ -231,25 +241,69 @@ export class ServiceRepository extends IServiceRepository {
         where.createdAt = { ...where.createdAt, lte: new Date(filters.dateTo) };
       }
 
-      const services = await prisma.service.findMany({
-        where,
-        include: {
-          customer: true,
-          evidence: true,
-          statusHistory: {
-            orderBy: { changedAt: 'desc' },
-            take: 1
-          }
-        },
-        skip: filters.offset || 0,
-        take: filters.limit || 100,
-        orderBy: filters.orderBy || { createdAt: 'desc' }
-      });
+      const page = parseInt(filters.page) || 1;
+      const limit = parseInt(filters.limit) || 20;
+      const skip = (page - 1) * limit;
 
-      return services.map(service => new Service(service));
+      const [services, total] = await Promise.all([
+        prisma.service.findMany({
+          where,
+          include: {
+            customer: true,
+            evidence: true,
+            statusHistory: {
+              orderBy: { changedAt: 'desc' },
+              take: 1
+            }
+          },
+          skip,
+          take: limit,
+          orderBy: filters.orderBy || { createdAt: 'desc' }
+        }),
+        prisma.service.count({ where })
+      ]);
+
+      return {
+        data: services.map(service => new Service(service)),
+        total,
+        page,
+        totalPages: Math.ceil(total / limit),
+        limit
+      };
     } catch (error) {
       logger.error('Error finding all services:', error);
       throw new DatabaseError('Error finding services', error.message);
+    }
+  }
+
+  async getStatusCounts() {
+    try {
+      const counts = await prisma.service.groupBy({
+        by: ['status'],
+        _count: { status: true }
+      });
+
+      const result = {
+        RECEIVED: 0,
+        IN_DIAGNOSIS: 0,
+        IN_REPAIR: 0,
+        READY_FOR_PICKUP: 0,
+        DELIVERED: 0,
+        CANCELLED: 0
+      };
+
+      counts.forEach(c => {
+        result[c.status] = c._count.status;
+      });
+
+      result.active = result.RECEIVED + result.IN_DIAGNOSIS + result.IN_REPAIR + result.READY_FOR_PICKUP;
+      result.completed = result.DELIVERED + result.CANCELLED;
+      result.total = result.active + result.completed;
+
+      return result;
+    } catch (error) {
+      logger.error('Error getting status counts:', error);
+      throw new DatabaseError('Error getting service stats', error.message);
     }
   }
 

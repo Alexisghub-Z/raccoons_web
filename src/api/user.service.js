@@ -6,9 +6,20 @@ export const userService = {
     return response.data;
   },
 
-  async getAll() {
-    const response = await apiClient.get('/users');
-    return response.data;
+  async getAll(filters = {}) {
+    const queryParams = new URLSearchParams();
+
+    Object.keys(filters).forEach(key => {
+      if (filters[key] !== undefined && filters[key] !== null && filters[key] !== '') {
+        queryParams.append(key, filters[key]);
+      }
+    });
+
+    const queryString = queryParams.toString();
+    const endpoint = queryString ? `/users?${queryString}` : '/users';
+
+    const response = await apiClient.get(endpoint);
+    return response;
   },
 
   async getById(id) {

@@ -42,7 +42,8 @@ function ServiceFormModal({ isOpen, onClose, onSubmit, isLoading, selectedCustom
 
       setSearchingCustomer(true);
       try {
-        const allUsers = await userService.getAll();
+        const response = await userService.getAll({ role: 'CUSTOMER', limit: 1000 });
+        const allUsers = response.data || [];
         const found = allUsers.find(user => {
           if (formData.clientEmail && user.email === formData.clientEmail) {
             return true;

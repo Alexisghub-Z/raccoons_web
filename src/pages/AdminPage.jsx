@@ -12,7 +12,11 @@ import {
   CheckCircle2,
   Users,
   Edit,
-  Trash2
+  Trash2,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight
 } from 'lucide-react';
 import { authService } from '../api/auth.service';
 import { serviceService } from '../api/service.service';
@@ -46,6 +50,14 @@ function AdminPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [toast, setToast] = useState(null);
 
+  // Pagination state
+  const ITEMS_PER_PAGE = 12;
+  const [servicePage, setServicePage] = useState(1);
+  const [servicePagination, setServicePagination] = useState({ total: 0, totalPages: 1 });
+  const [customerPage, setCustomerPage] = useState(1);
+  const [customerPagination, setCustomerPagination] = useState({ total: 0, totalPages: 1 });
+  const [serviceStats, setServiceStats] = useState({ active: 0, completed: 0, inDiagnosis: 0, inRepair: 0, delivered: 0, cancelled: 0 });
+
   useEffect(() => {
     if (authService.isAuthenticated()) {
       setIsAuthenticated(true);
@@ -54,27 +66,83 @@ function AdminPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      loadServices();
-      loadCustomers();
+      loadServiceStats();
     }
   }, [isAuthenticated]);
 
+  // Reload services when authenticated, pagination, filters, or tab changes
   useEffect(() => {
-    if (currentView === 'SERVICES') {
-      filterServices();
-    } else {
-      filterCustomers();
+    if (isAuthenticated) {
+      loadServices();
     }
-  }, [services, customers, searchTerm, statusFilter, activeTab, currentView]);
+  }, [isAuthenticated, servicePage, statusFilter, activeTab]);
+
+  // Reload customers when authenticated or pagination changes
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadCustomers();
+    }
+  }, [isAuthenticated, customerPage]);
+
+  // Reset page to 1 when search term changes (with debounce)
+  // Setting page to 1 triggers the page useEffect which calls loadServices/loadCustomers
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const timer = setTimeout(() => {
+      if (currentView === 'SERVICES') {
+        if (servicePage === 1) {
+          loadServices(); // Already on page 1, need to manually reload
+        } else {
+          setServicePage(1); // Will trigger reload via useEffect
+        }
+      } else {
+        if (customerPage === 1) {
+          loadCustomers();
+        } else {
+          setCustomerPage(1);
+        }
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // Filter locally (for search on already-loaded data)
+  useEffect(() => {
+    setFilteredServices(services);
+    setFilteredCustomers(customers);
+  }, [services, customers]);
 
   const loadServices = async () => {
     try {
-      const data = await serviceService.getAll();
-      setServices(data);
+      const filters = {
+        page: servicePage,
+        limit: ITEMS_PER_PAGE
+      };
+
+      if (searchTerm) {
+        filters.search = searchTerm;
+      }
+
+      // Apply status filter based on tab
+      if (statusFilter !== 'ALL') {
+        filters.status = statusFilter;
+      } else if (activeTab === 'ACTIVE') {
+        filters.statusNotIn = 'DELIVERED,CANCELLED';
+      } else if (activeTab === 'COMPLETED') {
+        filters.statusIn = 'DELIVERED,CANCELLED';
+      }
+
+      const response = await serviceService.getAll(filters);
+      setServices(response.data || []);
+      if (response.pagination) {
+        setServicePagination({
+          total: response.pagination.total,
+          totalPages: response.pagination.totalPages
+        });
+      }
     } catch (error) {
       console.error('Error loading services:', error);
 
-      // Manejar errores específicos
       if (error.message === 'SESSION_EXPIRED' || error.message === 'NO_AUTH') {
         showToast('Tu sesión ha expirado. Por favor inicia sesión nuevamente.', 'error');
         setTimeout(() => {
@@ -86,12 +154,42 @@ function AdminPage() {
     }
   };
 
+  const loadServiceStats = async () => {
+    try {
+      const stats = await serviceService.getStats();
+      setServiceStats({
+        active: stats.active || 0,
+        completed: stats.completed || 0,
+        inDiagnosis: stats.IN_DIAGNOSIS || 0,
+        inRepair: stats.IN_REPAIR || 0,
+        delivered: stats.DELIVERED || 0,
+        cancelled: stats.CANCELLED || 0
+      });
+    } catch (error) {
+      console.error('Error loading service stats:', error);
+    }
+  };
+
   const loadCustomers = async () => {
     try {
-      const data = await userService.getAll();
-      // Filtrar solo clientes (role === 'CUSTOMER')
-      const customersOnly = data.filter(user => user.role === 'CUSTOMER');
-      setCustomers(customersOnly);
+      const filters = {
+        role: 'CUSTOMER',
+        page: customerPage,
+        limit: ITEMS_PER_PAGE
+      };
+
+      if (searchTerm && currentView === 'CUSTOMERS') {
+        filters.search = searchTerm;
+      }
+
+      const response = await userService.getAll(filters);
+      setCustomers(response.data || []);
+      if (response.pagination) {
+        setCustomerPagination({
+          total: response.pagination.total,
+          totalPages: response.pagination.totalPages
+        });
+      }
     } catch (error) {
       console.error('Error loading customers:', error);
       if (error.message === 'SESSION_EXPIRED' || error.message === 'NO_AUTH') {
@@ -105,60 +203,32 @@ function AdminPage() {
     }
   };
 
-  const filterServices = () => {
-    let filtered = [...services];
+  // Pagination helper to generate page numbers
+  const getPageNumbers = (currentPage, totalPages) => {
+    const pages = [];
+    const maxVisible = 5;
 
-    // Filtrar por pestaña activa (Activos o Completados)
-    if (activeTab === 'ACTIVE') {
-      filtered = filtered.filter(service =>
-        service.status !== 'DELIVERED' && service.status !== 'CANCELLED'
-      );
-    } else if (activeTab === 'COMPLETED') {
-      filtered = filtered.filter(service =>
-        service.status === 'DELIVERED' || service.status === 'CANCELLED'
-      );
+    if (totalPages <= maxVisible) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      let start = Math.max(2, currentPage - 1);
+      let end = Math.min(totalPages - 1, currentPage + 1);
+
+      if (currentPage <= 3) {
+        end = Math.min(4, totalPages - 1);
+      }
+      if (currentPage >= totalPages - 2) {
+        start = Math.max(totalPages - 3, 2);
+      }
+
+      if (start > 2) pages.push('...');
+      for (let i = start; i <= end; i++) pages.push(i);
+      if (end < totalPages - 1) pages.push('...');
+      pages.push(totalPages);
     }
 
-    // Filtrar por búsqueda
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(service => {
-        const clientName = service.customer
-          ? `${service.customer.firstName} ${service.customer.lastName}`.toLowerCase()
-          : '';
-        return (
-          service.code.toLowerCase().includes(term) ||
-          service.motorcycle.toLowerCase().includes(term) ||
-          clientName.includes(term)
-        );
-      });
-    }
-
-    // Filtrar por estado
-    if (statusFilter !== 'ALL') {
-      filtered = filtered.filter(service => service.status === statusFilter);
-    }
-
-    setFilteredServices(filtered);
-  };
-
-  const filterCustomers = () => {
-    let filtered = [...customers];
-
-    // Filtrar por búsqueda
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(customer => {
-        const fullName = `${customer.firstName} ${customer.lastName}`.toLowerCase();
-        return (
-          fullName.includes(term) ||
-          (customer.email && customer.email.toLowerCase().includes(term)) ||
-          (customer.phone && customer.phone.includes(term))
-        );
-      });
-    }
-
-    setFilteredCustomers(filtered);
+    return pages;
   };
 
   const handleLoginSuccess = () => {
@@ -186,7 +256,8 @@ function AdminPage() {
 
       // Buscar si el cliente ya existe (por email o teléfono)
       try {
-        const allUsers = await userService.getAll();
+        const usersResponse = await userService.getAll({ role: 'CUSTOMER', limit: 1000 });
+        const allUsers = usersResponse.data || [];
         const existingCustomer = allUsers.find(user => {
           // Buscar por email si se proporcionó uno válido
           if (formData.clientEmail && user.email === formData.clientEmail) {
@@ -249,6 +320,7 @@ function AdminPage() {
       setIsModalOpen(false);
       loadServices();
       loadCustomers();
+      loadServiceStats();
     } catch (error) {
       console.error('Error creating service:', error);
       showToast('Error al crear el servicio: ' + error.message, 'error');
@@ -293,17 +365,6 @@ function AdminPage() {
   };
 
   const handleDeleteCustomer = async (customer) => {
-    // Verificar si el cliente tiene servicios
-    const customerServices = services.filter(s => s.customer?.id === customer.id);
-
-    if (customerServices.length > 0) {
-      showToast(
-        `No se puede eliminar el cliente porque tiene ${customerServices.length} servicio(s) asociado(s). Elimina los servicios primero.`,
-        'error'
-      );
-      return;
-    }
-
     const confirmed = window.confirm(
       `¿Estás seguro de que quieres eliminar a ${customer.firstName} ${customer.lastName}?\n\nEsta acción no se puede deshacer.`
     );
@@ -331,8 +392,9 @@ function AdminPage() {
   const handleStatusChange = async (serviceId, newStatus, notes) => {
     try {
       await serviceService.updateStatus(serviceId, newStatus, notes);
-      showToast('Estado actualizado. SMS enviado al cliente', 'success');
+      showToast('Estado actualizado. Email enviado al cliente', 'success');
       loadServices();
+      loadServiceStats();
     } catch (error) {
       console.error('Error updating status:', error);
 
@@ -358,6 +420,7 @@ function AdminPage() {
       await serviceService.delete(serviceId);
       showToast('Servicio eliminado correctamente', 'success');
       loadServices();
+      loadServiceStats();
     } catch (error) {
       console.error('Error deleting service:', error);
 
@@ -406,6 +469,7 @@ function AdminPage() {
 
       showToast('Servicio actualizado correctamente', 'success');
       loadServices();
+      loadServiceStats();
     } catch (error) {
       console.error('Error updating service:', error);
 
@@ -471,6 +535,7 @@ function AdminPage() {
           onClick={() => {
             setCurrentView('SERVICES');
             setSearchTerm('');
+            setServicePage(1);
           }}
         >
           <Wrench size={20} />
@@ -482,6 +547,7 @@ function AdminPage() {
             setCurrentView('CUSTOMERS');
             setSearchTerm('');
             setStatusFilter('ALL');
+            setCustomerPage(1);
           }}
         >
           <Users size={20} />
@@ -519,7 +585,7 @@ function AdminPage() {
           {currentView === 'SERVICES' && (
             <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+              onChange={(e) => { setStatusFilter(e.target.value); setServicePage(1); }}
               className="status-filter"
             >
               <option value="ALL">Todos los estados</option>
@@ -541,12 +607,13 @@ function AdminPage() {
           onClick={() => {
             setActiveTab('ACTIVE');
             setStatusFilter('ALL');
+            setServicePage(1);
           }}
         >
           <Wrench size={18} />
           <span>Servicios Activos</span>
           <span className="tab-count">
-            {services.filter(s => s.status !== 'DELIVERED' && s.status !== 'CANCELLED').length}
+            {serviceStats.active}
           </span>
         </button>
         <button
@@ -554,12 +621,13 @@ function AdminPage() {
           onClick={() => {
             setActiveTab('COMPLETED');
             setStatusFilter('ALL');
+            setServicePage(1);
           }}
         >
           <CheckCircle2 size={18} />
           <span>Servicios Completados</span>
           <span className="tab-count">
-            {services.filter(s => s.status === 'DELIVERED' || s.status === 'CANCELLED').length}
+            {serviceStats.completed}
           </span>
         </button>
       </div>
@@ -571,9 +639,7 @@ function AdminPage() {
         <div className="stat-item">
           <span className="stat-label">{activeTab === 'ACTIVE' ? 'Servicios Activos' : 'Servicios Completados'}</span>
           <span className="stat-value">
-            {activeTab === 'ACTIVE'
-              ? services.filter(s => s.status !== 'DELIVERED' && s.status !== 'CANCELLED').length
-              : services.filter(s => s.status === 'DELIVERED' || s.status === 'CANCELLED').length}
+            {servicePagination.total}
           </span>
         </div>
         <div className="stat-item">
@@ -585,13 +651,13 @@ function AdminPage() {
             <div className="stat-item">
               <span className="stat-label">En Diagnóstico</span>
               <span className="stat-value">
-                {services.filter(s => s.status === 'IN_DIAGNOSIS').length}
+                {serviceStats.inDiagnosis}
               </span>
             </div>
             <div className="stat-item">
               <span className="stat-label">En Reparación</span>
               <span className="stat-value">
-                {services.filter(s => s.status === 'IN_REPAIR').length}
+                {serviceStats.inRepair}
               </span>
             </div>
           </>
@@ -601,13 +667,13 @@ function AdminPage() {
             <div className="stat-item">
               <span className="stat-label">Entregados</span>
               <span className="stat-value">
-                {services.filter(s => s.status === 'DELIVERED').length}
+                {serviceStats.delivered}
               </span>
             </div>
             <div className="stat-item">
               <span className="stat-label">Cancelados</span>
               <span className="stat-value">
-                {services.filter(s => s.status === 'CANCELLED').length}
+                {serviceStats.cancelled}
               </span>
             </div>
           </>
@@ -635,17 +701,78 @@ function AdminPage() {
             )}
           </div>
         ) : (
-          <div className="services-grid">
-            {filteredServices.map(service => (
-              <ServiceCard
-                key={service.id}
-                service={service}
-                onStatusChange={handleStatusChange}
-                onDelete={handleDeleteService}
-                onUpdate={handleUpdateService}
-              />
-            ))}
-          </div>
+          <>
+            <div className="services-grid">
+              {filteredServices.map(service => (
+                <ServiceCard
+                  key={service.id}
+                  service={service}
+                  onStatusChange={handleStatusChange}
+                  onDelete={handleDeleteService}
+                  onUpdate={handleUpdateService}
+                />
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {servicePagination.totalPages > 1 && (
+              <div className="pagination">
+                <button
+                  className="pagination-btn"
+                  onClick={() => setServicePage(1)}
+                  disabled={servicePage === 1}
+                  title="Primera página"
+                >
+                  <ChevronsLeft size={18} />
+                </button>
+                <button
+                  className="pagination-btn"
+                  onClick={() => setServicePage(p => Math.max(1, p - 1))}
+                  disabled={servicePage === 1}
+                  title="Página anterior"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+
+                <div className="pagination-pages">
+                  {getPageNumbers(servicePage, servicePagination.totalPages).map((page, idx) => (
+                    page === '...' ? (
+                      <span key={`dots-${idx}`} className="pagination-dots">...</span>
+                    ) : (
+                      <button
+                        key={page}
+                        className={`pagination-page ${servicePage === page ? 'active' : ''}`}
+                        onClick={() => setServicePage(page)}
+                      >
+                        {page}
+                      </button>
+                    )
+                  ))}
+                </div>
+
+                <button
+                  className="pagination-btn"
+                  onClick={() => setServicePage(p => Math.min(servicePagination.totalPages, p + 1))}
+                  disabled={servicePage === servicePagination.totalPages}
+                  title="Página siguiente"
+                >
+                  <ChevronRight size={18} />
+                </button>
+                <button
+                  className="pagination-btn"
+                  onClick={() => setServicePage(servicePagination.totalPages)}
+                  disabled={servicePage === servicePagination.totalPages}
+                  title="Última página"
+                >
+                  <ChevronsRight size={18} />
+                </button>
+
+                <span className="pagination-info">
+                  Página {servicePage} de {servicePagination.totalPages}
+                </span>
+              </div>
+            )}
+          </>
         )}
       </div>
       )}
@@ -656,7 +783,7 @@ function AdminPage() {
         <div className="stats-bar" style={{ marginBottom: '1.5rem' }}>
           <div className="stat-item">
             <span className="stat-label">Total Clientes</span>
-            <span className="stat-value">{customers.length}</span>
+            <span className="stat-value">{customerPagination.total}</span>
           </div>
           <div className="stat-item">
             <span className="stat-label">Mostrando</span>
@@ -675,55 +802,108 @@ function AdminPage() {
             </p>
           </div>
         ) : (
-          <div className="customers-grid">
-            {filteredCustomers.map(customer => (
-              <div key={customer.id} className="customer-card">
-                <div className="customer-header">
-                  <div className="customer-avatar">
-                    <User size={24} />
+          <>
+            <div className="customers-grid">
+              {filteredCustomers.map(customer => (
+                <div key={customer.id} className="customer-card">
+                  <div className="customer-header">
+                    <div className="customer-avatar">
+                      <User size={24} />
+                    </div>
+                    <div className="customer-info">
+                      <h3>{customer.firstName} {customer.lastName}</h3>
+                      <p className="customer-email">{customer.email}</p>
+                      {customer.phone && <p className="customer-phone">{customer.phone}</p>}
+                    </div>
                   </div>
-                  <div className="customer-info">
-                    <h3>{customer.firstName} {customer.lastName}</h3>
-                    <p className="customer-email">{customer.email}</p>
-                    {customer.phone && <p className="customer-phone">{customer.phone}</p>}
-                  </div>
-                </div>
-                <div className="customer-stats">
-                  <div className="customer-stat">
-                    <span className="stat-label">Servicios</span>
-                    <span className="stat-value">
-                      {services.filter(s => s.customer?.id === customer.id).length}
-                    </span>
-                  </div>
-                </div>
-                <div className="customer-actions">
-                  <button
-                    className="btn-create-service-for-customer"
-                    onClick={() => handleSelectCustomer(customer)}
-                  >
-                    <Plus size={18} />
-                    Crear Servicio
-                  </button>
-                  <div className="customer-secondary-actions">
+                  <div className="customer-actions">
                     <button
-                      className="btn-icon-action btn-edit"
-                      onClick={() => handleEditCustomer(customer)}
-                      title="Editar cliente"
+                      className="btn-create-service-for-customer"
+                      onClick={() => handleSelectCustomer(customer)}
                     >
-                      <Edit size={18} />
+                      <Plus size={18} />
+                      Crear Servicio
                     </button>
-                    <button
-                      className="btn-icon-action btn-delete"
-                      onClick={() => handleDeleteCustomer(customer)}
-                      title="Eliminar cliente"
-                    >
-                      <Trash2 size={18} />
-                    </button>
+                    <div className="customer-secondary-actions">
+                      <button
+                        className="btn-icon-action btn-edit"
+                        onClick={() => handleEditCustomer(customer)}
+                        title="Editar cliente"
+                      >
+                        <Edit size={18} />
+                      </button>
+                      <button
+                        className="btn-icon-action btn-delete"
+                        onClick={() => handleDeleteCustomer(customer)}
+                        title="Eliminar cliente"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
                   </div>
                 </div>
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {customerPagination.totalPages > 1 && (
+              <div className="pagination">
+                <button
+                  className="pagination-btn"
+                  onClick={() => setCustomerPage(1)}
+                  disabled={customerPage === 1}
+                  title="Primera página"
+                >
+                  <ChevronsLeft size={18} />
+                </button>
+                <button
+                  className="pagination-btn"
+                  onClick={() => setCustomerPage(p => Math.max(1, p - 1))}
+                  disabled={customerPage === 1}
+                  title="Página anterior"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+
+                <div className="pagination-pages">
+                  {getPageNumbers(customerPage, customerPagination.totalPages).map((page, idx) => (
+                    page === '...' ? (
+                      <span key={`dots-${idx}`} className="pagination-dots">...</span>
+                    ) : (
+                      <button
+                        key={page}
+                        className={`pagination-page ${customerPage === page ? 'active' : ''}`}
+                        onClick={() => setCustomerPage(page)}
+                      >
+                        {page}
+                      </button>
+                    )
+                  ))}
+                </div>
+
+                <button
+                  className="pagination-btn"
+                  onClick={() => setCustomerPage(p => Math.min(customerPagination.totalPages, p + 1))}
+                  disabled={customerPage === customerPagination.totalPages}
+                  title="Página siguiente"
+                >
+                  <ChevronRight size={18} />
+                </button>
+                <button
+                  className="pagination-btn"
+                  onClick={() => setCustomerPage(customerPagination.totalPages)}
+                  disabled={customerPage === customerPagination.totalPages}
+                  title="Última página"
+                >
+                  <ChevronsRight size={18} />
+                </button>
+
+                <span className="pagination-info">
+                  Página {customerPage} de {customerPagination.totalPages}
+                </span>
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
       </div>
       )}

@@ -43,16 +43,46 @@ export class ServiceController {
         search: req.query.search,
         dateFrom: req.query.dateFrom,
         dateTo: req.query.dateTo,
-        offset: parseInt(req.query.offset) || 0,
+        page: parseInt(req.query.page) || 1,
         limit: parseInt(req.query.limit) || 20
       };
 
-      const services = await listServicesUseCase.execute(filters);
+      // Support comma-separated status lists
+      if (req.query.statusIn) {
+        filters.statusIn = req.query.statusIn.split(',');
+        delete filters.status;
+      }
+      if (req.query.statusNotIn) {
+        filters.statusNotIn = req.query.statusNotIn.split(',');
+        delete filters.status;
+      }
+
+      const result = await listServicesUseCase.execute(filters);
 
       res.status(200).json({
         success: true,
-        data: services,
+        data: result.data,
+        pagination: {
+          total: result.total,
+          page: result.page,
+          totalPages: result.totalPages,
+          limit: result.limit
+        },
         message: 'Services retrieved successfully'
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getStats(req, res, next) {
+    try {
+      const stats = await serviceRepository.getStatusCounts();
+
+      res.status(200).json({
+        success: true,
+        data: stats,
+        message: 'Service stats retrieved successfully'
       });
     } catch (error) {
       next(error);

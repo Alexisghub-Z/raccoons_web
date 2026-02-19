@@ -23,6 +23,13 @@ router.get(
 );
 
 router.get(
+  '/stats',
+  authenticate,
+  authorize('ADMIN', 'MECHANIC'),
+  (req, res, next) => serviceController.getStats(req, res, next)
+);
+
+router.get(
   '/code/:code',
   (req, res, next) => serviceController.getByCode(req, res, next)
 );

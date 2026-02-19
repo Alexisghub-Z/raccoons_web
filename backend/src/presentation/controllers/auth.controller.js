@@ -83,11 +83,24 @@ export class AuthController {
 
   async getAllUsers(req, res, next) {
     try {
-      const users = await userRepository.findAll();
+      const filters = {
+        role: req.query.role,
+        search: req.query.search,
+        page: parseInt(req.query.page) || 1,
+        limit: parseInt(req.query.limit) || 20
+      };
+
+      const result = await userRepository.findAll(filters);
 
       res.status(200).json({
         success: true,
-        data: users.map(u => u.toJSON()),
+        data: result.data.map(u => u.toJSON()),
+        pagination: {
+          total: result.total,
+          page: result.page,
+          totalPages: result.totalPages,
+          limit: result.limit
+        },
         message: 'Users retrieved successfully'
       });
     } catch (error) {

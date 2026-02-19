@@ -7,11 +7,11 @@ export class ListServicesUseCase {
 
   async execute(filters = {}) {
     try {
-      const services = await this.serviceRepository.findAll(filters);
+      const result = await this.serviceRepository.findAll(filters);
 
-      logger.info(`Services listed: ${services.length} results`);
+      logger.info(`Services listed: ${result.data.length} of ${result.total} results (page ${result.page}/${result.totalPages})`);
 
-      return services;
+      return result;
     } catch (error) {
       logger.error('Error in ListServicesUseCase:', error);
       throw error;

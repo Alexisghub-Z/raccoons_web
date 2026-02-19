@@ -142,18 +142,32 @@ export class UserRepository extends IUserRepository {
         where.OR = [
           { firstName: { contains: filters.search, mode: 'insensitive' } },
           { lastName: { contains: filters.search, mode: 'insensitive' } },
-          { email: { contains: filters.search, mode: 'insensitive' } }
+          { email: { contains: filters.search, mode: 'insensitive' } },
+          { phone: { contains: filters.search } }
         ];
       }
 
-      const users = await prisma.user.findMany({
-        where,
-        skip: filters.offset || 0,
-        take: filters.limit || 100,
-        orderBy: filters.orderBy || { createdAt: 'desc' }
-      });
+      const page = parseInt(filters.page) || 1;
+      const limit = parseInt(filters.limit) || 20;
+      const skip = (page - 1) * limit;
 
-      return users.map(user => new User(user));
+      const [users, total] = await Promise.all([
+        prisma.user.findMany({
+          where,
+          skip,
+          take: limit,
+          orderBy: filters.orderBy || { createdAt: 'desc' }
+        }),
+        prisma.user.count({ where })
+      ]);
+
+      return {
+        data: users.map(user => new User(user)),
+        total,
+        page,
+        totalPages: Math.ceil(total / limit),
+        limit
+      };
     } catch (error) {
       logger.error('Error finding all users:', error);
       throw new DatabaseError('Error finding users', error.message);
