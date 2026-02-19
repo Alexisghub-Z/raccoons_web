@@ -13,6 +13,7 @@ import {
   Users,
   Edit,
   Trash2,
+  Phone,
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
@@ -805,41 +806,42 @@ function AdminPage() {
           <>
             <div className="customers-grid">
               {filteredCustomers.map(customer => (
-                <div key={customer.id} className="customer-card">
-                  <div className="customer-header">
-                    <div className="customer-avatar">
-                      <User size={24} />
-                    </div>
-                    <div className="customer-info">
-                      <h3>{customer.firstName} {customer.lastName}</h3>
-                      <p className="customer-email">{customer.email}</p>
-                      {customer.phone && <p className="customer-phone">{customer.phone}</p>}
-                    </div>
+                <div key={customer.id} className="customer-row">
+                  <div className="customer-row-avatar">
+                    <User size={16} />
                   </div>
-                  <div className="customer-actions">
+                  <div className="customer-row-name">
+                    <span className="row-customer-name">{customer.firstName} {customer.lastName}</span>
+                  </div>
+                  <div className="customer-row-email">
+                    <span>{customer.email || '—'}</span>
+                  </div>
+                  <div className="customer-row-phone">
+                    <Phone size={14} className="row-icon" />
+                    <span>{customer.phone || '—'}</span>
+                  </div>
+                  <div className="customer-row-actions">
                     <button
-                      className="btn-create-service-for-customer"
+                      className="row-action-btn row-action-service"
                       onClick={() => handleSelectCustomer(customer)}
+                      title="Crear Servicio"
                     >
-                      <Plus size={18} />
-                      Crear Servicio
+                      <Plus size={15} />
                     </button>
-                    <div className="customer-secondary-actions">
-                      <button
-                        className="btn-icon-action btn-edit"
-                        onClick={() => handleEditCustomer(customer)}
-                        title="Editar cliente"
-                      >
-                        <Edit size={18} />
-                      </button>
-                      <button
-                        className="btn-icon-action btn-delete"
-                        onClick={() => handleDeleteCustomer(customer)}
-                        title="Eliminar cliente"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
+                    <button
+                      className="row-action-btn row-action-edit"
+                      onClick={() => handleEditCustomer(customer)}
+                      title="Editar"
+                    >
+                      <Edit size={15} />
+                    </button>
+                    <button
+                      className="row-action-btn row-action-delete"
+                      onClick={() => handleDeleteCustomer(customer)}
+                      title="Eliminar"
+                    >
+                      <Trash2 size={15} />
+                    </button>
                   </div>
                 </div>
               ))}
