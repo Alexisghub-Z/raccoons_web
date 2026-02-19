@@ -68,7 +68,7 @@ function BeforeAfterGallery() {
             onTouchEnd={() => setIsDragging(false)}
           >
             <div className="image-container after-image">
-              <img src={afterImage} alt="Después - Mantenimiento" draggable="false" />
+              <img src={afterImage} alt="Después - Mantenimiento" draggable="false" loading="lazy" />
               <div className="image-label label-after" style={{ opacity: sliderPosition < 85 ? 1 : 0 }}>
                 Después
               </div>
@@ -78,7 +78,7 @@ function BeforeAfterGallery() {
               className="image-container before-image"
               style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
             >
-              <img src={beforeImage} alt="Antes - Mantenimiento" draggable="false" />
+              <img src={beforeImage} alt="Antes - Mantenimiento" draggable="false" loading="lazy" />
               <div className="image-label label-before" style={{ opacity: sliderPosition > 15 ? 1 : 0 }}>
                 Antes
               </div>

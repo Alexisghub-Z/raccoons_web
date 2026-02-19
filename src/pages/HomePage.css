@@ -249,9 +249,15 @@
   font-weight: 400;
   letter-spacing: 4px;
   color: #ffffff;
-  line-height: 1;
+  line-height: 1.1;
   animation: heroTitleIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s backwards;
   text-shadow: 0 4px 40px rgba(0,0,0,0.4);
+}
+
+.home-page .hero-trademark {
+  font-size: 0.3em;
+  vertical-align: 1.8em;
+  margin-left: 1px;
 }
 
 /* Subtítulo */
@@ -2183,6 +2189,29 @@
   .home-page .hero-cta-secondary {
     padding: 0.85rem 1rem;
     font-size: 0.85rem;
+  }
+}
+
+/* ========================================
+   Reducir animaciones en móvil
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-page .hero-badge,
+  .home-page .hero-title-main,
+  .home-page .hero-title-sub,
+  .home-page .hero-description,
+  .home-page .hero-buttons,
+  .home-page .hero-scroll {
+    animation: none;
   }
 }
 

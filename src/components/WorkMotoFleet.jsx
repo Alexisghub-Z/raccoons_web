@@ -47,10 +47,10 @@ function WorkMotoFleet() {
         <div className="work-fleet__orb work-fleet__orb--1"></div>
         <div className="work-fleet__orb work-fleet__orb--2"></div>
         {/* Motos decorativas de fondo */}
-        <img src="/trabajo/trabajo-1.png" className="work-fleet__moto work-fleet__moto--1" aria-hidden="true" alt="" />
-        <img src="/trabajo/trabajo-2.png" className="work-fleet__moto work-fleet__moto--2" aria-hidden="true" alt="" />
-        <img src="/trabajo/trabajo-3.png" className="work-fleet__moto work-fleet__moto--3" aria-hidden="true" alt="" />
-        <img src="/trabajo/trabajo-4.png" className="work-fleet__moto work-fleet__moto--4" aria-hidden="true" alt="" />
+        <img src="/trabajo/trabajo-1.png" className="work-fleet__moto work-fleet__moto--1" aria-hidden="true" alt="" loading="lazy" />
+        <img src="/trabajo/trabajo-2.png" className="work-fleet__moto work-fleet__moto--2" aria-hidden="true" alt="" loading="lazy" />
+        <img src="/trabajo/trabajo-3.png" className="work-fleet__moto work-fleet__moto--3" aria-hidden="true" alt="" loading="lazy" />
+        <img src="/trabajo/trabajo-4.png" className="work-fleet__moto work-fleet__moto--4" aria-hidden="true" alt="" loading="lazy" />
       </div>
 
       <div className="container work-fleet__container">

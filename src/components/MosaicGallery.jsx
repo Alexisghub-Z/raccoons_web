@@ -157,7 +157,7 @@ function MosaicGallery() {
       <div className="gallery-grid__container">
         <div className="gallery-grid__featured">
           <div className="gallery-grid__featured-inner">
-            <img className="gallery-grid__featured-image" src={galleryImages[0]} alt="Taller Raccoons" />
+            <img className="gallery-grid__featured-image" src={galleryImages[0]} alt="Taller Raccoons" loading="lazy" />
           </div>
         </div>
         <div className="gallery-grid__images">

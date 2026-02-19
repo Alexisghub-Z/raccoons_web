@@ -43,7 +43,10 @@ function HomePage() {
   }, [navigate]);
 
   // Optimización: Parallax con throttling para mejor performance
+  // Desactivado en móvil (< 1024px) para evitar lag
   useEffect(() => {
+    if (window.innerWidth < 1024) return;
+
     let ticking = false;
 
     const handleScroll = () => {
@@ -110,7 +113,7 @@ function HomePage() {
         <div className="hero-content" ref={heroRef}>
           <div className="hero-badge">Taller Especializado · Oaxaca, México</div>
           <h1 className="hero-title">
-            <span className="hero-title-main">RACCOONS<sup style={{fontSize: '0.27em', position: 'relative', top: '-0.75em'}}>®</sup></span>
+            <span className="hero-title-main">RACCOONS<sup className="hero-trademark">®</sup></span>
             <span className="hero-title-sub">Especialistas en Motocicletas</span>
           </h1>
           <p className="hero-description">
@@ -147,7 +150,7 @@ function HomePage() {
           <div className="services-grid">
             <div className="service-card">
               <div className="service-card-img">
-                <img src="/servicios/mantenimiento.jpg" alt="Mantenimiento de motocicletas" />
+                <img src="/servicios/mantenimiento.jpg" alt="Mantenimiento de motocicletas" loading="lazy" />
               </div>
               <div className="service-card-content">
                 <h3>Mantenimiento</h3>
@@ -161,7 +164,7 @@ function HomePage() {
             </div>
             <div className="service-card">
               <div className="service-card-img">
-                <img src="/servicios/reparacion.jpg" alt="Reparación de motocicletas" />
+                <img src="/servicios/reparacion.jpg" alt="Reparación de motocicletas" loading="lazy" />
               </div>
               <div className="service-card-content">
                 <h3>Reparación</h3>
@@ -175,7 +178,7 @@ function HomePage() {
             </div>
             <div className="service-card">
               <div className="service-card-img">
-                <img src="/servicios/equipamiento.jpeg" alt="Equipamiento profesional" />
+                <img src="/servicios/equipamiento.jpeg" alt="Equipamiento profesional" loading="lazy" />
               </div>
               <div className="service-card-content">
                 <h3>Equipamiento Profesional</h3>
@@ -203,59 +206,59 @@ function HomePage() {
           <div className="slide-track">
             {/* Primera serie de logos */}
             <div className="slide">
-              <img src="/brands/honda.png" height="120" alt="Honda" />
+              <img src="/brands/honda.png" height="120" alt="Honda" loading="lazy" />
             </div>
             <div className="slide">
-              <img src="/brands/yamaha.png" height="120" alt="Yamaha" />
+              <img src="/brands/yamaha.png" height="120" alt="Yamaha" loading="lazy" />
             </div>
             <div className="slide">
-              <img src="/brands/suzuki.png" height="120" alt="Suzuki" />
+              <img src="/brands/suzuki.png" height="120" alt="Suzuki" loading="lazy" />
             </div>
             <div className="slide">
-              <img src="/brands/kawasaki.png" height="120" alt="Kawasaki" />
+              <img src="/brands/kawasaki.png" height="120" alt="Kawasaki" loading="lazy" />
             </div>
             <div className="slide">
-              <img src="/brands/ducati.png" height="120" alt="Ducati" />
+              <img src="/brands/ducati.png" height="120" alt="Ducati" loading="lazy" />
             </div>
             <div className="slide">
-              <img src="/brands/harley.png" height="120" alt="Harley Davidson" />
+              <img src="/brands/harley.png" height="120" alt="Harley Davidson" loading="lazy" />
             </div>
             <div className="slide">
-              <img src="/brands/bmw.png" height="120" alt="BMW" />
+              <img src="/brands/bmw.png" height="120" alt="BMW" loading="lazy" />
             </div>
             <div className="slide">
-              <img src="/brands/cfmoto.png" height="120" alt="CF Moto" />
+              <img src="/brands/cfmoto.png" height="120" alt="CF Moto" loading="lazy" />
             </div>
             <div className="slide">
-              <img src="/brands/bajaj.png" height="120" alt="Bajaj" />
+              <img src="/brands/bajaj.png" height="120" alt="Bajaj" loading="lazy" />
             </div>
             {/* Segunda serie (duplicada para efecto infinito) */}
             <div className="slide">
-              <img src="/brands/honda.png" height="120" alt="Honda" />
+              <img src="/brands/honda.png" height="120" alt="Honda" loading="lazy" />
             </div>
             <div className="slide">
-              <img src="/brands/yamaha.png" height="120" alt="Yamaha" />
+              <img src="/brands/yamaha.png" height="120" alt="Yamaha" loading="lazy" />
             </div>
             <div className="slide">
-              <img src="/brands/suzuki.png" height="120" alt="Suzuki" />
+              <img src="/brands/suzuki.png" height="120" alt="Suzuki" loading="lazy" />
             </div>
             <div className="slide">
-              <img src="/brands/kawasaki.png" height="120" alt="Kawasaki" />
+              <img src="/brands/kawasaki.png" height="120" alt="Kawasaki" loading="lazy" />
             </div>
             <div className="slide">
-              <img src="/brands/ducati.png" height="120" alt="Ducati" />
+              <img src="/brands/ducati.png" height="120" alt="Ducati" loading="lazy" />
             </div>
             <div className="slide">
-              <img src="/brands/harley.png" height="120" alt="Harley Davidson" />
+              <img src="/brands/harley.png" height="120" alt="Harley Davidson" loading="lazy" />
             </div>
             <div className="slide">
-              <img src="/brands/bmw.png" height="120" alt="BMW" />
+              <img src="/brands/bmw.png" height="120" alt="BMW" loading="lazy" />
             </div>
             <div className="slide">
-              <img src="/brands/cfmoto.png" height="120" alt="CF Moto" />
+              <img src="/brands/cfmoto.png" height="120" alt="CF Moto" loading="lazy" />
             </div>
             <div className="slide">
-              <img src="/brands/bajaj.png" height="120" alt="Bajaj" />
+              <img src="/brands/bajaj.png" height="120" alt="Bajaj" loading="lazy" />
             </div>
           </div>
         </div>
@@ -294,19 +297,19 @@ function HomePage() {
 
                 <ul className="carousel__items">
                   <li className="carousel__item">
-                    <img src="/workshop/taller-4.jpg" alt="Taller Raccoons 4" />
+                    <img src="/workshop/taller-4.jpg" alt="Taller Raccoons 4" loading="lazy" />
                   </li>
                   <li className="carousel__item">
-                    <img src="/workshop/taller-1.jpg" alt="Taller Raccoons 1" />
+                    <img src="/workshop/taller-1.jpg" alt="Taller Raccoons 1" loading="lazy" />
                   </li>
                   <li className="carousel__item">
-                    <img src="/workshop/taller-2.jpg" alt="Taller Raccoons 2" />
+                    <img src="/workshop/taller-2.jpg" alt="Taller Raccoons 2" loading="lazy" />
                   </li>
                   <li className="carousel__item">
-                    <img src="/workshop/taller-3.jpg" alt="Taller Raccoons 3" />
+                    <img src="/workshop/taller-3.jpg" alt="Taller Raccoons 3" loading="lazy" />
                   </li>
                   <li className="carousel__item">
-                    <img src="/workshop/taller-5.jpg" alt="Taller Raccoons 5" />
+                    <img src="/workshop/taller-5.jpg" alt="Taller Raccoons 5" loading="lazy" />
                   </li>
                 </ul>
 
