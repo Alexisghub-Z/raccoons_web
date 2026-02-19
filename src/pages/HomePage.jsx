@@ -150,7 +150,9 @@ function HomePage() {
           <div className="services-grid">
             <div className="service-card">
               <div className="service-card-img">
-                <img src="/servicios/mantenimiento.jpg" alt="Mantenimiento de motocicletas" loading="lazy" />
+                <div className="service-card-img-inner">
+                  <img src="/servicios/mantenimiento.jpg" alt="Mantenimiento de motocicletas" loading="lazy" />
+                </div>
               </div>
               <div className="service-card-content">
                 <h3>Mantenimiento</h3>
@@ -164,7 +166,9 @@ function HomePage() {
             </div>
             <div className="service-card">
               <div className="service-card-img">
-                <img src="/servicios/reparacion.jpg" alt="Reparación de motocicletas" loading="lazy" />
+                <div className="service-card-img-inner">
+                  <img src="/servicios/reparacion.jpg" alt="Reparación de motocicletas" loading="lazy" />
+                </div>
               </div>
               <div className="service-card-content">
                 <h3>Reparación</h3>
@@ -178,7 +182,9 @@ function HomePage() {
             </div>
             <div className="service-card">
               <div className="service-card-img">
-                <img src="/servicios/equipamiento.jpeg" alt="Equipamiento profesional" loading="lazy" />
+                <div className="service-card-img-inner">
+                  <img src="/servicios/equipamiento.jpeg" alt="Equipamiento profesional" loading="lazy" />
+                </div>
               </div>
               <div className="service-card-content">
                 <h3>Equipamiento Profesional</h3>

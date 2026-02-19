@@ -45,15 +45,15 @@
 /* Stagger: cards de servicios */
 .scroll-animate .service-card {
   opacity: 0;
-  transform: translateY(60px);
-  transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(40px);
+  transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .scroll-animate.animate-in .service-card { opacity: 1; transform: translateY(0); }
-.scroll-animate.animate-in .service-card:nth-child(1) { transition-delay: 0.3s; }
-.scroll-animate.animate-in .service-card:nth-child(2) { transition-delay: 0.5s; }
-.scroll-animate.animate-in .service-card:nth-child(3) { transition-delay: 0.7s; }
+.scroll-animate.animate-in .service-card:nth-child(1) { transition-delay: 0.1s; }
+.scroll-animate.animate-in .service-card:nth-child(2) { transition-delay: 0.2s; }
+.scroll-animate.animate-in .service-card:nth-child(3) { transition-delay: 0.3s; }
 
 /* Stagger: items de contacto */
 .scroll-animate .contact-item {
@@ -539,28 +539,31 @@
   position: relative;
   overflow: hidden;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  will-change: transform;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.4s ease,
+              border-color 0.4s ease;
 }
 
 .home-page .service-card-img {
-  width: 100%;
-  height: 200px;
+  display: grid;
+  grid-template-rows: 200px;
+  transition: grid-template-rows 0.45s cubic-bezier(0.33, 1, 0.68, 1);
   overflow: hidden;
-  transition: height 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .home-page .service-card:hover .service-card-img {
-  height: 380px;
+  grid-template-rows: 380px;
+}
+
+.home-page .service-card-img-inner {
+  overflow: hidden;
 }
 
 .home-page .service-card-img img {
   width: 100%;
-  height: 100%;
+  height: 380px;
   object-fit: cover;
-  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.home-page .service-card:hover .service-card-img img {
-  transform: scale(1.02);
 }
 
 .home-page .service-card-content {
