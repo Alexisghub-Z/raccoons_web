@@ -61,7 +61,7 @@ function Stats() {
 
   // Valores de las estadísticas
   const motosReparadas = useCountUp(700, 2500, isVisible);
-  const anosExperiencia = useCountUp(10, 2000, isVisible);
+  const anosExperiencia = useCountUp(8, 2000, isVisible);
   const clientesSatisfechos = useCountUp(90, 2500, isVisible);
   const tiempoPromedio = useCountUp(24, 2000, isVisible);
 
@@ -149,7 +149,7 @@ function Stats() {
         <div className="stats-header">
           <h2 className="stats-title">Números que Hablan por Nosotros</h2>
           <p className="stats-subtitle">
-            Más de una década de excelencia en el servicio de motocicletas
+            Más de 8 años de excelencia en el servicio de motocicletas
           </p>
         </div>
 
