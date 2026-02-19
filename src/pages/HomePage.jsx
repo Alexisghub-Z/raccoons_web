@@ -110,7 +110,7 @@ function HomePage() {
         <div className="hero-content" ref={heroRef}>
           <div className="hero-badge">Taller Especializado · Oaxaca, México</div>
           <h1 className="hero-title">
-            <span className="hero-title-main">RACCOONS</span>
+            <span className="hero-title-main">RACCOONS<sup style={{fontSize: '0.27em', position: 'relative', top: '-0.75em'}}>®</sup></span>
             <span className="hero-title-sub">Especialistas en Motocicletas</span>
           </h1>
           <p className="hero-description">
