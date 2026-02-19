@@ -319,9 +319,9 @@
 }
 
 .services-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-  gap: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   animation: fadeIn 0.3s ease-out;
 }
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Bike, User, Phone, Wrench, FileText, Trash2, Clock, Edit, Image as ImageIcon, FileText as FilePdfIcon, ChevronRight, ChevronLeft, XCircle, Check, AlertCircle } from 'lucide-react';
+import { Bike, User, Phone, Wrench, FileText, Trash2, Clock, Edit, Image as ImageIcon, FileText as FilePdfIcon, ChevronRight, ChevronLeft, XCircle, Check, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import StatusBadge from './StatusBadge';
 import EvidenceUpload from './EvidenceUpload';
 import ServiceEditModal from './ServiceEditModal';
@@ -17,6 +17,7 @@ const STATUS_FLOW = [
 ];
 
 function ServiceCard({ service, onStatusChange, onDelete, onUpdate }) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const [isChangingStatus, setIsChangingStatus] = useState(false);
   const [showNotesModal, setShowNotesModal] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState(null);
@@ -26,8 +27,10 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate }) {
   const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
-    loadEvidences();
-  }, [service.id]);
+    if (isExpanded) {
+      loadEvidences();
+    }
+  }, [isExpanded, service.id]);
 
   const loadEvidences = async () => {
     try {
@@ -90,7 +93,8 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate }) {
     setShowNotesModal(true);
   };
 
-  const handleDelete = () => {
+  const handleDelete = (e) => {
+    e.stopPropagation();
     const confirmDelete = window.confirm(
       `¿Estás seguro de eliminar el servicio ${service.code}?`
     );
@@ -99,7 +103,8 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate }) {
     }
   };
 
-  const handleEdit = () => {
+  const handleEdit = (e) => {
+    e.stopPropagation();
     setShowEditModal(true);
   };
 
@@ -112,7 +117,7 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate }) {
     ? `${service.customer.firstName} ${service.customer.lastName}`
     : 'Cliente Desconocido';
 
-  const clientPhone = service.customer?.phone || 'Sin teléfono';
+  const clientPhone = service.customer?.phone || '';
 
   // Calcular posición actual en el flujo
   const isCancelled = service.status === 'CANCELLED';
@@ -120,230 +125,217 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate }) {
   const nextStep = currentStepIndex < STATUS_FLOW.length - 1 ? STATUS_FLOW[currentStepIndex + 1] : null;
   const prevStep = currentStepIndex > 0 ? STATUS_FLOW[currentStepIndex - 1] : null;
 
+  const createdDate = new Date(service.createdAt).toLocaleDateString('es-MX', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  });
+
   return (
     <>
-      <div className={`service-card ${isCancelled ? 'service-card--cancelled' : ''}`}>
-        <div className="service-card-header">
-          <div className="service-card-code">
-            <span className="code-label">Código:</span>
-            <span className="code-value">{service.code}</span>
-          </div>
-          <StatusBadge status={service.status} size="small" />
-        </div>
+      <div className={`service-row ${isCancelled ? 'service-row--cancelled' : ''} ${isExpanded ? 'service-row--expanded' : ''}`}>
+        {/* Fila principal - clickeable para expandir */}
+        <div className="service-row-main" onClick={() => setIsExpanded(!isExpanded)}>
+          {/* Indicador de color por estado */}
+          <div
+            className="service-row-indicator"
+            style={{ backgroundColor: isCancelled ? '#ef4444' : (STATUS_FLOW[currentStepIndex]?.color || '#6b7280') }}
+          />
 
-        <div className="service-card-body">
-          <div className="service-info-row">
-            <Bike className="info-icon" size={18} />
-            <div className="info-content">
-              <span className="info-label">Motocicleta</span>
-              <span className="info-value">{service.motorcycle}</span>
-            </div>
+          {/* Código */}
+          <div className="service-row-code">
+            <span className="row-code">{service.code}</span>
+            <span className="row-date">{createdDate}</span>
           </div>
 
-          <div className="service-info-row">
-            <User className="info-icon" size={18} />
-            <div className="info-content">
-              <span className="info-label">Cliente</span>
-              <span className="info-value">{clientName}</span>
+          {/* Cliente */}
+          <div className="service-row-client">
+            <User size={15} className="row-icon" />
+            <div className="row-client-info">
+              <span className="row-client-name">{clientName}</span>
+              {clientPhone && <span className="row-client-phone">{clientPhone}</span>}
             </div>
           </div>
 
-          <div className="service-info-row">
-            <Phone className="info-icon" size={18} />
-            <div className="info-content">
-              <span className="info-label">Teléfono</span>
-              <span className="info-value">{clientPhone}</span>
-            </div>
+          {/* Moto */}
+          <div className="service-row-moto">
+            <Bike size={15} className="row-icon" />
+            <span>{service.motorcycle}</span>
           </div>
 
-          <div className="service-info-row">
-            <Wrench className="info-icon" size={18} />
-            <div className="info-content">
-              <span className="info-label">Tipo de Servicio</span>
-              <span className="info-value">{service.serviceType}</span>
-            </div>
+          {/* Tipo de servicio */}
+          <div className="service-row-type">
+            <Wrench size={15} className="row-icon" />
+            <span>{service.serviceType}</span>
           </div>
 
-          {service.notes && (
-            <div className="service-notes">
-              <FileText className="info-icon" size={18} />
-              <span className="notes-text">{service.notes}</span>
-            </div>
-          )}
-        </div>
-
-        {/* Stepper de progreso */}
-        {!isCancelled ? (
-          <div className="status-stepper">
-            <div className="stepper-track">
-              {STATUS_FLOW.map((step, index) => {
-                const isCompleted = index < currentStepIndex;
-                const isCurrent = index === currentStepIndex;
-                const isFuture = index > currentStepIndex;
-
-                return (
-                  <div key={step.value} className="stepper-item">
-                    <button
-                      className={`stepper-dot ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''} ${isFuture ? 'future' : ''}`}
-                      onClick={() => !isCurrent && handleStepClick(step.value)}
-                      disabled={isCurrent || isChangingStatus}
-                      title={isCurrent ? step.label : `Cambiar a: ${step.label}`}
-                    >
-                      {isCompleted ? <Check size={12} /> : <span className="stepper-dot-num">{index + 1}</span>}
-                    </button>
-                    <span className={`stepper-label ${isCurrent ? 'stepper-label--current' : ''}`}>
-                      {step.shortLabel}
-                    </span>
-                    {index < STATUS_FLOW.length - 1 && (
-                      <div className={`stepper-line ${isCompleted ? 'completed' : ''}`} />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Botones de acción de estado */}
-            <div className="status-actions">
-              {prevStep && (
-                <button
-                  className="status-action-btn status-action-btn--prev"
-                  onClick={() => handleStepClick(prevStep.value)}
-                  disabled={isChangingStatus}
-                  title={`Retroceder a: ${prevStep.label}`}
-                >
-                  <ChevronLeft size={16} />
-                  {prevStep.shortLabel}
-                </button>
-              )}
-
-              {nextStep && (
-                <button
-                  className="status-action-btn status-action-btn--next"
-                  onClick={() => handleStepClick(nextStep.value)}
-                  disabled={isChangingStatus}
-                  title={`Avanzar a: ${nextStep.label}`}
-                >
-                  {isChangingStatus ? (
-                    <Clock size={16} className="spinning" />
-                  ) : (
-                    <>
-                      Avanzar a {nextStep.shortLabel}
-                      <ChevronRight size={16} />
-                    </>
-                  )}
-                </button>
-              )}
-
-              {service.status !== 'DELIVERED' && (
-                <button
-                  className="status-action-btn status-action-btn--cancel"
-                  onClick={handleCancelService}
-                  disabled={isChangingStatus}
-                  title="Cancelar servicio"
-                >
-                  <XCircle size={16} />
-                </button>
-              )}
-            </div>
+          {/* Estado */}
+          <div className="service-row-status">
+            <StatusBadge status={service.status} size="small" />
           </div>
-        ) : (
-          <div className="status-cancelled-banner">
-            <AlertCircle size={18} />
-            <span>Servicio Cancelado</span>
-            <button
-              className="status-action-btn status-action-btn--restore"
-              onClick={() => handleStepClick('RECEIVED')}
-              disabled={isChangingStatus}
-              title="Reactivar servicio"
-            >
-              Reactivar
+
+          {/* Acciones rápidas */}
+          <div className="service-row-actions" onClick={(e) => e.stopPropagation()}>
+            <button className="row-action-btn row-action-edit" onClick={handleEdit} title="Editar">
+              <Edit size={15} />
+            </button>
+            <button className="row-action-btn row-action-delete" onClick={handleDelete} title="Eliminar">
+              <Trash2 size={15} />
+            </button>
+            <button className="row-expand-btn" onClick={(e) => { e.stopPropagation(); setIsExpanded(!isExpanded); }}>
+              {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
             </button>
           </div>
-        )}
+        </div>
 
-        {/* Evidencias */}
-        {evidences.length > 0 && (
-          <div className="service-evidences">
-            <h4 className="evidences-title">
-              <ImageIcon size={18} />
-              Evidencias ({evidences.length})
-            </h4>
-            <div className="evidences-grid">
-              {evidences.map((evidence, index) => (
-                <div key={evidence.id || index} className="evidence-item">
-                  <button
-                    className="evidence-delete-btn"
-                    onClick={() => handleDeleteEvidence(evidence.id)}
-                    title="Eliminar evidencia"
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                  {evidence.type === 'IMAGE' ? (
-                    <img
-                      src={`${import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${evidence.url}`}
-                      alt={evidence.description || 'Evidencia'}
-                      className="evidence-image"
-                      onClick={() => window.open(`${import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${evidence.url}`, '_blank')}
-                    />
-                  ) : (
-                    <a
-                      href={`${import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${evidence.url}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="evidence-pdf"
+        {/* Panel expandido */}
+        {isExpanded && (
+          <div className="service-row-detail">
+            {/* Notas */}
+            {service.notes && (
+              <div className="detail-notes">
+                <FileText size={15} />
+                <span>{service.notes}</span>
+              </div>
+            )}
+
+            {/* Stepper de progreso */}
+            {!isCancelled ? (
+              <div className="detail-stepper">
+                <div className="stepper-track">
+                  {STATUS_FLOW.map((step, index) => {
+                    const isCompleted = index < currentStepIndex;
+                    const isCurrent = index === currentStepIndex;
+                    const isFuture = index > currentStepIndex;
+
+                    return (
+                      <div key={step.value} className="stepper-item">
+                        <button
+                          className={`stepper-dot ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''} ${isFuture ? 'future' : ''}`}
+                          onClick={() => !isCurrent && handleStepClick(step.value)}
+                          disabled={isCurrent || isChangingStatus}
+                          title={isCurrent ? step.label : `Cambiar a: ${step.label}`}
+                        >
+                          {isCompleted ? <Check size={12} /> : <span className="stepper-dot-num">{index + 1}</span>}
+                        </button>
+                        <span className={`stepper-label ${isCurrent ? 'stepper-label--current' : ''}`}>
+                          {step.shortLabel}
+                        </span>
+                        {index < STATUS_FLOW.length - 1 && (
+                          <div className={`stepper-line ${isCompleted ? 'completed' : ''}`} />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="detail-status-actions">
+                  {prevStep && (
+                    <button
+                      className="status-action-btn status-action-btn--prev"
+                      onClick={() => handleStepClick(prevStep.value)}
+                      disabled={isChangingStatus}
                     >
-                      <FilePdfIcon size={24} />
-                      <span>PDF</span>
-                    </a>
+                      <ChevronLeft size={16} />
+                      {prevStep.shortLabel}
+                    </button>
                   )}
-                  {evidence.description && (
-                    <p className="evidence-description">{evidence.description}</p>
+
+                  {nextStep && (
+                    <button
+                      className="status-action-btn status-action-btn--next"
+                      onClick={() => handleStepClick(nextStep.value)}
+                      disabled={isChangingStatus}
+                    >
+                      {isChangingStatus ? (
+                        <Clock size={16} className="spinning" />
+                      ) : (
+                        <>
+                          Avanzar a {nextStep.shortLabel}
+                          <ChevronRight size={16} />
+                        </>
+                      )}
+                    </button>
+                  )}
+
+                  {service.status !== 'DELIVERED' && (
+                    <button
+                      className="status-action-btn status-action-btn--cancel"
+                      onClick={handleCancelService}
+                      disabled={isChangingStatus}
+                      title="Cancelar servicio"
+                    >
+                      <XCircle size={16} />
+                    </button>
                   )}
                 </div>
-              ))}
-            </div>
+              </div>
+            ) : (
+              <div className="status-cancelled-banner">
+                <AlertCircle size={18} />
+                <span>Servicio Cancelado</span>
+                <button
+                  className="status-action-btn status-action-btn--restore"
+                  onClick={() => handleStepClick('RECEIVED')}
+                  disabled={isChangingStatus}
+                >
+                  Reactivar
+                </button>
+              </div>
+            )}
+
+            {/* Evidencias */}
+            {evidences.length > 0 && (
+              <div className="detail-evidences">
+                <h4 className="evidences-title">
+                  <ImageIcon size={16} />
+                  Evidencias ({evidences.length})
+                </h4>
+                <div className="evidences-grid">
+                  {evidences.map((evidence, index) => (
+                    <div key={evidence.id || index} className="evidence-item">
+                      <button
+                        className="evidence-delete-btn"
+                        onClick={() => handleDeleteEvidence(evidence.id)}
+                        title="Eliminar evidencia"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                      {evidence.type === 'IMAGE' ? (
+                        <img
+                          src={`${import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${evidence.url}`}
+                          alt={evidence.description || 'Evidencia'}
+                          className="evidence-image"
+                          onClick={() => window.open(`${import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${evidence.url}`, '_blank')}
+                        />
+                      ) : (
+                        <a
+                          href={`${import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${evidence.url}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="evidence-pdf"
+                        >
+                          <FilePdfIcon size={24} />
+                          <span>PDF</span>
+                        </a>
+                      )}
+                      {evidence.description && (
+                        <p className="evidence-description">{evidence.description}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {(service.status === 'IN_REPAIR' || service.status === 'READY_FOR_PICKUP') && (
+              <EvidenceUpload
+                serviceId={service.id}
+                onUploadSuccess={handleEvidenceUploadSuccess}
+              />
+            )}
           </div>
         )}
-
-        {(service.status === 'IN_REPAIR' || service.status === 'READY_FOR_PICKUP') && (
-          <EvidenceUpload
-            serviceId={service.id}
-            onUploadSuccess={handleEvidenceUploadSuccess}
-          />
-        )}
-
-        <div className="service-card-footer">
-          <div className="service-card-date">
-            <Clock size={14} />
-            <span className="date-label">Creado:</span>
-            <span className="date-value">
-              {new Date(service.createdAt).toLocaleDateString('es-MX', {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-              })}
-            </span>
-          </div>
-
-          <div className="card-actions">
-            <button
-              className="edit-btn"
-              onClick={handleEdit}
-              title="Editar servicio"
-            >
-              <Edit size={18} />
-            </button>
-            <button
-              className="delete-btn"
-              onClick={handleDelete}
-              title="Eliminar servicio"
-            >
-              <Trash2 size={18} />
-            </button>
-          </div>
-        </div>
       </div>
 
       {/* Modal de notas */}
