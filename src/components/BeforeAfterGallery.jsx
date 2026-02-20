@@ -1,97 +1,94 @@
-import { useState, useRef, useEffect } from 'react';
+import { useRef, useCallback, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import './BeforeAfterGallery.css';
 
 function BeforeAfterGallery() {
-  const [sliderPosition, setSliderPosition] = useState(50);
-  const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef(null);
+  const beforeRef = useRef(null);
+  const dividerRef = useRef(null);
+  const labelBeforeRef = useRef(null);
+  const labelAfterRef = useRef(null);
+  const isDraggingRef = useRef(false);
 
-  // ─────────────────────────────────────────────────────────────────
-  // 🔧 AGREGA TUS FOTOS AQUÍ (verticales, de mantenimiento)
-  // ─────────────────────────────────────────────────────────────────
-  // Sube tus fotos a la carpeta: /public/before-after/
-  // Nombres sugeridos:
-  //   - antes-mantenimiento.jpg  (foto vertical ANTES)
-  //   - despues-mantenimiento.jpg (foto vertical DESPUÉS)
-  // ─────────────────────────────────────────────────────────────────
   const beforeImage = "/before-after/antes-mantenimiento.jpeg";
   const afterImage = "/before-after/despues-mantenimiento.jpeg";
   const title = "Trabajo Profesional";
   const description = "Realizamos servicios de mantenimiento de calidad que dejan tu moto en perfectas condiciones. Cada trabajo se hace con profesionalismo y dedicación para garantizar los mejores resultados.";
   const tags = ["Calidad", "Profesional", "Confiable"];
 
-  const handleMouseDown = () => setIsDragging(true);
-  const handleMouseUp = () => setIsDragging(false);
+  const updateSlider = useCallback((clientX) => {
+    const container = containerRef.current;
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+    const pct = (x / rect.width) * 100;
 
-  const handleMouseMove = (e) => {
-    if (!isDragging || !containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
-    setSliderPosition((x / rect.width) * 100);
-  };
-
-  const handleTouchMove = (e) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = Math.max(0, Math.min(e.touches[0].clientX - rect.left, rect.width));
-    setSliderPosition((x / rect.width) * 100);
-  };
+    if (beforeRef.current) beforeRef.current.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+    if (dividerRef.current) dividerRef.current.style.left = `${pct}%`;
+    if (labelBeforeRef.current) labelBeforeRef.current.style.opacity = pct > 15 ? '1' : '0';
+    if (labelAfterRef.current) labelAfterRef.current.style.opacity = pct < 85 ? '1' : '0';
+  }, []);
 
   useEffect(() => {
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-    } else {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    }
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+    const onMouseMove = (e) => {
+      if (isDraggingRef.current) updateSlider(e.clientX);
     };
-  }, [isDragging]);
+    const onTouchMove = (e) => {
+      if (isDraggingRef.current) updateSlider(e.touches[0].clientX);
+    };
+    const onEnd = () => { isDraggingRef.current = false; };
+
+    document.addEventListener('mousemove', onMouseMove, { passive: true });
+    document.addEventListener('mouseup', onEnd);
+    document.addEventListener('touchmove', onTouchMove, { passive: true });
+    document.addEventListener('touchend', onEnd);
+
+    return () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onEnd);
+      document.removeEventListener('touchmove', onTouchMove);
+      document.removeEventListener('touchend', onEnd);
+    };
+  }, [updateSlider]);
+
+  const onStart = () => { isDraggingRef.current = true; };
 
   return (
     <section className="before-after-gallery">
       <div className="container">
-        {/* Layout: comparador izquierda + panel derecha */}
         <div className="ba-layout-single">
 
-          {/* Comparador vertical izquierda */}
           <div
             className="before-after-slider-vertical"
             ref={containerRef}
-            onMouseDown={handleMouseDown}
-            onTouchStart={() => setIsDragging(true)}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={() => setIsDragging(false)}
+            onMouseDown={onStart}
+            onTouchStart={onStart}
           >
             <div className="image-container after-image">
               <img src={afterImage} alt="Después - Mantenimiento" draggable="false" loading="lazy" />
-              <div className="image-label label-after" style={{ opacity: sliderPosition < 85 ? 1 : 0 }}>
+              <div className="image-label label-after" ref={labelAfterRef}>
                 Después
               </div>
             </div>
 
             <div
               className="image-container before-image"
-              style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
+              ref={beforeRef}
+              style={{ clipPath: 'inset(0 50% 0 0)' }}
             >
               <img src={beforeImage} alt="Antes - Mantenimiento" draggable="false" loading="lazy" />
-              <div className="image-label label-before" style={{ opacity: sliderPosition > 15 ? 1 : 0 }}>
+              <div className="image-label label-before" ref={labelBeforeRef}>
                 Antes
               </div>
             </div>
 
-            <div className="slider-divider" style={{ left: `${sliderPosition}%` }}>
+            <div className="slider-divider" ref={dividerRef} style={{ left: '50%' }}>
               <div className="slider-button">
                 <ChevronLeft size={16} />
                 <ChevronRight size={16} />
               </div>
             </div>
 
-            {/* Hint de arrastre */}
             <div className="drag-hint">← Desliza →</div>
           </div>
 

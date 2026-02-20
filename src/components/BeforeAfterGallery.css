@@ -61,7 +61,7 @@
 
 .before-image {
   z-index: 2;
-  transition: clip-path 0.05s ease-out;
+  will-change: clip-path;
 }
 
 /* Labels */
@@ -69,9 +69,7 @@
   position: absolute;
   top: 1.5rem;
   padding: 0.5rem 1rem;
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.75);
   color: white;
   font-weight: 700;
   font-size: 0.72rem;
@@ -97,9 +95,7 @@
   text-transform: uppercase;
   color: white;
   padding: 0.5rem 1rem;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.6);
   border-radius: 20px;
   z-index: 10;
   opacity: 0;
@@ -120,7 +116,7 @@
   background: white;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
   z-index: 15;
-  transition: left 0.05s ease-out;
+  will-change: left;
   cursor: ew-resize;
 }
 
