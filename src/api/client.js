@@ -4,6 +4,7 @@ class ApiClient {
   constructor() {
     this.baseURL = API_URL;
     this.token = localStorage.getItem('accessToken');
+    this.isRefreshing = false;
   }
 
   setToken(token) {
@@ -17,6 +18,31 @@ class ApiClient {
 
   getToken() {
     return this.token || localStorage.getItem('accessToken');
+  }
+
+  async _tryRefresh() {
+    if (this.isRefreshing) return false;
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) return false;
+
+    this.isRefreshing = true;
+    try {
+      const response = await fetch(`${this.baseURL}/auth/refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken })
+      });
+      const data = await response.json();
+      if (response.ok && data.data?.accessToken) {
+        this.setToken(data.data.accessToken);
+        return true;
+      }
+      return false;
+    } catch {
+      return false;
+    } finally {
+      this.isRefreshing = false;
+    }
   }
 
   async request(endpoint, options = {}) {
@@ -60,6 +86,14 @@ class ApiClient {
         if (response.status === 401) {
           // En endpoints de auth (login/register) no limpiar ni redirigir
           if (!options.skipAuth) {
+            if (!options._isRetry) {
+              // Intentar renovar el token antes de limpiar la sesión
+              const refreshed = await this._tryRefresh();
+              if (refreshed) {
+                return this.request(endpoint, { ...options, _isRetry: true });
+              }
+            }
+            // No se pudo refrescar — limpiar sesión
             this.setToken(null);
             localStorage.removeItem('refreshToken');
             localStorage.removeItem('user');

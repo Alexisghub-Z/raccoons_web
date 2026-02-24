@@ -46,6 +46,12 @@ export class RefreshTokenUseCase {
         role: user.role
       });
 
+      // Extender la sesión otros 7 días desde el último uso (sliding window)
+      await prisma.refreshToken.update({
+        where: { id: storedToken.id },
+        data: { expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) }
+      });
+
       logger.info(`Token refreshed for user: ${user.email}`);
 
       return {
