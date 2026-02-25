@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
-import { User, Mail, Phone, X, Save, Loader2 } from 'lucide-react';
+import { User, Mail, Phone, X, Save, Loader2, AlertCircle } from 'lucide-react';
 import './CustomerEditModal.css';
 
-function CustomerEditModal({ isOpen, onClose, onSubmit, customer, isLoading }) {
+function CustomerEditModal({ isOpen, onClose, onSubmit, customer, isLoading, externalErrors }) {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
     phone: ''
   });
+
+  const [fieldErrors, setFieldErrors] = useState({});
 
   useEffect(() => {
     if (customer && isOpen) {
@@ -18,8 +20,16 @@ function CustomerEditModal({ isOpen, onClose, onSubmit, customer, isLoading }) {
         email: customer.email || '',
         phone: customer.phone || ''
       });
+      setFieldErrors({});
     }
   }, [customer, isOpen]);
+
+  // Aplicar errores externos (del backend) cuando lleguen
+  useEffect(() => {
+    if (externalErrors && Object.keys(externalErrors).length > 0) {
+      setFieldErrors(externalErrors);
+    }
+  }, [externalErrors]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,18 +37,23 @@ function CustomerEditModal({ isOpen, onClose, onSubmit, customer, isLoading }) {
       ...prev,
       [name]: value
     }));
+    // Limpiar error del campo al escribir
+    if (fieldErrors[name]) {
+      setFieldErrors(prev => ({ ...prev, [name]: null }));
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setFieldErrors({});
 
     // Validar campos requeridos
-    if (!formData.firstName.trim()) {
-      alert('Por favor ingresa el nombre');
-      return;
-    }
-    if (!formData.email.trim()) {
-      alert('Por favor ingresa el email');
+    const newErrors = {};
+    if (!formData.firstName.trim()) newErrors.firstName = 'El nombre es requerido';
+    if (!formData.email.trim()) newErrors.email = 'El email es requerido';
+
+    if (Object.keys(newErrors).length > 0) {
+      setFieldErrors(newErrors);
       return;
     }
 
@@ -52,6 +67,7 @@ function CustomerEditModal({ isOpen, onClose, onSubmit, customer, isLoading }) {
       email: '',
       phone: ''
     });
+    setFieldErrors({});
     onClose();
   };
 
@@ -71,6 +87,13 @@ function CustomerEditModal({ isOpen, onClose, onSubmit, customer, isLoading }) {
         </div>
 
         <form onSubmit={handleSubmit} className="customer-edit-form">
+          {fieldErrors.submit && (
+            <div className="error-banner">
+              <AlertCircle size={18} />
+              <span>{fieldErrors.submit}</span>
+            </div>
+          )}
+
           <div className="form-grid">
             <div className="form-group">
               <label htmlFor="firstName">
@@ -83,9 +106,12 @@ function CustomerEditModal({ isOpen, onClose, onSubmit, customer, isLoading }) {
                 value={formData.firstName}
                 onChange={handleChange}
                 placeholder="Ej: Juan"
-                required
+                className={fieldErrors.firstName ? 'error' : ''}
                 disabled={isLoading}
               />
+              {fieldErrors.firstName && (
+                <span className="field-error">{fieldErrors.firstName}</span>
+              )}
             </div>
 
             <div className="form-group">
@@ -99,8 +125,12 @@ function CustomerEditModal({ isOpen, onClose, onSubmit, customer, isLoading }) {
                 value={formData.lastName}
                 onChange={handleChange}
                 placeholder="Ej: Pérez"
+                className={fieldErrors.lastName ? 'error' : ''}
                 disabled={isLoading}
               />
+              {fieldErrors.lastName && (
+                <span className="field-error">{fieldErrors.lastName}</span>
+              )}
             </div>
 
             <div className="form-group full-width">
@@ -115,9 +145,12 @@ function CustomerEditModal({ isOpen, onClose, onSubmit, customer, isLoading }) {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="cliente@email.com"
-                required
+                className={fieldErrors.email ? 'error' : ''}
                 disabled={isLoading}
               />
+              {fieldErrors.email && (
+                <span className="field-error">{fieldErrors.email}</span>
+              )}
             </div>
 
             <div className="form-group full-width">
@@ -132,8 +165,12 @@ function CustomerEditModal({ isOpen, onClose, onSubmit, customer, isLoading }) {
                 value={formData.phone}
                 onChange={handleChange}
                 placeholder="9511234567"
+                className={fieldErrors.phone ? 'error' : ''}
                 disabled={isLoading}
               />
+              {fieldErrors.phone && (
+                <span className="field-error">{fieldErrors.phone}</span>
+              )}
             </div>
           </div>
 
