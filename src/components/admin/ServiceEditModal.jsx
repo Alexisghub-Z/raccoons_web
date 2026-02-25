@@ -3,6 +3,14 @@ import { createPortal } from 'react-dom';
 import { X, Save, AlertCircle } from 'lucide-react';
 import './ServiceEditModal.css';
 
+function translateJoiMessage(msg) {
+  if (msg.includes('is required')) return 'Este campo es requerido';
+  if (msg.includes('must be a valid email')) return 'Debe ser un email válido';
+  if (msg.includes('fails to match the required pattern')) return 'Teléfono inválido (ej: 9511234567 o +529511234567)';
+  if (msg.includes('length must be at least')) return `Mínimo ${msg.match(/\d+/)?.[0]} caracteres`;
+  return msg;
+}
+
 function ServiceEditModal({ isOpen, onClose, service, onSave }) {
   const [formData, setFormData] = useState({
     motorcycle: '',
@@ -110,7 +118,23 @@ function ServiceEditModal({ isOpen, onClose, service, onSave }) {
       onClose();
     } catch (error) {
       console.error('Error saving service:', error);
-      setErrors({ submit: error.message || 'Error al guardar los cambios' });
+      if (error.details) {
+        const fieldMap = {
+          motorcycle: 'motorcycle',
+          serviceType: 'serviceType',
+          firstName: 'customerFirstName',
+          lastName: 'customerLastName',
+          email: 'customerEmail',
+          phone: 'customerPhone'
+        };
+        const newErrors = {};
+        error.details.forEach(({ field, message }) => {
+          newErrors[fieldMap[field] || 'submit'] = translateJoiMessage(message);
+        });
+        setErrors(newErrors);
+      } else {
+        setErrors({ submit: error.message || 'Error al guardar los cambios' });
+      }
     } finally {
       setIsSaving(false);
     }

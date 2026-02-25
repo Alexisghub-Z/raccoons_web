@@ -134,7 +134,11 @@ class ApiClient {
               throw new Error(`No se puede cambiar de "${from}" a "${to}"`);
             }
           }
-          throw new Error(errorMessage);
+          const err = new Error(errorMessage);
+          if (data.error?.details) {
+            err.details = data.error.details;
+          }
+          throw err;
         }
 
         if (response.status === 404) {

@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Wrench, User, Bike, CheckCircle2, Loader2, X, UserCheck } from 'lucide-react';
+import { Wrench, User, Bike, CheckCircle2, Loader2, X, UserCheck, AlertCircle } from 'lucide-react';
 import { userService } from '../../api/user.service';
 import './ServiceFormModal.css';
 
-function ServiceFormModal({ isOpen, onClose, onSubmit, isLoading, selectedCustomer }) {
+function ServiceFormModal({ isOpen, onClose, onSubmit, isLoading, selectedCustomer, externalErrors }) {
   const [formData, setFormData] = useState({
     clientName: '',
     clientPhone: '',
@@ -13,6 +13,7 @@ function ServiceFormModal({ isOpen, onClose, onSubmit, isLoading, selectedCustom
     notes: ''
   });
 
+  const [fieldErrors, setFieldErrors] = useState({});
   const [existingCustomer, setExistingCustomer] = useState(null);
   const [searchingCustomer, setSearchingCustomer] = useState(false);
 
@@ -28,6 +29,13 @@ function ServiceFormModal({ isOpen, onClose, onSubmit, isLoading, selectedCustom
       setExistingCustomer(selectedCustomer);
     }
   }, [selectedCustomer, isOpen]);
+
+  // Aplicar errores externos (del backend) cuando lleguen
+  useEffect(() => {
+    if (externalErrors && Object.keys(externalErrors).length > 0) {
+      setFieldErrors(externalErrors);
+    }
+  }, [externalErrors]);
 
   // Buscar cliente existente cuando cambie email o teléfono
   useEffect(() => {
@@ -86,37 +94,29 @@ function ServiceFormModal({ isOpen, onClose, onSubmit, isLoading, selectedCustom
       ...prev,
       [name]: value
     }));
+    // Limpiar error del campo al escribir
+    if (fieldErrors[name]) {
+      setFieldErrors(prev => ({ ...prev, [name]: null }));
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setFieldErrors({});
 
     // Validar campos requeridos
-    if (!formData.clientName.trim()) {
-      alert('Por favor ingresa el nombre del cliente');
-      return;
-    }
-    if (!formData.motorcycle.trim()) {
-      alert('Por favor ingresa la motocicleta');
-      return;
-    }
-    if (!formData.serviceType.trim()) {
-      alert('Por favor ingresa el tipo de servicio');
+    const newErrors = {};
+    if (!formData.clientName.trim()) newErrors.clientName = 'El nombre del cliente es requerido';
+    if (!formData.clientPhone.trim()) newErrors.clientPhone = 'El teléfono del cliente es requerido';
+    if (!formData.motorcycle.trim()) newErrors.motorcycle = 'La motocicleta es requerida';
+    if (!formData.serviceType.trim()) newErrors.serviceType = 'El tipo de servicio es requerido';
+
+    if (Object.keys(newErrors).length > 0) {
+      setFieldErrors(newErrors);
       return;
     }
 
     onSubmit(formData);
-
-    // Reset form
-    setFormData({
-      clientName: '',
-      clientPhone: '',
-      clientEmail: '',
-      motorcycle: '',
-      serviceType: '',
-      notes: ''
-    });
-    setExistingCustomer(null);
   };
 
   const handleClose = () => {
@@ -129,6 +129,7 @@ function ServiceFormModal({ isOpen, onClose, onSubmit, isLoading, selectedCustom
       notes: ''
     });
     setExistingCustomer(null);
+    setFieldErrors({});
     onClose();
   };
 
@@ -148,6 +149,13 @@ function ServiceFormModal({ isOpen, onClose, onSubmit, isLoading, selectedCustom
         </div>
 
         <form onSubmit={handleSubmit} className="service-form">
+          {fieldErrors.submit && (
+            <div className="error-banner">
+              <AlertCircle size={18} />
+              <span>{fieldErrors.submit}</span>
+            </div>
+          )}
+
           <div className="form-section">
             <div className="section-header-with-badge">
               <h3>
@@ -173,12 +181,17 @@ function ServiceFormModal({ isOpen, onClose, onSubmit, isLoading, selectedCustom
                   value={formData.clientName}
                   onChange={handleChange}
                   placeholder="Ej: Juan Pérez"
-                  required
+                  className={fieldErrors.clientName ? 'error' : ''}
                 />
+                {fieldErrors.clientName && (
+                  <span className="field-error">{fieldErrors.clientName}</span>
+                )}
               </div>
 
               <div className="form-group">
-                <label htmlFor="clientPhone">Teléfono</label>
+                <label htmlFor="clientPhone">
+                  Teléfono <span className="required">*</span>
+                </label>
                 <input
                   type="tel"
                   id="clientPhone"
@@ -186,8 +199,13 @@ function ServiceFormModal({ isOpen, onClose, onSubmit, isLoading, selectedCustom
                   value={formData.clientPhone}
                   onChange={handleChange}
                   placeholder="Ej: 9511234567"
+                  className={fieldErrors.clientPhone ? 'error' : ''}
                 />
-                <span className="form-hint">Se enviará SMS automático si se proporciona</span>
+                {fieldErrors.clientPhone ? (
+                  <span className="field-error">{fieldErrors.clientPhone}</span>
+                ) : (
+                  <span className="form-hint">Se enviará SMS automático si se proporciona</span>
+                )}
               </div>
 
               <div className="form-group full-width">
@@ -199,7 +217,11 @@ function ServiceFormModal({ isOpen, onClose, onSubmit, isLoading, selectedCustom
                   value={formData.clientEmail}
                   onChange={handleChange}
                   placeholder="Ej: cliente@email.com"
+                  className={fieldErrors.clientEmail ? 'error' : ''}
                 />
+                {fieldErrors.clientEmail && (
+                  <span className="field-error">{fieldErrors.clientEmail}</span>
+                )}
               </div>
             </div>
           </div>
@@ -221,8 +243,11 @@ function ServiceFormModal({ isOpen, onClose, onSubmit, isLoading, selectedCustom
                   value={formData.motorcycle}
                   onChange={handleChange}
                   placeholder="Ej: Yamaha R1"
-                  required
+                  className={fieldErrors.motorcycle ? 'error' : ''}
                 />
+                {fieldErrors.motorcycle && (
+                  <span className="field-error">{fieldErrors.motorcycle}</span>
+                )}
               </div>
 
               <div className="form-group">
@@ -236,8 +261,11 @@ function ServiceFormModal({ isOpen, onClose, onSubmit, isLoading, selectedCustom
                   value={formData.serviceType}
                   onChange={handleChange}
                   placeholder="Ej: Mantenimiento General"
-                  required
+                  className={fieldErrors.serviceType ? 'error' : ''}
                 />
+                {fieldErrors.serviceType && (
+                  <span className="field-error">{fieldErrors.serviceType}</span>
+                )}
               </div>
 
               <div className="form-group full-width">

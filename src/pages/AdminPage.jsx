@@ -29,6 +29,14 @@ import CustomerEditModal from '../components/admin/CustomerEditModal';
 import Toast from '../components/admin/Toast';
 import './AdminPage.css';
 
+function translateJoiMessage(msg) {
+  if (msg.includes('is required')) return 'Este campo es requerido';
+  if (msg.includes('must be a valid email')) return 'Debe ser un email válido';
+  if (msg.includes('fails to match the required pattern')) return 'Teléfono inválido (ej: 9511234567 o +529511234567)';
+  if (msg.includes('length must be at least')) return `Mínimo ${msg.match(/\d+/)?.[0]} caracteres`;
+  return msg;
+}
+
 function AdminPage() {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -50,6 +58,8 @@ function AdminPage() {
   const [isCustomerEditModalOpen, setIsCustomerEditModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [toast, setToast] = useState(null);
+  const [createServiceErrors, setCreateServiceErrors] = useState({});
+  const [customerEditErrors, setCustomerEditErrors] = useState({});
 
   // Pagination state
   const ITEMS_PER_PAGE = 12;
@@ -278,10 +288,11 @@ function AdminPage() {
           console.log(`Cliente existente encontrado: ${existingCustomer.email} (ID: ${customerId})`);
         } else {
           // Cliente no existe, crear uno nuevo
+          const finalEmail = emailToUse || `cliente-${Date.now()}@raccoons.internal`;
           const customerData = {
             firstName,
             lastName,
-            email: emailToUse,
+            email: finalEmail,
             phone: phoneToUse,
             password: 'Temp1234!',
             role: 'CUSTOMER'
@@ -293,7 +304,8 @@ function AdminPage() {
         }
       } catch (error) {
         console.error('Error al buscar/crear cliente:', error);
-        throw new Error('Error al procesar los datos del cliente: ' + error.message);
+        // Re-lanzar con details intactos para que el catch exterior los maneje
+        throw error;
       }
 
       // Crear servicio
@@ -324,7 +336,24 @@ function AdminPage() {
       loadServiceStats();
     } catch (error) {
       console.error('Error creating service:', error);
-      showToast('Error al crear el servicio: ' + error.message, 'error');
+      if (error.details) {
+        const fieldMap = {
+          firstName: 'clientName',
+          lastName: 'clientName',
+          email: 'clientEmail',
+          phone: 'clientPhone',
+          motorcycle: 'motorcycle',
+          serviceType: 'serviceType'
+        };
+        const mapped = {};
+        error.details.forEach(({ field, message }) => {
+          const frontendField = fieldMap[field] || 'submit';
+          mapped[frontendField] = translateJoiMessage(message);
+        });
+        setCreateServiceErrors(mapped);
+      } else {
+        showToast('Error al crear el servicio: ' + error.message, 'error');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -357,6 +386,18 @@ function AdminPage() {
         setTimeout(() => {
           setIsAuthenticated(false);
         }, 2000);
+      } else if (error.details) {
+        const fieldMap = {
+          firstName: 'firstName',
+          lastName: 'lastName',
+          email: 'email',
+          phone: 'phone'
+        };
+        const mapped = {};
+        error.details.forEach(({ field, message }) => {
+          mapped[fieldMap[field] || 'submit'] = translateJoiMessage(message);
+        });
+        setCustomerEditErrors(mapped);
       } else {
         showToast(error.message || 'Error al actualizar el cliente', 'error');
       }
@@ -916,10 +957,12 @@ function AdminPage() {
         onClose={() => {
           setIsModalOpen(false);
           setSelectedCustomer(null);
+          setCreateServiceErrors({});
         }}
         onSubmit={handleCreateService}
         isLoading={isLoading}
         selectedCustomer={selectedCustomer}
+        externalErrors={createServiceErrors}
       />
 
       {/* Modal de Edición de Cliente */}
@@ -928,10 +971,12 @@ function AdminPage() {
         onClose={() => {
           setIsCustomerEditModalOpen(false);
           setCustomerToEdit(null);
+          setCustomerEditErrors({});
         }}
         onSubmit={handleUpdateCustomer}
         customer={customerToEdit}
         isLoading={isLoading}
+        externalErrors={customerEditErrors}
       />
 
       {/* Toast */}
