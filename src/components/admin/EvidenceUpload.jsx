@@ -134,7 +134,15 @@ function EvidenceUpload({ serviceId, onUploadSuccess }) {
           {selectedFiles.map((fileObj, index) => (
             <div key={index} className="evidence-preview-item">
               {fileObj.type === 'IMAGE' ? (
-                <img src={fileObj.preview} alt="Preview" className="evidence-preview-img" />
+                <img
+                  src={fileObj.preview}
+                  alt="Preview"
+                  className="evidence-preview-img"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling?.style && (e.target.nextSibling.style.display = 'flex');
+                  }}
+                />
               ) : (
                 <div className="evidence-preview-pdf">
                   <FileText size={32} />
