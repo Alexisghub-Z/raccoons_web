@@ -328,7 +328,7 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate }) {
               </div>
             )}
 
-            {(service.status === 'IN_REPAIR' || service.status === 'READY_FOR_PICKUP') && (
+            {service.status !== 'CANCELLED' && (
               <EvidenceUpload
                 serviceId={service.id}
                 onUploadSuccess={handleEvidenceUploadSuccess}

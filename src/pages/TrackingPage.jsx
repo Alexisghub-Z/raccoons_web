@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Download, Search, Inbox, Cog, CheckCircle, Bike, Package, Wrench, Image as ImageIcon, FileText as FilePdfIcon, ExternalLink, Check, User, Calendar, Settings } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { Download, Search, Inbox, Cog, CheckCircle, Bike, Package, Wrench, Image as ImageIcon, FileText as FilePdfIcon, ExternalLink, Check, User, Calendar, Settings, Facebook, Instagram, X } from 'lucide-react';
+import confetti from 'canvas-confetti';
 import Header from '../components/Header';
 import InteractiveGrid from '../components/InteractiveGrid';
 import { getStatusColor, getStatusText } from '../utils/statusHelpers';
@@ -30,6 +32,7 @@ function TrackingPage() {
   const [serviceData, setServiceData] = useState(null);
   const [error, setError] = useState('');
   const [isSearching, setIsSearching] = useState(false);
+  const [showDeliveredModal, setShowDeliveredModal] = useState(false);
   const heroContentRef = useRef(null);
 
   useEffect(() => {
@@ -57,6 +60,36 @@ function TrackingPage() {
       loadServiceByCode(lastTrackingCode);
     }
   }, [lastTrackingCode]);
+
+  useEffect(() => {
+    if (serviceData?.status === 'READY_FOR_PICKUP') {
+      const t = setTimeout(() => {
+        setShowDeliveredModal(true);
+        const colors = ['#10b981', '#f59e0b', '#3b82f6', '#ef4444', '#8b5cf6', '#ec4899', '#f97316', '#06b6d4'];
+        const baseOpts = { colors, gravity: 0.6, scalar: 1.2, drift: 0.1, ticks: 600 };
+
+        // Salva inicial — esquinas + centro
+        confetti({ ...baseOpts, particleCount: 220, spread: 70, angle: 60,  origin: { x: 0,   y: 1 }, startVelocity: 70 });
+        confetti({ ...baseOpts, particleCount: 220, spread: 70, angle: 120, origin: { x: 1,   y: 1 }, startVelocity: 70 });
+        setTimeout(() => {
+          confetti({ ...baseOpts, particleCount: 180, spread: 110, angle: 90, origin: { x: 0.5, y: 1 }, startVelocity: 60 });
+        }, 200);
+
+        // Segunda salva a 1.2s
+        setTimeout(() => {
+          confetti({ ...baseOpts, particleCount: 160, spread: 65, angle: 65,  origin: { x: 0.1, y: 1 }, startVelocity: 65 });
+          confetti({ ...baseOpts, particleCount: 160, spread: 65, angle: 115, origin: { x: 0.9, y: 1 }, startVelocity: 65 });
+        }, 1200);
+
+        // Tercera salva a 2.4s — lluvia suave de cierre
+        setTimeout(() => {
+          confetti({ ...baseOpts, particleCount: 120, spread: 130, angle: 90, origin: { x: 0.3, y: 1 }, startVelocity: 50, gravity: 0.5 });
+          confetti({ ...baseOpts, particleCount: 120, spread: 130, angle: 90, origin: { x: 0.7, y: 1 }, startVelocity: 50, gravity: 0.5 });
+        }, 2400);
+      }, 800);
+      return () => clearTimeout(t);
+    }
+  }, [serviceData?.status]);
 
   const loadServiceByCode = async (code) => {
     try {
@@ -414,9 +447,186 @@ function TrackingPage() {
                 </div>
               )}
 
+              {/* ── READY_FOR_PICKUP / DELIVERED CTA ── */}
+              {(serviceData.status === 'READY_FOR_PICKUP' || serviceData.status === 'DELIVERED') && (
+                <div className="delivered-cta">
+                  <div className="delivered-cta-header">
+                    <span className="delivered-cta-icon">🏍️</span>
+                    <div>
+                      <h3 className="delivered-cta-title">¡Tu moto te espera!</h3>
+                      <p className="delivered-cta-subtitle">Si quedaste contento, una reseña nos ayuda a seguir creciendo</p>
+                    </div>
+                  </div>
+
+                  <div className="review-buttons">
+                    <a
+                      href="https://maps.app.goo.gl/AsX5mxTu235HR8Bv6"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="review-btn google"
+                    >
+                      <svg className="review-btn-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                      </svg>
+                      Reseña en Google
+                    </a>
+                    <a
+                      href="https://www.facebook.com/profile.php?id=100092034219719"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="review-btn facebook"
+                    >
+                      <Facebook size={18} className="review-btn-icon" />
+                      Reseña en Facebook
+                    </a>
+                  </div>
+
+                  <hr className="cta-divider" />
+
+                  <p className="social-follow-label">Síguenos en redes</p>
+                  <div className="social-buttons">
+                    <a
+                      href="https://www.instagram.com/raccoons_oax/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="social-btn instagram"
+                    >
+                      <Instagram size={16} />
+                      Instagram
+                    </a>
+                    <a
+                      href="https://www.tiktok.com/@raccoons.oax"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="social-btn tiktok"
+                    >
+                      <svg className="social-btn-svg" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.35 6.35 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/>
+                      </svg>
+                      TikTok
+                    </a>
+                    <a
+                      href="https://www.youtube.com/@RaccoonsOax/videos"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="social-btn youtube"
+                    >
+                      <svg className="social-btn-svg" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                      </svg>
+                      YouTube
+                    </a>
+                  </div>
+                </div>
+              )}
+
             </div>
           </div>
         </section>
+      )}
+
+      {/* ── DELIVERED Modal ── */}
+      {showDeliveredModal && createPortal(
+        <div className="delivered-modal-overlay" onClick={() => setShowDeliveredModal(false)}>
+          <div className="delivered-modal-card" onClick={(e) => e.stopPropagation()}>
+            <button className="delivered-modal-close" onClick={() => setShowDeliveredModal(false)} aria-label="Cerrar">
+              <X size={20} />
+            </button>
+
+            <div className="delivered-modal-hero">
+              <div className="delivered-modal-check-icon">
+                <svg viewBox="0 0 52 52" width="32" height="32">
+                  <path fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" d="M14 27l8 8 16-17" />
+                </svg>
+              </div>
+              <h2 className="delivered-modal-title">¡Tu moto está lista para recoger! 🏍️</h2>
+              <p className="delivered-modal-subtitle">Puedes pasar a recogerla cuando gustes</p>
+            </div>
+
+            <div className="delivered-modal-thank-you">
+              <p>Fue un gusto trabajar en tu moto. Nos esforzamos en cada detalle para que salgas con la confianza de que tu moto está en su mejor estado.</p>
+              <p className="thank-you-sign">¡Buen rodaje! 🤙 — El equipo Raccoons</p>
+            </div>
+
+            <div className="delivered-modal-divider" />
+
+            <div className="delivered-modal-section">
+              <p className="delivered-modal-section-label">⭐ Déjanos tu reseña</p>
+              <div className="review-btn-row">
+                <a
+                  href="https://maps.app.goo.gl/AsX5mxTu235HR8Bv6"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="review-btn google"
+                >
+                  <svg className="review-btn-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                  </svg>
+                  Google
+                </a>
+                <a
+                  href="https://www.facebook.com/profile.php?id=100092034219719"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="review-btn facebook"
+                >
+                  <Facebook size={18} className="review-btn-icon" />
+                  Facebook
+                </a>
+              </div>
+            </div>
+
+            <div className="delivered-modal-divider" />
+
+            <div className="delivered-modal-section">
+              <p className="delivered-modal-section-label">Síguenos</p>
+              <div className="social-btn-row">
+                <a
+                  href="https://www.instagram.com/raccoons_oax/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="social-btn instagram"
+                >
+                  <Instagram size={16} />
+                  Instagram
+                </a>
+                <a
+                  href="https://www.tiktok.com/@raccoons.oax"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="social-btn tiktok"
+                >
+                  <svg className="social-btn-svg" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.35 6.35 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/>
+                  </svg>
+                  TikTok
+                </a>
+                <a
+                  href="https://www.youtube.com/@RaccoonsOax/videos"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="social-btn youtube"
+                >
+                  <svg className="social-btn-svg" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                  </svg>
+                  YouTube
+                </a>
+              </div>
+            </div>
+
+            <button className="delivered-modal-dismiss" onClick={() => setShowDeliveredModal(false)}>
+              Cerrar
+            </button>
+          </div>
+        </div>,
+        document.body
       )}
     </div>
   );
