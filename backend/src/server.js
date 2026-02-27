@@ -41,7 +41,12 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Servir archivos estáticos (evidencias)
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+// Cross-Origin-Resource-Policy: cross-origin permite que el frontend
+// en un origen diferente (ej. localhost:5173) cargue estas imágenes
+app.use('/uploads', (req, res, next) => {
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  next();
+}, express.static(path.join(__dirname, '../uploads')));
 
 app.use(requestLogger);
 
