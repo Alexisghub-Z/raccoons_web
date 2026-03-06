@@ -35,7 +35,7 @@ function HomePage() {
 
   // Optimización: Memoización de handlers
   const handleWhatsAppClick = useCallback(() => {
-    window.open('https://wa.me/529516512065?text=Hola,%20me%20gustaría%20agendar%20una%20cita%20para%20mi%20moto', '_blank');
+    window.open('https://wa.me/529511790349?text=Hola,%20me%20gustaría%20agendar%20una%20cita%20para%20mi%20moto', '_blank');
   }, []);
 
   const handleTrackingClick = useCallback(() => {
@@ -468,7 +468,7 @@ function HomePage() {
             <div className="contact-item">
               <div className="contact-icon"><Phone size={32} /></div>
               <h3>Teléfono</h3>
-              <p>+52 951 651 2065</p>
+              <p>+52 951 179 0349</p>
             </div>
             <div className="contact-item">
               <div className="contact-icon"><Clock size={32} /></div>
