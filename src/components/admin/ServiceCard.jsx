@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Bike, User, Phone, Wrench, FileText, Trash2, Clock, Edit, Image as ImageIcon, FileText as FilePdfIcon, ChevronRight, ChevronLeft, XCircle, Check, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { Bike, User, Phone, Wrench, FileText, Trash2, Clock, Edit, Image as ImageIcon, FileText as FilePdfIcon, ChevronRight, ChevronLeft, XCircle, Check, AlertCircle, ChevronDown, ChevronUp, MessageSquare } from 'lucide-react';
 import StatusBadge from './StatusBadge';
 import EvidenceUpload from './EvidenceUpload';
 import ServiceEditModal from './ServiceEditModal';
@@ -196,6 +196,34 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate }) {
               <div className="detail-notes">
                 <FileText size={15} />
                 <span>{service.notes}</span>
+              </div>
+            )}
+
+            {/* Historial de notas por estado */}
+            {service.statusHistory?.some(h => h.notes) && (
+              <div className="detail-status-notes">
+                <h4 className="detail-status-notes-title">
+                  <MessageSquare size={14} />
+                  Notas del historial
+                </h4>
+                {[...service.statusHistory]
+                  .reverse()
+                  .filter(h => h.notes)
+                  .map((entry, i) => (
+                    <div key={i} className="detail-status-note-item">
+                      <span className="dsn-status">
+                        {STATUS_FLOW.find(s => s.value === entry.status)?.label || entry.status}
+                      </span>
+                      <p className="dsn-text">{entry.notes}</p>
+                      <span className="dsn-date">
+                        {new Date(entry.changedAt).toLocaleDateString('es-MX', {
+                          day: '2-digit', month: 'short', year: 'numeric',
+                          hour: '2-digit', minute: '2-digit'
+                        })}
+                      </span>
+                    </div>
+                  ))
+                }
               </div>
             )}
 

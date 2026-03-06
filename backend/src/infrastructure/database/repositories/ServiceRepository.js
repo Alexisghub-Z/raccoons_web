@@ -252,8 +252,7 @@ export class ServiceRepository extends IServiceRepository {
             customer: true,
             evidence: true,
             statusHistory: {
-              orderBy: { changedAt: 'desc' },
-              take: 1
+              orderBy: { changedAt: 'desc' }
             }
           },
           skip,
