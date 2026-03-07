@@ -593,6 +593,49 @@
     width: 35px;
     height: 1.5px;
   }
+
+  .splash_svg rect {
+    -webkit-clip-path: polygon(30% 40%, 70% 40%, 70% 60%, 30% 60%);
+    clip-path: polygon(30% 40%, 70% 40%, 70% 60%, 30% 60%);
+    -webkit-animation: expand-mobile 0.7s ease-in forwards 2.7s;
+    animation: expand-mobile 0.7s ease-in forwards 2.7s;
+  }
+
+  .splash_minimize rect {
+    -webkit-animation: scale-mobile 0.2s ease-out forwards 1s, hide 1.3s ease-out forwards 1.2s;
+    animation: scale-mobile 0.2s ease-out forwards 1s, hide 1.3s ease-out forwards 1.2s;
+  }
+
+  @keyframes scale-mobile {
+    100% {
+      -webkit-clip-path: polygon(30% 40%, 70% 40%, 70% 60%, 30% 60%);
+      clip-path: polygon(30% 40%, 70% 40%, 70% 60%, 30% 60%);
+    }
+  }
+
+  @keyframes expand-mobile {
+    0% {}
+    25% {
+      -webkit-clip-path: polygon(0% 0%, 70% 40%, 70% 60%, 30% 60%);
+      clip-path: polygon(0% 0%, 70% 40%, 70% 60%, 30% 60%);
+      fill: #ffffff;
+    }
+    50% {
+      -webkit-clip-path: polygon(0% 0%, 100% 0%, 70% 60%, 30% 60%);
+      clip-path: polygon(0% 0%, 100% 0%, 70% 60%, 30% 60%);
+      fill: #2563eb;
+    }
+    75% {
+      -webkit-clip-path: polygon(0% 0%, 100% 0%, 70% 60%, 0% 100%);
+      clip-path: polygon(0% 0%, 100% 0%, 70% 60%, 0% 100%);
+      fill: #ffffff;
+    }
+    100% {
+      -webkit-clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+      clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+      fill: #2563eb;
+    }
+  }
 }
 
 /* Responsive - Móviles pequeños */
@@ -621,5 +664,48 @@
   .splash_logo_text:before,
   .splash_logo_text:after {
     width: 30px;
+  }
+
+  .splash_svg rect {
+    -webkit-clip-path: polygon(30% 40%, 70% 40%, 70% 60%, 30% 60%);
+    clip-path: polygon(30% 40%, 70% 40%, 70% 60%, 30% 60%);
+    -webkit-animation: expand-mobile 0.7s ease-in forwards 2.7s;
+    animation: expand-mobile 0.7s ease-in forwards 2.7s;
+  }
+
+  .splash_minimize rect {
+    -webkit-animation: scale-mobile 0.2s ease-out forwards 1s, hide 1.3s ease-out forwards 1.2s;
+    animation: scale-mobile 0.2s ease-out forwards 1s, hide 1.3s ease-out forwards 1.2s;
+  }
+
+  @keyframes scale-mobile {
+    100% {
+      -webkit-clip-path: polygon(30% 40%, 70% 40%, 70% 60%, 30% 60%);
+      clip-path: polygon(30% 40%, 70% 40%, 70% 60%, 30% 60%);
+    }
+  }
+
+  @keyframes expand-mobile {
+    0% {}
+    25% {
+      -webkit-clip-path: polygon(0% 0%, 70% 40%, 70% 60%, 30% 60%);
+      clip-path: polygon(0% 0%, 70% 40%, 70% 60%, 30% 60%);
+      fill: #ffffff;
+    }
+    50% {
+      -webkit-clip-path: polygon(0% 0%, 100% 0%, 70% 60%, 30% 60%);
+      clip-path: polygon(0% 0%, 100% 0%, 70% 60%, 30% 60%);
+      fill: #2563eb;
+    }
+    75% {
+      -webkit-clip-path: polygon(0% 0%, 100% 0%, 70% 60%, 0% 100%);
+      clip-path: polygon(0% 0%, 100% 0%, 70% 60%, 0% 100%);
+      fill: #ffffff;
+    }
+    100% {
+      -webkit-clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+      clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+      fill: #2563eb;
+    }
   }
 }
