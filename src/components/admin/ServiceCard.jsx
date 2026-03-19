@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Bike, User, Phone, Wrench, FileText, Trash2, Clock, Edit, Image as ImageIcon, FileText as FilePdfIcon, ChevronRight, ChevronLeft, XCircle, Check, AlertCircle, ChevronDown, ChevronUp, MessageSquare } from 'lucide-react';
+import { Bike, User, Phone, Wrench, FileText, Trash2, Clock, Edit, Image as ImageIcon, FileText as FilePdfIcon, ChevronRight, ChevronLeft, XCircle, Check, AlertCircle, ChevronDown, ChevronUp, MessageSquare, Copy } from 'lucide-react';
 import StatusBadge from './StatusBadge';
 import EvidenceUpload from './EvidenceUpload';
 import ServiceEditModal from './ServiceEditModal';
 import { serviceService } from '../../api/service.service';
+import { sendTrackingCodeWhatsApp, buildTrackingMessage } from '../../services/whatsappService';
 import './ServiceCard.css';
 
 // Flujo principal de estados en orden
@@ -108,6 +109,38 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate }) {
     setShowEditModal(true);
   };
 
+  const handleWhatsApp = (e) => {
+    e.stopPropagation();
+    if (!clientPhone) {
+      alert('Este cliente no tiene numero de telefono registrado.');
+      return;
+    }
+    sendTrackingCodeWhatsApp(clientPhone, service.code, service.customer.firstName, service.motorcycle, service.serviceType);
+  };
+
+  const handleCopyMessage = async (e) => {
+    e.stopPropagation();
+    const message = buildTrackingMessage(
+      service.customer?.firstName || 'Cliente',
+      service.motorcycle,
+      service.code,
+      service.serviceType
+    );
+    try {
+      await navigator.clipboard.writeText(message);
+      alert('Mensaje copiado al portapapeles');
+    } catch {
+      // Fallback para navegadores sin clipboard API
+      const textarea = document.createElement('textarea');
+      textarea.value = message;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      alert('Mensaje copiado al portapapeles');
+    }
+  };
+
   const handleSaveEdit = async (serviceId, formData) => {
     await onUpdate(serviceId, formData);
     setShowEditModal(false);
@@ -176,6 +209,12 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate }) {
 
           {/* Acciones rápidas */}
           <div className="service-row-actions" onClick={(e) => e.stopPropagation()}>
+            <button className="row-action-btn row-action-whatsapp" onClick={handleWhatsApp} title="Enviar codigo por WhatsApp">
+              <MessageSquare size={15} />
+            </button>
+            <button className="row-action-btn row-action-copy" onClick={handleCopyMessage} title="Copiar mensaje de seguimiento">
+              <Copy size={15} />
+            </button>
             <button className="row-action-btn row-action-edit" onClick={handleEdit} title="Editar">
               <Edit size={15} />
             </button>

@@ -10,6 +10,25 @@
  * @param {string} serviceType - Tipo de servicio
  * @returns {boolean} - true si se abrió WhatsApp correctamente
  */
+/**
+ * Construir el mensaje de tracking sin enviar
+ */
+export const buildTrackingMessage = (clientName, motorcycle, trackingCode, serviceType) => {
+  return [
+    `Hola ${clientName}!`,
+    '',
+    `Tu motocicleta *${motorcycle}* ha sido recibida en Raccoons Taller.`,
+    '',
+    `Codigo de seguimiento: ${trackingCode}`,
+    `Servicio: ${serviceType}`,
+    '',
+    'Puedes consultar el estado de tu servicio en cualquier momento aqui:',
+    'https://raccoonsoax.com/seguimiento',
+    '',
+    'Gracias por confiar en nosotros!',
+  ].join('\n');
+};
+
 export const sendTrackingCodeWhatsApp = (phoneNumber, trackingCode, clientName, motorcycle, serviceType) => {
   // Limpiar el número de teléfono (quitar espacios, guiones, etc)
   const cleanPhone = phoneNumber.replace(/\D/g, '');
@@ -17,19 +36,8 @@ export const sendTrackingCodeWhatsApp = (phoneNumber, trackingCode, clientName, 
   // Agregar código de país si no lo tiene (México: 52)
   const fullPhone = cleanPhone.length === 10 ? `52${cleanPhone}` : cleanPhone;
 
-  // Crear el mensaje
-  const message = `
-¡Hola ${clientName}! 👋
-
-Tu motocicleta *${motorcycle}* ha sido recibida en Raccoons Taller. 🏍️
-
-📋 *Código de seguimiento:* ${trackingCode}
-🔧 *Servicio:* ${serviceType}
-
-Puedes consultar el estado de tu servicio en cualquier momento usando este código en nuestra página web.
-
-¡Gracias por confiar en nosotros! 🦝
-  `.trim();
+  // Mensaje con formato WhatsApp (negritas con asteriscos)
+  const message = buildTrackingMessage(clientName, motorcycle, trackingCode, serviceType);
 
   // Codificar el mensaje para URL
   const encodedMessage = encodeURIComponent(message);

@@ -181,6 +181,22 @@
   border-color: #bfdbfe;
 }
 
+.row-action-whatsapp {
+  color: #25D366;
+}
+
+.row-action-whatsapp:hover {
+  background: #dcfce7;
+  color: #25D366;
+  border-color: #bbf7d0;
+}
+
+.row-action-copy:hover {
+  background: #f3e8ff;
+  color: #7c3aed;
+  border-color: #e9d5ff;
+}
+
 .row-action-delete:hover {
   background: #fee2e2;
   color: #ef4444;
