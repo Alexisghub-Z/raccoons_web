@@ -1,15 +1,8 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Save, AlertCircle } from 'lucide-react';
+import { translateJoiMessage } from '../../utils/joiMessages';
 import './ServiceEditModal.css';
-
-function translateJoiMessage(msg) {
-  if (msg.includes('is required')) return 'Este campo es requerido';
-  if (msg.includes('must be a valid email')) return 'Debe ser un email válido';
-  if (msg.includes('fails to match the required pattern')) return 'Teléfono inválido (ej: 9511234567 o +529511234567)';
-  if (msg.includes('length must be at least')) return `Mínimo ${msg.match(/\d+/)?.[0]} caracteres`;
-  return msg;
-}
 
 function ServiceEditModal({ isOpen, onClose, service, onSave }) {
   const [formData, setFormData] = useState({
@@ -129,7 +122,7 @@ function ServiceEditModal({ isOpen, onClose, service, onSave }) {
         };
         const newErrors = {};
         error.details.forEach(({ field, message }) => {
-          newErrors[fieldMap[field] || 'submit'] = translateJoiMessage(message);
+          newErrors[fieldMap[field] || 'submit'] = translateJoiMessage(message, field);
         });
         setErrors(newErrors);
       } else {

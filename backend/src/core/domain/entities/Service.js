@@ -23,6 +23,7 @@ export class Service {
     internalNotes,
     evidence,
     statusHistory,
+    authorizationQuestions,
     createdAt = new Date(),
     updatedAt = new Date()
   }) {
@@ -46,6 +47,7 @@ export class Service {
     this.internalNotes = internalNotes;
     this.evidence = evidence;
     this.statusHistory = statusHistory;
+    this.authorizationQuestions = authorizationQuestions;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }

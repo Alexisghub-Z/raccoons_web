@@ -13,8 +13,8 @@ export const updateAppointmentSchema = Joi.object({
   scheduledDate: Joi.date().iso().optional(),
   motorcycle: Joi.string().optional(),
   serviceType: Joi.string().optional(),
-  description: Joi.string().allow('').optional(),
-  notes: Joi.string().allow('').optional()
+  description: Joi.string().allow('', null).optional(),
+  notes: Joi.string().allow('', null).optional()
 });
 
 export const cancelAppointmentSchema = Joi.object({

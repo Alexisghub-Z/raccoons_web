@@ -41,6 +41,22 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
+// Directorio para archivos de autorizaciones
+const authUploadsDir = path.join(__dirname, '../../../uploads/authorizations');
+if (!fs.existsSync(authUploadsDir)) {
+  fs.mkdirSync(authUploadsDir, { recursive: true });
+}
+
+const authStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, authUploadsDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'auth-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
 // Configuración de multer
 export const uploadEvidence = multer({
   storage: storage,
@@ -49,6 +65,14 @@ export const uploadEvidence = multer({
     fileSize: 10 * 1024 * 1024 // 10MB máximo
   }
 }).array('files', 10); // Máximo 10 archivos
+
+export const uploadAuthAttachments = multer({
+  storage: authStorage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024
+  }
+}).array('files', 5);
 
 export const handleMulterError = (err, req, res, next) => {
   if (err instanceof multer.MulterError) {

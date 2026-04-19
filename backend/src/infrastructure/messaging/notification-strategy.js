@@ -102,6 +102,16 @@ export class NotificationStrategy {
           );
           break;
 
+        case 'AUTHORIZATION_REQUESTED':
+          result = await emailService.sendAuthorizationRequestEmail(
+            user.email,
+            firstName,
+            notification.metadata?.serviceCode,
+            notification.metadata?.motorcycle,
+            notification.metadata?.questionText
+          );
+          break;
+
         default:
           result = await emailService.sendEmail(
             user.email,

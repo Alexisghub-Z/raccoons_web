@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Wrench, User, Bike, CheckCircle2, Loader2, X, UserCheck, AlertCircle } from 'lucide-react';
 import { userService } from '../../api/user.service';
 import './ServiceFormModal.css';
@@ -135,7 +136,7 @@ function ServiceFormModal({ isOpen, onClose, onSubmit, isLoading, selectedCustom
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="modal-overlay" onClick={handleClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
@@ -219,6 +220,12 @@ function ServiceFormModal({ isOpen, onClose, onSubmit, isLoading, selectedCustom
                   placeholder="Ej: cliente@email.com"
                   className={fieldErrors.clientEmail ? 'error' : ''}
                 />
+                {searchingCustomer && (
+                  <span className="customer-search-indicator">
+                    <Loader2 size={13} className="spinning" />
+                    Buscando cliente…
+                  </span>
+                )}
                 {fieldErrors.clientEmail && (
                   <span className="field-error">{fieldErrors.clientEmail}</span>
                 )}
@@ -311,7 +318,8 @@ function ServiceFormModal({ isOpen, onClose, onSubmit, isLoading, selectedCustom
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

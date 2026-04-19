@@ -438,6 +438,42 @@ export class NodemailerEmailService {
     return await this.sendEmail(customerEmail, subject, baseTemplate(content));
   }
 
+  // ── Solicitud de autorizacion ────────────────────────────────────────────────
+  async sendAuthorizationRequestEmail(customerEmail, customerName, serviceCode, motorcycle, questionText) {
+    const subject = `⚠️ Solicitud de autorizacion — ${serviceCode}`;
+
+    const content = `
+      <p style="margin:0 0 8px;font-size:16px;color:#1a1a1a;">Hola, <strong>${customerName}</strong></p>
+      <p style="margin:0 0 24px;font-size:15px;color:#4a5568;line-height:1.6;">
+        Necesitamos tu autorizacion para continuar con el servicio de tu motocicleta.
+      </p>
+
+      ${codeBox(serviceCode)}
+
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
+        ${infoRow('Motocicleta', motorcycle || '—')}
+        ${infoRow('Codigo de servicio', serviceCode)}
+      </table>
+
+      <div style="background:#fffbeb;border-left:4px solid #d97706;border-radius:0 8px 8px 0;padding:20px;margin:24px 0;">
+        <p style="margin:0 0 4px;font-size:12px;color:#92400e;letter-spacing:1px;text-transform:uppercase;font-weight:600;">Mensaje del taller:</p>
+        <p style="margin:0;font-size:15px;color:#1a1a1a;line-height:1.6;">${questionText}</p>
+      </div>
+
+      <p style="margin:0 0 8px;font-size:14px;color:#4a5568;line-height:1.6;">
+        Ingresa a la pagina de seguimiento con tu codigo para responder:
+      </p>
+
+      ${ctaButton(`${config.frontend?.url || 'http://localhost:5173'}/seguimiento`, 'Responder ahora')}
+
+      <p style="margin:24px 0 0;font-size:13px;color:#9ca3af;line-height:1.6;">
+        Si prefieres, tambien puedes contactarnos directamente por WhatsApp.
+      </p>
+    `;
+
+    return await this.sendEmail(customerEmail, subject, baseTemplate(content));
+  }
+
   isEnabled() {
     return this.enabled;
   }

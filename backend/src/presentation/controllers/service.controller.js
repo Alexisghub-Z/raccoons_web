@@ -89,6 +89,20 @@ export class ServiceController {
     }
   }
 
+  async getDashboard(req, res, next) {
+    try {
+      const data = await serviceRepository.getDashboardStats();
+
+      res.status(200).json({
+        success: true,
+        data,
+        message: 'Dashboard stats retrieved successfully'
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async getById(req, res, next) {
     try {
       const service = await serviceRepository.findById(req.params.id);

@@ -268,13 +268,13 @@
   margin-top: 1px;
 }
 
-/* Historial de notas por estado */
+/* ── Historial unificado (notas + autorizaciones) ── */
 .detail-status-notes {
   margin-bottom: 0;
-  padding: 0.875rem 1rem;
   background: white;
   border-radius: 8px;
   border: 1px solid #e5e7eb;
+  overflow: hidden;
 }
 
 .detail-status-notes-title {
@@ -286,51 +286,373 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #9ca3af;
-  margin: 0 0 0.75rem 0;
-}
-
-.detail-status-note-item {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: auto auto;
-  gap: 0.2rem 0.625rem;
-  padding: 0.5rem 0;
+  margin: 0;
+  padding: 0.5rem 0.875rem;
   border-bottom: 1px solid #f3f4f6;
 }
 
-.detail-status-note-item:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
+/* Bloque por etapa */
+.dsn-step-block {
+  border-bottom: 1px solid #f3f4f6;
+  padding: 0.5rem 0.875rem 0.625rem;
 }
 
-.dsn-status {
+.dsn-step-block:last-child {
+  border-bottom: none;
+}
+
+/* Header de etapa: dot + nombre + fecha */
+.dsn-step-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.dsn-step-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--step-color, #6b7280);
+  flex-shrink: 0;
+}
+
+.dsn-step-name {
   font-size: 0.7rem;
   font-weight: 700;
-  color: #9ca3af;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  grid-column: 1;
-  grid-row: 1;
+  letter-spacing: 0.07em;
+  color: var(--step-color, #6b7280);
+  flex: 1;
+}
+
+.dsn-step-date {
+  font-size: 0.65rem;
+  color: #9ca3af;
+  font-family: 'Courier New', monospace;
   white-space: nowrap;
+}
+
+/* Nota del estado */
+.dsn-note {
+  margin-bottom: 0.375rem;
 }
 
 .dsn-text {
   margin: 0;
-  font-size: 0.875rem;
-  color: #1f2937;
+  font-size: 0.8125rem;
+  color: #374151;
   line-height: 1.5;
-  grid-column: 2;
-  grid-row: 1 / 3;
+}
+
+/* ── Auth question thread ── */
+.auth-q-thread {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.625rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.auth-q-badge {
   align-self: center;
 }
 
-.dsn-date {
-  font-size: 0.68rem;
-  color: #9ca3af;
-  font-family: 'Courier New', monospace;
-  grid-column: 1;
-  grid-row: 2;
+.auth-q-thread--history {
+  background: #fafafa;
+  border-color: #f0f0f0;
+}
+
+.auth-q-thread--history .auth-q-question {
+  color: #6b7280;
+}
+
+.auth-q-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.auth-q-question {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: #1f2937;
+  line-height: 1.45;
+  flex: 1;
+}
+
+.auth-q-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-size: 0.625rem;
+  font-weight: 600;
   white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.auth-q-badge--pending {
+  background: #fffbeb;
+  color: #d97706;
+}
+
+.auth-q-badge--authorized {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.auth-q-badge--rejected {
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+.auth-q-badge--whatsapp_contact {
+  background: #dcfce7;
+  color: #25D366;
+}
+
+/* ── Messages ── */
+.auth-q-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.auth-q-msg {
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  max-width: 88%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.auth-q-msg-time {
+  font-size: 0.5625rem;
+  color: #9ca3af;
+  margin-top: 0.125rem;
+  align-self: flex-end;
+}
+
+.auth-q-msg--admin {
+  align-self: flex-start;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+}
+
+.auth-q-msg--customer {
+  align-self: flex-end;
+  background: #ecfdf5;
+  border: 1px solid #bbf7d0;
+}
+
+.auth-q-msg-label {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.auth-q-msg--admin .auth-q-msg-label {
+  color: #3b82f6;
+}
+
+.auth-q-msg--customer .auth-q-msg-label {
+  color: #16a34a;
+}
+
+.auth-q-msg-text {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: #1f2937;
+}
+
+/* ── Attachments ── */
+.auth-q-attachments {
+  display: flex;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+}
+
+.auth-q-attachment {
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.auth-q-attachment-img {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  cursor: pointer;
+  display: block;
+}
+
+.auth-q-attachment-img:hover {
+  opacity: 0.8;
+}
+
+.auth-q-attachment-pdf {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.3rem 0.4rem;
+  font-size: 0.625rem;
+  color: #3b82f6;
+  text-decoration: none;
+  background: #eff6ff;
+}
+
+.auth-q-attachment-pdf:hover {
+  background: #dbeafe;
+}
+
+.auth-q-attachment-pdf span {
+  max-width: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.auth-q-attachment-delete {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.auth-q-attachment:hover .auth-q-attachment-delete {
+  opacity: 1;
+}
+
+/* ── Toolbar ── */
+.auth-q-toolbar {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+.auth-q-reply-input {
+  flex: 1;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.6875rem;
+  font-family: inherit;
+  background: white;
+  color: #1f2937;
+  transition: border-color 0.15s;
+}
+
+.auth-q-reply-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.auth-q-toolbar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.auth-q-toolbar-btn svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+.auth-q-toolbar-btn--send {
+  background: #3b82f6;
+  color: white;
+}
+
+.auth-q-toolbar-btn--send:hover {
+  background: #2563eb;
+}
+
+.auth-q-toolbar-btn--send:disabled {
+  background: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.auth-q-toolbar-btn--attach {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.auth-q-toolbar-btn--attach:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.auth-q-toolbar-btn--authorize {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.auth-q-toolbar-btn--authorize:hover {
+  background: #059669;
+  color: white;
+}
+
+.auth-q-toolbar-btn--reject {
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+.auth-q-toolbar-btn--reject:hover {
+  background: #ef4444;
+  color: white;
+}
+
+.auth-question-trigger-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.625rem;
+  background: #fffbeb;
+  border: 1px dashed #f59e0b;
+  border-radius: 8px;
+  color: #d97706;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.auth-question-trigger-btn:hover {
+  background: #fef3c7;
+  border-color: #d97706;
 }
 
 /* Stepper dentro del panel expandido */
@@ -778,6 +1100,25 @@
 
 .spinning {
   animation: spin 1s linear infinite;
+}
+
+/* Skeleton loader para evidencias */
+.evidence-item--skeleton {
+  background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+  background-size: 200% 100%;
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+  min-height: 120px;
+  border-radius: 8px;
+}
+
+@keyframes skeleton-pulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.auth-q-toolbar-btn.is-loading {
+  opacity: 0.7;
+  pointer-events: none;
 }
 
 /* ============================================

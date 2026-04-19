@@ -7,6 +7,7 @@ import InteractiveGrid from '../components/InteractiveGrid';
 import { getStatusColor, getStatusText } from '../utils/statusHelpers';
 import { useCookie } from '../hooks/useCookie';
 import { serviceService } from '../api/service.service';
+import { AuthorizationQuestionsForStep } from '../components/tracking/AuthorizationQuestions';
 import './TrackingPage.css';
 
 const STATUS_STEPS = [
@@ -364,6 +365,24 @@ function TrackingPage() {
                         </div>
                         {isActive && historyEntry?.notes && (
                           <p className="tl-notes">{historyEntry.notes}</p>
+                        )}
+                        {isActive && serviceData.authorizationQuestions?.length > 0 && (
+                          <AuthorizationQuestionsForStep
+                            questions={serviceData.authorizationQuestions}
+                            stepStatus={step.value}
+                            statusHistory={serviceData.statusHistory}
+                            serviceCode={serviceData.code}
+                            onResponded={(questionId, response, customerMessage) => {
+                              setServiceData(prev => ({
+                                ...prev,
+                                authorizationQuestions: prev.authorizationQuestions.map(q =>
+                                  q.id === questionId
+                                    ? { ...q, response, customerMessage: customerMessage || null, respondedAt: new Date().toISOString() }
+                                    : q
+                                )
+                              }));
+                            }}
+                          />
                         )}
                       </div>
                     </div>

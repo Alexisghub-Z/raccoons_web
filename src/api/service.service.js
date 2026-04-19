@@ -27,6 +27,11 @@ export const serviceService = {
     return response.data;
   },
 
+  async getDashboard() {
+    const response = await apiClient.get('/services/dashboard');
+    return response.data;
+  },
+
   async getById(id) {
     const response = await apiClient.get(`/services/${id}`);
     return response.data;
@@ -80,5 +85,46 @@ export const serviceService = {
   async deleteEvidence(id, evidenceId) {
     const response = await apiClient.delete(`/services/${id}/evidence/${evidenceId}`);
     return response.data;
+  },
+
+  async createAuthorizationQuestion(serviceId, question) {
+    const response = await apiClient.post(`/services/${serviceId}/authorization-questions`, { question });
+    return response.data;
+  },
+
+  async respondAuthorizationQuestion(questionId, response, customerMessage) {
+    const res = await apiClient.put(
+      `/services/authorization-questions/${questionId}/respond`,
+      { response, customerMessage },
+      { skipAuth: true }
+    );
+    return res.data;
+  },
+
+  async replyAuthorizationQuestion(questionId, message) {
+    const res = await apiClient.put(
+      `/services/authorization-questions/${questionId}/reply`,
+      { message }
+    );
+    return res.data;
+  },
+
+  async uploadAuthAttachments(questionId, files) {
+    const formData = new FormData();
+    for (const file of files) {
+      formData.append('files', file);
+    }
+    const res = await apiClient.post(
+      `/services/authorization-questions/${questionId}/attachments`,
+      formData
+    );
+    return res.data;
+  },
+
+  async deleteAuthAttachment(attachmentId) {
+    const res = await apiClient.delete(
+      `/services/authorization-questions/attachments/${attachmentId}`
+    );
+    return res.data;
   }
 };

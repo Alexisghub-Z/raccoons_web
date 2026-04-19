@@ -17,7 +17,8 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
-  ChevronsRight
+  ChevronsRight,
+  LayoutDashboard
 } from 'lucide-react';
 import { authService } from '../api/auth.service';
 import { serviceService } from '../api/service.service';
@@ -26,16 +27,13 @@ import LoginForm from '../components/LoginForm';
 import ServiceCard from '../components/admin/ServiceCard';
 import ServiceFormModal from '../components/admin/ServiceFormModal';
 import CustomerEditModal from '../components/admin/CustomerEditModal';
-import Toast from '../components/admin/Toast';
+import { useToast } from '../components/admin/toast-context';
+import { useConfirm } from '../hooks/useConfirm';
+import { useNotifications } from '../hooks/useNotifications';
+import { translateJoiMessage } from '../utils/joiMessages';
+import DashboardView from '../components/admin/DashboardView';
+import NotificationBell from '../components/admin/NotificationBell';
 import './AdminPage.css';
-
-function translateJoiMessage(msg) {
-  if (msg.includes('is required')) return 'Este campo es requerido';
-  if (msg.includes('must be a valid email')) return 'Debe ser un email válido';
-  if (msg.includes('fails to match the required pattern')) return 'Teléfono inválido (ej: 9511234567 o +529511234567)';
-  if (msg.includes('length must be at least')) return `Mínimo ${msg.match(/\d+/)?.[0]} caracteres`;
-  return msg;
-}
 
 function AdminPage() {
   const navigate = useNavigate();
@@ -44,7 +42,8 @@ function AdminPage() {
   useEffect(() => {
     document.title = 'Panel de Administración | Raccoons Taller';
   }, []);
-  const [currentView, setCurrentView] = useState('SERVICES'); // 'SERVICES' | 'CUSTOMERS'
+  const [currentView, setCurrentView] = useState('DASHBOARD'); // 'DASHBOARD' | 'SERVICES' | 'CUSTOMERS'
+  const [expandServiceId, setExpandServiceId] = useState(null);
   const [services, setServices] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [filteredServices, setFilteredServices] = useState([]);
@@ -57,7 +56,10 @@ function AdminPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCustomerEditModalOpen, setIsCustomerEditModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [toast, setToast] = useState(null);
+  const [isLoadingServices, setIsLoadingServices] = useState(false);
+  const { showToast } = useToast();
+  const { confirm, ConfirmElement } = useConfirm();
+  const { notifications, unreadCount, markRead, markAllRead, refresh: refreshNotifications } = useNotifications(isAuthenticated);
   const [createServiceErrors, setCreateServiceErrors] = useState({});
   const [customerEditErrors, setCustomerEditErrors] = useState({});
 
@@ -83,10 +85,10 @@ function AdminPage() {
 
   // Reload services when authenticated, pagination, filters, or tab changes
   useEffect(() => {
-    if (isAuthenticated) {
-      loadServices();
+    if (isAuthenticated && currentView === 'SERVICES') {
+      loadServices(expandServiceId || undefined);
     }
-  }, [isAuthenticated, servicePage, statusFilter, activeTab]);
+  }, [isAuthenticated, currentView, servicePage, statusFilter, activeTab]);
 
   // Reload customers when authenticated or pagination changes
   useEffect(() => {
@@ -123,8 +125,19 @@ function AdminPage() {
     setFilteredCustomers(customers);
   }, [services, customers]);
 
-  const loadServices = async () => {
+  const loadServices = async (targetServiceId) => {
+    setServices([]);
+    setIsLoadingServices(true);
     try {
+      // Si hay un servicio específico a expandir, cargarlo directamente
+      if (targetServiceId) {
+        const target = await serviceService.getById(targetServiceId);
+        setServices([target]);
+        setServicePagination({ total: 1, totalPages: 1 });
+        setIsLoadingServices(false);
+        return;
+      }
+
       const filters = {
         page: servicePage,
         limit: ITEMS_PER_PAGE
@@ -162,6 +175,8 @@ function AdminPage() {
       } else {
         showToast(error.message || 'Error al cargar los servicios', 'error');
       }
+    } finally {
+      setIsLoadingServices(false);
     }
   };
 
@@ -348,7 +363,7 @@ function AdminPage() {
         const mapped = {};
         error.details.forEach(({ field, message }) => {
           const frontendField = fieldMap[field] || 'submit';
-          mapped[frontendField] = translateJoiMessage(message);
+          mapped[frontendField] = translateJoiMessage(message, field);
         });
         setCreateServiceErrors(mapped);
       } else {
@@ -395,7 +410,7 @@ function AdminPage() {
         };
         const mapped = {};
         error.details.forEach(({ field, message }) => {
-          mapped[fieldMap[field] || 'submit'] = translateJoiMessage(message);
+          mapped[fieldMap[field] || 'submit'] = translateJoiMessage(message, field);
         });
         setCustomerEditErrors(mapped);
       } else {
@@ -407,9 +422,12 @@ function AdminPage() {
   };
 
   const handleDeleteCustomer = async (customer) => {
-    const confirmed = window.confirm(
-      `¿Estás seguro de que quieres eliminar a ${customer.firstName} ${customer.lastName}?\n\nEsta acción no se puede deshacer.`
-    );
+    const confirmed = await confirm({
+      title: 'Eliminar cliente',
+      message: `¿Estás seguro de que quieres eliminar a ${customer.firstName} ${customer.lastName}?\n\nEsta acción no se puede deshacer.`,
+      confirmText: 'Eliminar',
+      variant: 'danger',
+    });
 
     if (!confirmed) return;
 
@@ -535,14 +553,6 @@ function AdminPage() {
     }
   };
 
-  const showToast = (message, type = 'info') => {
-    setToast({ message, type });
-  };
-
-  const closeToast = () => {
-    setToast(null);
-  };
-
   if (!isAuthenticated) {
     return <LoginForm onLoginSuccess={handleLoginSuccess} />;
   }
@@ -563,6 +573,18 @@ function AdminPage() {
             <User size={18} />
             Admin
           </span>
+          <NotificationBell
+            notifications={notifications}
+            unreadCount={unreadCount}
+            markRead={markRead}
+            markAllRead={markAllRead}
+            onRefresh={refreshNotifications}
+            onNavigate={(view, serviceId) => {
+              setCurrentView(view);
+              setExpandServiceId(serviceId || null);
+              setServicePage(1);
+            }}
+          />
           <button className="logout-btn" onClick={handleLogout}>
             <LogOut size={18} />
             Salir
@@ -573,11 +595,22 @@ function AdminPage() {
       {/* View Switcher */}
       <div className="view-switcher">
         <button
+          className={`view-btn ${currentView === 'DASHBOARD' ? 'active' : ''}`}
+          onClick={() => {
+            setCurrentView('DASHBOARD');
+            setSearchTerm('');
+          }}
+        >
+          <LayoutDashboard size={20} />
+          Dashboard
+        </button>
+        <button
           className={`view-btn ${currentView === 'SERVICES' ? 'active' : ''}`}
           onClick={() => {
             setCurrentView('SERVICES');
             setSearchTerm('');
             setServicePage(1);
+            setExpandServiceId(null);
           }}
         >
           <Wrench size={20} />
@@ -598,7 +631,7 @@ function AdminPage() {
       </div>
 
       {/* Toolbar */}
-      <div className="admin-toolbar">
+      {currentView !== 'DASHBOARD' && <div className="admin-toolbar">
         <button className="btn-new-service" onClick={() => {
           setSelectedCustomer(null);
           setIsModalOpen(true);
@@ -639,7 +672,7 @@ function AdminPage() {
             </select>
           )}
         </div>
-      </div>
+      </div>}
 
       {/* Tabs - Solo para servicios */}
       {currentView === 'SERVICES' && (
@@ -723,10 +756,29 @@ function AdminPage() {
       </div>
       )}
 
+      {/* Dashboard View */}
+      {currentView === 'DASHBOARD' && (
+        <DashboardView
+          isAuthenticated={isAuthenticated}
+          unreadCount={unreadCount}
+          onNavigate={(view, serviceId) => {
+            setCurrentView(view);
+            setExpandServiceId(serviceId || null);
+            setServicePage(1);
+          }}
+        />
+      )}
+
       {/* Services Grid */}
       {currentView === 'SERVICES' && (
       <div className="services-container">
-        {filteredServices.length === 0 ? (
+        {isLoadingServices ? (
+          <div className="services-loading">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="service-row-skeleton" />
+            ))}
+          </div>
+        ) : filteredServices.length === 0 ? (
           <div className="empty-state">
             <ClipboardList className="empty-icon" size={48} />
             <h3>No hay servicios</h3>
@@ -752,6 +804,8 @@ function AdminPage() {
                   onStatusChange={handleStatusChange}
                   onDelete={handleDeleteService}
                   onUpdate={handleUpdateService}
+                  defaultExpanded={expandServiceId === service.id}
+                  onExpanded={() => setExpandServiceId(null)}
                 />
               ))}
             </div>
@@ -979,14 +1033,7 @@ function AdminPage() {
         externalErrors={customerEditErrors}
       />
 
-      {/* Toast */}
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={closeToast}
-        />
-      )}
+      {ConfirmElement}
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { User, Mail, Phone, X, Save, Loader2, AlertCircle } from 'lucide-react';
 import './CustomerEditModal.css';
 
@@ -73,7 +74,7 @@ function CustomerEditModal({ isOpen, onClose, onSubmit, customer, isLoading, ext
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="modal-overlay" onClick={handleClose}>
       <div className="modal-content customer-edit-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
@@ -203,7 +204,8 @@ function CustomerEditModal({ isOpen, onClose, onSubmit, customer, isLoading, ext
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

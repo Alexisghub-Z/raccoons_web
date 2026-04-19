@@ -14,6 +14,10 @@ export class ServiceRepository extends IServiceRepository {
           evidence: true,
           statusHistory: {
             orderBy: { changedAt: 'desc' }
+          },
+          authorizationQuestions: {
+            orderBy: { createdAt: 'asc' },
+            include: { attachments: { orderBy: { createdAt: 'asc' } } }
           }
         }
       });
@@ -35,6 +39,10 @@ export class ServiceRepository extends IServiceRepository {
           evidence: true,
           statusHistory: {
             orderBy: { changedAt: 'desc' }
+          },
+          authorizationQuestions: {
+            orderBy: { createdAt: 'asc' },
+            include: { attachments: { orderBy: { createdAt: 'asc' } } }
           }
         }
       });
@@ -56,6 +64,10 @@ export class ServiceRepository extends IServiceRepository {
           evidence: true,
           statusHistory: {
             orderBy: { changedAt: 'desc' }
+          },
+          authorizationQuestions: {
+            orderBy: { createdAt: 'asc' },
+            include: { attachments: { orderBy: { createdAt: 'asc' } } }
           }
         },
         orderBy: { createdAt: 'desc' }
@@ -92,7 +104,10 @@ export class ServiceRepository extends IServiceRepository {
         include: {
           customer: true,
           evidence: true,
-          statusHistory: true
+          statusHistory: true,
+          authorizationQuestions: {
+            include: { attachments: { orderBy: { createdAt: 'asc' } } }
+          }
         }
       });
 
@@ -151,6 +166,10 @@ export class ServiceRepository extends IServiceRepository {
           evidence: true,
           statusHistory: {
             orderBy: { changedAt: 'desc' }
+          },
+          authorizationQuestions: {
+            orderBy: { createdAt: 'asc' },
+            include: { attachments: { orderBy: { createdAt: 'asc' } } }
           }
         }
       });
@@ -253,6 +272,9 @@ export class ServiceRepository extends IServiceRepository {
             evidence: true,
             statusHistory: {
               orderBy: { changedAt: 'desc' }
+            },
+            authorizationQuestions: {
+              orderBy: { createdAt: 'asc' }
             }
           },
           skip,
@@ -306,13 +328,137 @@ export class ServiceRepository extends IServiceRepository {
     }
   }
 
+  async getDashboardStats() {
+    try {
+      const now = new Date();
+
+      // Start of current week (Monday)
+      const startOfWeek = new Date(now);
+      startOfWeek.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+      startOfWeek.setHours(0, 0, 0, 0);
+
+      // Start of current month
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+      const [
+        statusCounts,
+        deliveredThisWeek,
+        customersThisMonth,
+        authCounts,
+        recentActivity,
+        recentAuthorizations
+      ] = await Promise.all([
+        // Conteos por estado (sección 2)
+        prisma.service.groupBy({
+          by: ['status'],
+          _count: { status: true }
+        }),
+
+        // Entregados esta semana (sección 1)
+        prisma.service.count({
+          where: {
+            status: 'DELIVERED',
+            updatedAt: { gte: startOfWeek }
+          }
+        }),
+
+        // Clientes atendidos este mes = servicios creados este mes con cliente único
+        prisma.service.findMany({
+          where: { createdAt: { gte: startOfMonth } },
+          select: { customerId: true },
+          distinct: ['customerId']
+        }),
+
+        // Conteos de autorizaciones por estado
+        prisma.authorizationQuestion.groupBy({
+          by: ['response'],
+          _count: { response: true }
+        }),
+
+        // Últimos 5 servicios con actividad (sección 3)
+        prisma.service.findMany({
+          take: 5,
+          orderBy: { updatedAt: 'desc' },
+          select: {
+            id: true,
+            code: true,
+            status: true,
+            motorcycle: true,
+            serviceType: true,
+            updatedAt: true,
+            customer: {
+              select: { firstName: true, lastName: true }
+            }
+          }
+        }),
+
+        // Últimas 6 autorizaciones (cualquier estado) ordenadas por actividad
+        prisma.authorizationQuestion.findMany({
+          take: 6,
+          orderBy: { updatedAt: 'desc' },
+          select: {
+            id: true,
+            question: true,
+            response: true,
+            respondedAt: true,
+            updatedAt: true,
+            service: {
+              select: {
+                id: true,
+                code: true,
+                motorcycle: true,
+                customer: { select: { firstName: true, lastName: true } }
+              }
+            }
+          }
+        })
+      ]);
+
+      // Armar conteos por estado
+      const flow = {
+        RECEIVED: 0,
+        IN_DIAGNOSIS: 0,
+        IN_REPAIR: 0,
+        READY_FOR_PICKUP: 0,
+        DELIVERED: 0,
+        CANCELLED: 0
+      };
+      statusCounts.forEach(c => { flow[c.status] = c._count.status; });
+
+      const activeServices = flow.RECEIVED + flow.IN_DIAGNOSIS + flow.IN_REPAIR + flow.READY_FOR_PICKUP;
+
+      // Armar conteos de autorizaciones
+      const authorizationStats = { PENDING: 0, AUTHORIZED: 0, REJECTED: 0 };
+      authCounts.forEach(c => { authorizationStats[c.response] = c._count.response; });
+
+      return {
+        summary: {
+          activeServices,
+          deliveredThisWeek,
+          customersThisMonth: customersThisMonth.length,
+          pendingAuthorizations: authorizationStats.PENDING
+        },
+        flow,
+        authorizationStats,
+        recentAuthorizations,
+        recentActivity
+      };
+    } catch (error) {
+      logger.error('Error getting dashboard stats:', error);
+      throw new DatabaseError('Error getting dashboard stats', error.message);
+    }
+  }
+
   async findByStatus(status) {
     try {
       const services = await prisma.service.findMany({
         where: { status },
         include: {
           customer: true,
-          evidence: true
+          evidence: true,
+          authorizationQuestions: {
+            include: { attachments: { orderBy: { createdAt: 'asc' } } }
+          }
         },
         orderBy: { createdAt: 'desc' }
       });

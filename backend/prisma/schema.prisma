@@ -78,10 +78,11 @@ model Service {
   updatedAt      DateTime      @updatedAt
 
   // Relations
-  customer       User              @relation("CustomerServices", fields: [customerId], references: [id])
-  evidence       ServiceEvidence[]
-  statusHistory  ServiceHistory[]
-  notifications  Notification[]
+  customer               User                    @relation("CustomerServices", fields: [customerId], references: [id])
+  evidence               ServiceEvidence[]
+  statusHistory          ServiceHistory[]
+  notifications          Notification[]
+  authorizationQuestions AuthorizationQuestion[]
 
   @@index([code])
   @@index([customerId])
@@ -207,6 +208,8 @@ enum NotificationType {
   APPOINTMENT_REMINDER
   APPOINTMENT_CONFIRMED
   APPOINTMENT_CANCELLED
+  AUTHORIZATION_REQUESTED
+  AUTHORIZATION_ANSWERED
   GENERAL
 }
 
@@ -222,4 +225,47 @@ enum NotificationStatus {
   SENT
   FAILED
   READ
+}
+
+// ============================================
+// AUTHORIZATION QUESTIONS
+// ============================================
+model AuthorizationQuestion {
+  id              String                @id @default(uuid())
+  serviceId       String
+  question        String
+  response        AuthorizationResponse @default(PENDING)
+  customerMessage String?
+  adminMessage    String?
+  adminMessageAt  DateTime?
+  respondedAt     DateTime?
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+
+  service     Service                    @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  attachments AuthorizationAttachment[]
+
+  @@index([serviceId])
+  @@map("authorization_questions")
+}
+
+model AuthorizationAttachment {
+  id         String   @id @default(uuid())
+  questionId String
+  type       String   // IMAGE or PDF
+  url        String
+  filename   String
+  createdAt  DateTime @default(now())
+
+  question AuthorizationQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+  @@map("authorization_attachments")
+}
+
+enum AuthorizationResponse {
+  PENDING
+  AUTHORIZED
+  REJECTED
+  WHATSAPP_CONTACT
 }

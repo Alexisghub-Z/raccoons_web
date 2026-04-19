@@ -1,11 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Bike, User, Phone, Wrench, FileText, Trash2, Clock, Edit, Image as ImageIcon, FileText as FilePdfIcon, ChevronRight, ChevronLeft, XCircle, Check, AlertCircle, ChevronDown, ChevronUp, MessageSquare, Copy } from 'lucide-react';
+import { Bike, User, Phone, Wrench, FileText, Trash2, Clock, Edit, Image as ImageIcon, FileText as FilePdfIcon, ChevronRight, ChevronLeft, XCircle, Check, AlertCircle, ChevronDown, ChevronUp, MessageSquare, Copy, Send, Paperclip, X, Loader2 } from 'lucide-react';
 import StatusBadge from './StatusBadge';
 import EvidenceUpload from './EvidenceUpload';
 import ServiceEditModal from './ServiceEditModal';
 import { serviceService } from '../../api/service.service';
 import { sendTrackingCodeWhatsApp, buildTrackingMessage } from '../../services/whatsappService';
+import AuthorizationQuestionForm from './AuthorizationQuestionForm';
+import { useToast } from './toast-context';
+import { useConfirm } from '../../hooks/useConfirm';
 import './ServiceCard.css';
 
 // Flujo principal de estados en orden
@@ -17,8 +20,11 @@ const STATUS_FLOW = [
   { value: 'DELIVERED',        label: 'Entregado',          shortLabel: 'Entregado',   icon: '🏍️', color: '#8b5cf6' },
 ];
 
-function ServiceCard({ service, onStatusChange, onDelete, onUpdate }) {
+function ServiceCard({ service, onStatusChange, onDelete, onUpdate, defaultExpanded, onExpanded }) {
+  const { showToast } = useToast();
+  const { confirm, ConfirmElement } = useConfirm();
   const [isExpanded, setIsExpanded] = useState(false);
+  const cardRef = useRef(null);
   const [isChangingStatus, setIsChangingStatus] = useState(false);
   const [showNotesModal, setShowNotesModal] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState(null);
@@ -26,6 +32,27 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate }) {
   const [evidences, setEvidences] = useState([]);
   const [loadingEvidences, setLoadingEvidences] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showAuthQuestionForm, setShowAuthQuestionForm] = useState(false);
+  const [authQuestions, setAuthQuestions] = useState(service.authorizationQuestions || []);
+  const [replyTexts, setReplyTexts] = useState({});
+  const [respondingQuestionId, setRespondingQuestionId] = useState(null);
+  const [replyingQuestionId, setReplyingQuestionId] = useState(null);
+  const [uploadingQuestionId, setUploadingQuestionId] = useState(null);
+  const [deletingAttachmentId, setDeletingAttachmentId] = useState(null);
+
+  useEffect(() => {
+    setAuthQuestions(service.authorizationQuestions || []);
+  }, [service.authorizationQuestions]);
+
+  useEffect(() => {
+    if (defaultExpanded) {
+      setIsExpanded(true);
+      setTimeout(() => {
+        cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        onExpanded?.();
+      }, 100);
+    }
+  }, [defaultExpanded]);
 
   useEffect(() => {
     if (isExpanded) {
@@ -51,15 +78,20 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate }) {
   };
 
   const handleDeleteEvidence = async (evidenceId) => {
-    const confirmDelete = window.confirm('¿Estás seguro de eliminar esta evidencia?');
-    if (!confirmDelete) return;
+    const confirmed = await confirm({
+      title: 'Eliminar evidencia',
+      message: '¿Estás seguro de eliminar esta evidencia?',
+      confirmText: 'Eliminar evidencia',
+      variant: 'danger',
+    });
+    if (!confirmed) return;
 
     try {
       await serviceService.deleteEvidence(service.id, evidenceId);
       loadEvidences();
     } catch (error) {
       console.error('Error deleting evidence:', error);
-      alert('Error al eliminar la evidencia: ' + error.message);
+      showToast('Error al eliminar la evidencia: ' + error.message, 'error');
     }
   };
 
@@ -94,12 +126,15 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate }) {
     setShowNotesModal(true);
   };
 
-  const handleDelete = (e) => {
+  const handleDelete = async (e) => {
     e.stopPropagation();
-    const confirmDelete = window.confirm(
-      `¿Estás seguro de eliminar el servicio ${service.code}?`
-    );
-    if (confirmDelete) {
+    const confirmed = await confirm({
+      title: 'Eliminar servicio',
+      message: `¿Estás seguro de eliminar el servicio ${service.code}?`,
+      confirmText: 'Eliminar servicio',
+      variant: 'danger',
+    });
+    if (confirmed) {
       onDelete(service.id);
     }
   };
@@ -112,7 +147,7 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate }) {
   const handleWhatsApp = (e) => {
     e.stopPropagation();
     if (!clientPhone) {
-      alert('Este cliente no tiene numero de telefono registrado.');
+      showToast('Este cliente no tiene número de teléfono registrado', 'warning');
       return;
     }
     sendTrackingCodeWhatsApp(clientPhone, service.code, service.customer.firstName, service.motorcycle, service.serviceType);
@@ -128,22 +163,98 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate }) {
     );
     try {
       await navigator.clipboard.writeText(message);
-      alert('Mensaje copiado al portapapeles');
+      showToast('Mensaje copiado al portapapeles', 'success', 1500);
     } catch {
-      // Fallback para navegadores sin clipboard API
       const textarea = document.createElement('textarea');
       textarea.value = message;
       document.body.appendChild(textarea);
       textarea.select();
       document.execCommand('copy');
       document.body.removeChild(textarea);
-      alert('Mensaje copiado al portapapeles');
+      showToast('Mensaje copiado al portapapeles', 'success', 1500);
     }
   };
 
   const handleSaveEdit = async (serviceId, formData) => {
     await onUpdate(serviceId, formData);
     setShowEditModal(false);
+  };
+
+  const handleCreateAuthQuestion = async (questionText) => {
+    try {
+      const result = await serviceService.createAuthorizationQuestion(service.id, questionText);
+      setShowAuthQuestionForm(false);
+      if (result) {
+        setAuthQuestions(prev => [result, ...prev]);
+      }
+    } catch (error) {
+      showToast('Error al crear pregunta: ' + error.message, 'error');
+    }
+  };
+
+  const handleRespondAuthQuestion = async (questionId, response) => {
+    setRespondingQuestionId(questionId);
+    try {
+      await serviceService.respondAuthorizationQuestion(questionId, response);
+      setAuthQuestions(prev => prev.map(q =>
+        q.id === questionId
+          ? { ...q, response, respondedAt: new Date().toISOString() }
+          : q
+      ));
+    } catch (error) {
+      showToast('Error al responder: ' + error.message, 'error');
+    } finally {
+      setRespondingQuestionId(null);
+    }
+  };
+
+  const handleReplyAuthQuestion = async (questionId) => {
+    const text = replyTexts[questionId]?.trim();
+    if (!text) return;
+    setReplyingQuestionId(questionId);
+    try {
+      await serviceService.replyAuthorizationQuestion(questionId, text);
+      setAuthQuestions(prev => prev.map(q =>
+        q.id === questionId ? { ...q, adminMessage: text } : q
+      ));
+      setReplyTexts(prev => ({ ...prev, [questionId]: '' }));
+    } catch (error) {
+      showToast('Error al enviar mensaje: ' + error.message, 'error');
+    } finally {
+      setReplyingQuestionId(null);
+    }
+  };
+
+  const handleUploadAttachments = async (questionId, files) => {
+    setUploadingQuestionId(questionId);
+    try {
+      const result = await serviceService.uploadAuthAttachments(questionId, files);
+      if (result) {
+        setAuthQuestions(prev => prev.map(q =>
+          q.id === questionId ? { ...q, attachments: result.attachments || [] } : q
+        ));
+      }
+    } catch (error) {
+      showToast('Error al subir archivos: ' + error.message, 'error');
+    } finally {
+      setUploadingQuestionId(null);
+    }
+  };
+
+  const handleDeleteAttachment = async (questionId, attachmentId) => {
+    setDeletingAttachmentId(attachmentId);
+    try {
+      await serviceService.deleteAuthAttachment(attachmentId);
+      setAuthQuestions(prev => prev.map(q =>
+        q.id === questionId
+          ? { ...q, attachments: (q.attachments || []).filter(a => a.id !== attachmentId) }
+          : q
+      ));
+    } catch (error) {
+      showToast('Error al eliminar archivo: ' + error.message, 'error');
+    } finally {
+      setDeletingAttachmentId(null);
+    }
   };
 
   const clientName = service.customer
@@ -166,7 +277,7 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate }) {
 
   return (
     <>
-      <div className={`service-row ${isCancelled ? 'service-row--cancelled' : ''} ${isExpanded ? 'service-row--expanded' : ''}`}>
+      <div ref={cardRef} className={`service-row ${isCancelled ? 'service-row--cancelled' : ''} ${isExpanded ? 'service-row--expanded' : ''}`}>
         {/* Fila principal - clickeable para expandir */}
         <div className="service-row-main" onClick={() => setIsExpanded(!isExpanded)}>
           {/* Indicador de color por estado */}
@@ -238,32 +349,204 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate }) {
               </div>
             )}
 
-            {/* Historial de notas por estado */}
-            {service.statusHistory?.some(h => h.notes) && (
-              <div className="detail-status-notes">
-                <h4 className="detail-status-notes-title">
-                  <MessageSquare size={14} />
-                  Notas del historial
-                </h4>
-                {[...service.statusHistory]
-                  .reverse()
-                  .filter(h => h.notes)
-                  .map((entry, i) => (
-                    <div key={i} className="detail-status-note-item">
-                      <span className="dsn-status">
-                        {STATUS_FLOW.find(s => s.value === entry.status)?.label || entry.status}
-                      </span>
-                      <p className="dsn-text">{entry.notes}</p>
-                      <span className="dsn-date">
-                        {new Date(entry.changedAt).toLocaleDateString('es-MX', {
-                          day: '2-digit', month: 'short', year: 'numeric',
-                          hour: '2-digit', minute: '2-digit'
-                        })}
-                      </span>
-                    </div>
-                  ))
+            {/* Historial unificado: notas + autorizaciones por etapa */}
+            {(() => {
+              const apiBase = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001';
+
+              const getStatusAtTime = (timestamp) => {
+                const sorted = [...(service.statusHistory || [])].sort(
+                  (a, b) => new Date(a.changedAt) - new Date(b.changedAt)
+                );
+                let active = sorted[0]?.status || 'RECEIVED';
+                for (const entry of sorted) {
+                  if (new Date(entry.changedAt) <= new Date(timestamp)) active = entry.status;
+                  else break;
                 }
-              </div>
+                return active;
+              };
+
+              // Agrupar autorizaciones por etapa
+              const authByStep = {};
+              authQuestions?.forEach(q => {
+                const step = getStatusAtTime(q.createdAt);
+                if (!authByStep[step]) authByStep[step] = [];
+                authByStep[step].push(q);
+              });
+
+              // Construir lista de etapas que tienen nota O autorizaciones, en orden del flujo
+              const stepOrder = STATUS_FLOW.map(s => s.value);
+              const relevantSteps = stepOrder.filter(stepKey => {
+                const histEntry = service.statusHistory?.find(h => h.status === stepKey);
+                return (histEntry?.notes) || authByStep[stepKey]?.length > 0;
+              });
+
+              if (relevantSteps.length === 0) return null;
+
+              return (
+                <div className="detail-status-notes">
+                  <h4 className="detail-status-notes-title">
+                    <MessageSquare size={14} />
+                    Historial
+                  </h4>
+
+                  {relevantSteps.map(stepKey => {
+                    const stepMeta = STATUS_FLOW.find(s => s.value === stepKey);
+                    const histEntry = service.statusHistory?.find(h => h.status === stepKey);
+                    const stepQuestions = authByStep[stepKey] || [];
+                    const isCurrentStep = stepKey === service.status;
+
+                    return (
+                      <div key={stepKey} className="dsn-step-block" style={{ '--step-color': stepMeta?.color || '#6b7280' }}>
+                        {/* Header de etapa */}
+                        <div className="dsn-step-header">
+                          <span className="dsn-step-dot" />
+                          <span className="dsn-step-name">{stepMeta?.label || stepKey}</span>
+                          {histEntry?.changedAt && (
+                            <span className="dsn-step-date">
+                              {new Date(histEntry.changedAt).toLocaleDateString('es-MX', {
+                                day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+                              })}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Nota del estado */}
+                        {histEntry?.notes && (
+                          <div className="dsn-note">
+                            <p className="dsn-text">{histEntry.notes}</p>
+                          </div>
+                        )}
+
+                        {/* Autorizaciones de esta etapa */}
+                        {stepQuestions.map(q => (
+                          <div key={q.id} className={`auth-q-thread ${!isCurrentStep ? 'auth-q-thread--history' : ''}`}>
+
+                            {/* Mensajes en orden cronológico */}
+                            {[
+                              { type: 'admin', text: q.question, time: q.createdAt, isQuestion: true, attachments: q.attachments },
+                              q.adminMessage ? { type: 'admin', text: q.adminMessage, time: q.adminMessageAt || q.updatedAt } : null,
+                              q.customerMessage ? { type: 'customer', text: q.customerMessage, time: q.respondedAt } : null,
+                            ].filter(Boolean).sort((a, b) => new Date(a.time) - new Date(b.time)).map((msg, idx) => (
+                              msg.type === 'admin' ? (
+                                <div key={idx} className="auth-q-msg auth-q-msg--admin">
+                                  <span className="auth-q-msg-label">Taller</span>
+                                  <p className="auth-q-msg-text">{msg.text}</p>
+                                  {msg.isQuestion && msg.attachments?.length > 0 && (
+                                    <div className="auth-q-attachments">
+                                      {msg.attachments.map(a => (
+                                        <div key={a.id} className="auth-q-attachment">
+                                          {a.type === 'IMAGE' ? (
+                                            <img src={`${apiBase}${a.url}`} alt={a.filename} className="auth-q-attachment-img"
+                                              onClick={() => window.open(`${apiBase}${a.url}`, '_blank')} />
+                                          ) : (
+                                            <a href={`${apiBase}${a.url}`} target="_blank" rel="noopener noreferrer" className="auth-q-attachment-pdf">
+                                              <FilePdfIcon size={14} /><span>{a.filename}</span>
+                                            </a>
+                                          )}
+                                          {isCurrentStep && (
+                                            <button className="auth-q-attachment-delete"
+                                              onClick={() => handleDeleteAttachment(q.id, a.id)}
+                                              disabled={deletingAttachmentId === a.id} title="Eliminar">
+                                              {deletingAttachmentId === a.id ? <Loader2 size={10} className="spinning" /> : <X size={10} />}
+                                            </button>
+                                          )}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
+                                  <span className="auth-q-msg-time">{new Date(msg.time).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
+                                </div>
+                              ) : (
+                                <div key={idx} className="auth-q-msg auth-q-msg--customer">
+                                  <span className="auth-q-msg-label">Cliente</span>
+                                  <p className="auth-q-msg-text">{msg.text}</p>
+                                  {msg.time && <span className="auth-q-msg-time">{new Date(msg.time).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>}
+                                </div>
+                              )
+                            ))}
+
+                            {/* Badge de estado */}
+                            <span className={`auth-q-badge auth-q-badge--${(q.response || 'pending').toLowerCase()}`}>
+                              {q.response === 'PENDING' && 'Pendiente'}
+                              {q.response === 'AUTHORIZED' && 'Autorizado'}
+                              {q.response === 'REJECTED' && 'No autorizado'}
+                              {q.response === 'WHATSAPP_CONTACT' && 'Solicitó contacto'}
+                            </span>
+
+                            {/* Toolbar */}
+                            {isCurrentStep && (
+                              <div className="auth-q-toolbar">
+                                {!q.adminMessage && (
+                                  <>
+                                    <input
+                                      type="text"
+                                      className="auth-q-reply-input"
+                                      placeholder="Responder al cliente..."
+                                      value={replyTexts[q.id] || ''}
+                                      onChange={(e) => setReplyTexts(prev => ({ ...prev, [q.id]: e.target.value }))}
+                                      maxLength={500}
+                                      disabled={replyingQuestionId === q.id}
+                                      onKeyDown={(e) => e.key === 'Enter' && handleReplyAuthQuestion(q.id)}
+                                    />
+                                    <button className="auth-q-toolbar-btn auth-q-toolbar-btn--send"
+                                      onClick={() => handleReplyAuthQuestion(q.id)}
+                                      disabled={!replyTexts[q.id]?.trim() || replyingQuestionId === q.id} title="Enviar">
+                                      {replyingQuestionId === q.id
+                                        ? <Loader2 size={13} className="spinning" />
+                                        : <Send size={13} />}
+                                    </button>
+                                  </>
+                                )}
+                                <label className={`auth-q-toolbar-btn auth-q-toolbar-btn--attach ${uploadingQuestionId === q.id ? 'is-loading' : ''}`} title="Adjuntar">
+                                  {uploadingQuestionId === q.id
+                                    ? <Loader2 size={13} className="spinning" />
+                                    : <Paperclip size={13} />}
+                                  <input type="file" multiple accept="image/*,application/pdf" style={{ display: 'none' }}
+                                    disabled={uploadingQuestionId === q.id}
+                                    onChange={(e) => {
+                                      const files = Array.from(e.target.files);
+                                      if (files.length > 0) handleUploadAttachments(q.id, files);
+                                      e.target.value = '';
+                                    }} />
+                                </label>
+                                {q.response === 'PENDING' && (
+                                  <>
+                                    <button className="auth-q-toolbar-btn auth-q-toolbar-btn--authorize"
+                                      onClick={() => handleRespondAuthQuestion(q.id, 'AUTHORIZED')}
+                                      disabled={respondingQuestionId === q.id}
+                                      title="Autorizar">
+                                      {respondingQuestionId === q.id
+                                        ? <Loader2 size={13} className="spinning" />
+                                        : <Check size={13} />}
+                                    </button>
+                                    <button className="auth-q-toolbar-btn auth-q-toolbar-btn--reject"
+                                      onClick={() => handleRespondAuthQuestion(q.id, 'REJECTED')}
+                                      disabled={respondingQuestionId === q.id}
+                                      title="Rechazar">
+                                      <XCircle size={13} />
+                                    </button>
+                                  </>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+
+            {/* Boton solicitar autorizacion */}
+            {!isCancelled && service.status !== 'DELIVERED' && (
+              <button
+                className="auth-question-trigger-btn"
+                onClick={() => setShowAuthQuestionForm(true)}
+              >
+                <AlertCircle size={15} />
+                Solicitar autorizacion al cliente
+              </button>
             )}
 
             {/* Stepper de progreso */}
@@ -352,6 +635,20 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate }) {
             )}
 
             {/* Evidencias */}
+            {loadingEvidences && evidences.length === 0 && (
+              <div className="detail-evidences">
+                <h4 className="evidences-title">
+                  <ImageIcon size={16} />
+                  Evidencias
+                </h4>
+                <div className="evidences-grid">
+                  {[0, 1, 2].map(i => (
+                    <div key={i} className="evidence-item evidence-item--skeleton" />
+                  ))}
+                </div>
+              </div>
+            )}
+
             {evidences.length > 0 && (
               <div className="detail-evidences">
                 <h4 className="evidences-title">
@@ -366,7 +663,7 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate }) {
                         onClick={() => handleDeleteEvidence(evidence.id)}
                         title="Eliminar evidencia"
                       >
-                        <Trash2 size={14} />
+                        <Trash2 size={14} aria-hidden="true" />
                       </button>
                       {evidence.type === 'IMAGE' ? (
                         <img
@@ -452,6 +749,15 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate }) {
         service={service}
         onSave={handleSaveEdit}
       />
+
+      {showAuthQuestionForm && (
+        <AuthorizationQuestionForm
+          onSubmit={handleCreateAuthQuestion}
+          onCancel={() => setShowAuthQuestionForm(false)}
+        />
+      )}
+
+      {ConfirmElement}
     </>
   );
 }
