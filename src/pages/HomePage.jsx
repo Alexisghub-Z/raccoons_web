@@ -5,6 +5,7 @@ import Stats from '../components/Stats';
 import MosaicGallery from '../components/MosaicGallery';
 import BeforeAfterGallery from '../components/BeforeAfterGallery';
 import WorkMotoFleet from '../components/WorkMotoFleet';
+import ComingSoonSection from '../components/ComingSoonSection';
 import {
   Wrench,
   Settings,
@@ -136,6 +137,9 @@ function HomePage() {
           <span>Scroll</span>
         </div>
       </section>
+
+      {/* Coming Soon: Venta de Motos y Refacciones */}
+      <ComingSoonSection />
 
       {/* Stats Section */}
       <Stats />

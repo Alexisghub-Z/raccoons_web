@@ -1,0 +1,206 @@
+/* ================================================================
+   COMING SOON SECTION — Banner diagonal
+   ================================================================ */
+
+.cs-section {
+  height: 500px;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cs-section.cs-animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Panels ── */
+.cs-panel {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.cs-panel--motos {
+  clip-path: polygon(0 0, 53% 0, 47% 100%, 0 100%);
+}
+
+.cs-panel--refacciones {
+  clip-path: polygon(53% 0, 100% 0, 100% 100%, 47% 100%);
+}
+
+/* ── Imagen sin zoom base, hover mínimo ── */
+.cs-panel-img {
+  position: absolute;
+  inset: -1px;           /* evita bordes blancos por antialiasing */
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+              filter 0.5s ease;
+  filter: brightness(0.72) saturate(0.88);
+}
+
+.cs-panel:hover .cs-panel-img {
+  transform: scale(1.015);
+  filter: brightness(0.58) saturate(1);
+}
+
+.cs-panel-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.72) 0%,
+    rgba(0, 0, 0, 0.2) 50%,
+    transparent 100%
+  );
+  transition: background 0.4s ease;
+  z-index: 1;
+}
+
+.cs-panel:hover .cs-panel-overlay {
+  background: linear-gradient(
+    to top,
+    rgba(15, 40, 110, 0.82) 0%,
+    rgba(30, 64, 175, 0.35) 55%,
+    transparent 100%
+  );
+}
+
+/* ── SVG diagonal line ── */
+.cs-diagonal {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* ── Content ── */
+.cs-panel-content {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 2.2rem 2.5rem;
+  gap: 0.25rem;
+}
+
+.cs-panel--refacciones .cs-panel-content {
+  padding-left: 55%;
+}
+
+/* ── "Próximamente" — texto suelto, no badge ── */
+.cs-label {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  display: block;
+  transition: color 0.3s ease;
+}
+
+.cs-panel:hover .cs-label {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ── Título grande ── */
+.cs-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 400;
+  letter-spacing: 4px;
+  color: #ffffff;
+  margin: 0.2rem 0 0.6rem;
+  line-height: 1.05;
+  transition: letter-spacing 0.4s ease;
+}
+
+.cs-panel:hover .cs-title {
+  letter-spacing: 5px;
+}
+
+/* ── Ícono + línea decorativa ── */
+.cs-icon-line {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.3s ease;
+}
+
+.cs-panel:hover .cs-icon-line {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.cs-dot-line {
+  display: block;
+  height: 1px;
+  width: 40px;
+  background: currentColor;
+  transition: width 0.4s ease;
+}
+
+.cs-panel:hover .cs-dot-line {
+  width: 64px;
+}
+
+/* ── Responsive: móvil lado a lado ── */
+@media (max-width: 480px) {
+  .cs-section {
+    height: 340px;
+  }
+
+  .cs-panel--motos {
+    clip-path: polygon(0 0, 54% 0, 46% 100%, 0 100%);
+  }
+
+  .cs-panel--refacciones {
+    clip-path: polygon(54% 0, 100% 0, 100% 100%, 46% 100%);
+  }
+
+  .cs-panel-content {
+    padding: 1.4rem 1.2rem;
+  }
+
+  .cs-panel--refacciones .cs-panel-content {
+    padding-left: 56%;
+  }
+
+  .cs-title {
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+  }
+
+  .cs-label {
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+  }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .cs-section {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .cs-soon-dot { animation: none; }
+
+  .cs-panel-img { transition: none; }
+
+  .cs-panel:hover .cs-panel-img { transform: none; }
+}
