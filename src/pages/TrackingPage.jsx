@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Download, Search, Inbox, Cog, CheckCircle, Bike, Package, Wrench, Image as ImageIcon, FileText as FilePdfIcon, ExternalLink, Check, User, Calendar, Settings, Facebook, Instagram, X } from 'lucide-react';
+import { Download, Search, Inbox, Cog, CheckCircle, Bike, Package, Wrench, Image as ImageIcon, FileText as FilePdfIcon, ExternalLink, Check, User, Calendar, Settings, Facebook, Instagram, X, Video } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import Header from '../components/Header';
 import InteractiveGrid from '../components/InteractiveGrid';
@@ -397,7 +397,7 @@ function TrackingPage() {
                     <ImageIcon size={18} />
                     Evidencias del trabajo ({serviceData.evidence.length})
                   </h3>
-                  <p className="evidences-subtitle">Fotos y documentos del trabajo realizado</p>
+                  <p className="evidences-subtitle">Fotos, videos y documentos del trabajo realizado</p>
                   <div className="evidences-grid">
                     {serviceData.evidence.map((evidence, idx) => (
                       <div key={evidence.id || idx} className="evidence-card">
@@ -419,6 +419,16 @@ function TrackingPage() {
                               <span>Ver completa</span>
                             </a>
                           </div>
+                        ) : evidence.type === 'VIDEO' ? (
+                          <div className="evidence-video-container">
+                            <video
+                              src={`${import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${evidence.url}`}
+                              className="evidence-video"
+                              controls
+                              preload="metadata"
+                              playsInline
+                            />
+                          </div>
                         ) : (
                           <a
                             href={`${import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${evidence.url}`}
@@ -429,6 +439,16 @@ function TrackingPage() {
                             <FilePdfIcon size={28} />
                             <span className="pdf-label">PDF</span>
                             <span className="pdf-action">Abrir</span>
+                          </a>
+                        )}
+                        {evidence.type === 'VIDEO' && (
+                          <a
+                            href={`${import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${evidence.url}`}
+                            download
+                            className="evidence-video-download"
+                          >
+                            <Download size={13} />
+                            <span>Descargar video</span>
                           </a>
                         )}
                         {evidence.description && (

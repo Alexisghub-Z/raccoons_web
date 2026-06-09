@@ -23,7 +23,7 @@ const storage = multer.diskStorage({
   }
 });
 
-// Filtro de archivos - solo imágenes y PDFs
+// Filtro de archivos - imágenes, PDFs y videos
 const fileFilter = (req, file, cb) => {
   const allowedMimes = [
     'image/jpeg',
@@ -31,13 +31,18 @@ const fileFilter = (req, file, cb) => {
     'image/png',
     'image/gif',
     'image/webp',
-    'application/pdf'
+    'application/pdf',
+    'video/mp4',
+    'video/quicktime',
+    'video/x-msvideo',
+    'video/webm',
+    'video/x-matroska',
   ];
 
   if (allowedMimes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error('Tipo de archivo no permitido. Solo se permiten imágenes (JPEG, PNG, GIF, WEBP) y PDFs.'), false);
+    cb(new Error('Tipo de archivo no permitido. Solo se permiten imágenes (JPEG, PNG, GIF, WEBP), PDFs y videos (MP4, MOV, AVI, WEBM, MKV).'), false);
   }
 };
 
@@ -62,7 +67,7 @@ export const uploadEvidence = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: {
-    fileSize: 10 * 1024 * 1024 // 10MB máximo
+    fileSize: 200 * 1024 * 1024 // 200MB máximo (soporta videos)
   }
 }).array('files', 10); // Máximo 10 archivos
 
@@ -80,7 +85,7 @@ export const handleMulterError = (err, req, res, next) => {
       return res.status(400).json({
         success: false,
         error: {
-          message: 'El archivo es demasiado grande. Tamaño máximo: 10MB',
+          message: 'El archivo es demasiado grande. Tamaño máximo: 200MB para videos, 10MB para imágenes/PDFs',
           code: 'FILE_TOO_LARGE'
         }
       });

@@ -208,7 +208,11 @@ export class ServiceController {
       const evidences = [];
       for (const file of files) {
         const evidenceData = {
-          type: file.mimetype.startsWith('image/') ? 'IMAGE' : 'PDF',
+          type: file.mimetype.startsWith('image/')
+            ? 'IMAGE'
+            : file.mimetype.startsWith('video/')
+              ? 'VIDEO'
+              : 'PDF',
           url: `/uploads/evidence/${file.filename}`,
           description: description || `Evidencia - ${file.originalname}`
         };

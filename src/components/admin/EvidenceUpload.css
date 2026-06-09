@@ -110,6 +110,32 @@
   word-break: break-word;
 }
 
+.evidence-preview-video {
+  width: 100%;
+  height: 120px;
+  position: relative;
+  background: #111827;
+  overflow: hidden;
+}
+
+.evidence-preview-video-el {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.evidence-preview-video-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+  color: white;
+  pointer-events: none;
+}
+
 .evidence-remove-btn {
   position: absolute;
   top: 0.25rem;
@@ -202,6 +228,10 @@
   }
 
   .evidence-preview-pdf {
+    height: 80px;
+  }
+
+  .evidence-preview-video {
     height: 80px;
   }
 }

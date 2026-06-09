@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Bike, User, Phone, Wrench, FileText, Trash2, Clock, Edit, Image as ImageIcon, FileText as FilePdfIcon, ChevronRight, ChevronLeft, XCircle, Check, AlertCircle, ChevronDown, ChevronUp, MessageSquare, Copy, Send, Paperclip, X, Loader2 } from 'lucide-react';
+import { Bike, User, Phone, Wrench, FileText, Trash2, Clock, Edit, Image as ImageIcon, FileText as FilePdfIcon, ChevronRight, ChevronLeft, XCircle, Check, AlertCircle, ChevronDown, ChevronUp, MessageSquare, Copy, Send, Paperclip, X, Loader2, Pencil, Video } from 'lucide-react';
 import StatusBadge from './StatusBadge';
 import EvidenceUpload from './EvidenceUpload';
 import ServiceEditModal from './ServiceEditModal';
@@ -37,6 +37,8 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate, defaultExpan
   const [replyTexts, setReplyTexts] = useState({});
   const [respondingQuestionId, setRespondingQuestionId] = useState(null);
   const [replyingQuestionId, setReplyingQuestionId] = useState(null);
+  const [editingQuestionId, setEditingQuestionId] = useState(null);
+  const [editTexts, setEditTexts] = useState({});
   const [uploadingQuestionId, setUploadingQuestionId] = useState(null);
   const [deletingAttachmentId, setDeletingAttachmentId] = useState(null);
 
@@ -220,6 +222,31 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate, defaultExpan
       setReplyTexts(prev => ({ ...prev, [questionId]: '' }));
     } catch (error) {
       showToast('Error al enviar mensaje: ' + error.message, 'error');
+    } finally {
+      setReplyingQuestionId(null);
+    }
+  };
+
+  const handleEditAdminMessage = async (questionId, isQuestion) => {
+    const text = editTexts[questionId]?.trim();
+    if (!text) return;
+    setReplyingQuestionId(questionId);
+    try {
+      if (isQuestion) {
+        await serviceService.editAuthorizationQuestion(questionId, text);
+        setAuthQuestions(prev => prev.map(q =>
+          q.id === questionId ? { ...q, question: text } : q
+        ));
+      } else {
+        await serviceService.replyAuthorizationQuestion(questionId, text);
+        setAuthQuestions(prev => prev.map(q =>
+          q.id === questionId ? { ...q, adminMessage: text, adminMessageAt: new Date().toISOString() } : q
+        ));
+      }
+      setEditingQuestionId(null);
+      setEditTexts(prev => ({ ...prev, [questionId]: '' }));
+    } catch (error) {
+      showToast('Error al editar mensaje: ' + error.message, 'error');
     } finally {
       setReplyingQuestionId(null);
     }
@@ -430,7 +457,32 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate, defaultExpan
                               msg.type === 'admin' ? (
                                 <div key={idx} className="auth-q-msg auth-q-msg--admin">
                                   <span className="auth-q-msg-label">Taller</span>
-                                  <p className="auth-q-msg-text">{msg.text}</p>
+                                  {/* Modo edición */}
+                                  {editingQuestionId === `${q.id}-${msg.isQuestion ? 'q' : 'a'}` ? (
+                                    <div className="auth-q-edit-compose">
+                                      <textarea
+                                        className="auth-q-reply-input"
+                                        value={editTexts[q.id] || ''}
+                                        onChange={e => setEditTexts(prev => ({ ...prev, [q.id]: e.target.value }))}
+                                        maxLength={500}
+                                        rows={2}
+                                        autoFocus
+                                      />
+                                      <div className="auth-q-edit-actions">
+                                        <button className="auth-q-cancel-btn" onClick={() => { setEditingQuestionId(null); setEditTexts(prev => ({ ...prev, [q.id]: '' })); }}>
+                                          Cancelar
+                                        </button>
+                                        <button className="auth-q-save-btn"
+                                          onClick={() => handleEditAdminMessage(q.id, msg.isQuestion)}
+                                          disabled={!editTexts[q.id]?.trim() || replyingQuestionId === q.id}>
+                                          {replyingQuestionId === q.id ? <Loader2 size={13} className="spinning" /> : <Check size={13} />}
+                                          Guardar
+                                        </button>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <p className="auth-q-msg-text">{msg.text}</p>
+                                  )}
                                   {msg.isQuestion && msg.attachments?.length > 0 && (
                                     <div className="auth-q-attachments">
                                       {msg.attachments.map(a => (
@@ -454,7 +506,15 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate, defaultExpan
                                       ))}
                                     </div>
                                   )}
-                                  <span className="auth-q-msg-time">{new Date(msg.time).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
+                                  <div className="auth-q-msg-footer">
+                                    <span className="auth-q-msg-time">{new Date(msg.time).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
+                                    {q.response === 'PENDING' && editingQuestionId !== `${q.id}-${msg.isQuestion ? 'q' : 'a'}` && (
+                                      <button className="auth-q-edit-btn" title="Editar mensaje"
+                                        onClick={() => { setEditingQuestionId(`${q.id}-${msg.isQuestion ? 'q' : 'a'}`); setEditTexts(prev => ({ ...prev, [q.id]: msg.text })); }}>
+                                        <Pencil size={12} strokeWidth={2} />
+                                      </button>
+                                    )}
+                                  </div>
                                 </div>
                               ) : (
                                 <div key={idx} className="auth-q-msg auth-q-msg--customer">
@@ -658,30 +718,58 @@ function ServiceCard({ service, onStatusChange, onDelete, onUpdate, defaultExpan
                 <div className="evidences-grid">
                   {evidences.map((evidence, index) => (
                     <div key={evidence.id || index} className="evidence-item">
-                      <button
-                        className="evidence-delete-btn"
-                        onClick={() => handleDeleteEvidence(evidence.id)}
-                        title="Eliminar evidencia"
-                      >
-                        <Trash2 size={14} aria-hidden="true" />
-                      </button>
                       {evidence.type === 'IMAGE' ? (
-                        <img
-                          src={`${import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${evidence.url}`}
-                          alt={evidence.description || 'Evidencia'}
-                          className="evidence-image"
-                          onClick={() => window.open(`${import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${evidence.url}`, '_blank')}
-                        />
+                        <>
+                          <button
+                            className="evidence-delete-btn"
+                            onClick={() => handleDeleteEvidence(evidence.id)}
+                            title="Eliminar evidencia"
+                          >
+                            <Trash2 size={14} aria-hidden="true" />
+                          </button>
+                          <img
+                            src={`${import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${evidence.url}`}
+                            alt={evidence.description || 'Evidencia'}
+                            className="evidence-image"
+                            onClick={() => window.open(`${import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${evidence.url}`, '_blank')}
+                          />
+                        </>
+                      ) : evidence.type === 'VIDEO' ? (
+                        <div className="evidence-video-wrapper">
+                          <button
+                            className="evidence-delete-btn"
+                            onClick={() => handleDeleteEvidence(evidence.id)}
+                            title="Eliminar evidencia"
+                          >
+                            <Trash2 size={14} aria-hidden="true" />
+                          </button>
+                          <video
+                            src={`${import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${evidence.url}`}
+                            className="evidence-video"
+                            controls
+                            preload="metadata"
+                            playsInline
+                          />
+                        </div>
                       ) : (
-                        <a
-                          href={`${import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${evidence.url}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="evidence-pdf"
-                        >
-                          <FilePdfIcon size={24} />
-                          <span>PDF</span>
-                        </a>
+                        <>
+                          <button
+                            className="evidence-delete-btn"
+                            onClick={() => handleDeleteEvidence(evidence.id)}
+                            title="Eliminar evidencia"
+                          >
+                            <Trash2 size={14} aria-hidden="true" />
+                          </button>
+                          <a
+                            href={`${import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${evidence.url}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="evidence-pdf"
+                          >
+                            <FilePdfIcon size={24} />
+                            <span>PDF</span>
+                          </a>
+                        </>
                       )}
                       {evidence.description && (
                         <p className="evidence-description">{evidence.description}</p>

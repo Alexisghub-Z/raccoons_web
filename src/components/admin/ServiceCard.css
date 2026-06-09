@@ -434,8 +434,91 @@
 .auth-q-msg-time {
   font-size: 0.5625rem;
   color: #9ca3af;
-  margin-top: 0.125rem;
+}
+
+.auth-q-msg-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.2rem;
   align-self: flex-end;
+}
+
+.auth-q-edit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 2px 4px;
+  cursor: pointer;
+  color: #9ca3af;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.auth-q-edit-btn:hover {
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.08);
+}
+
+.auth-q-edit-compose {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.auth-q-edit-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  justify-content: flex-end;
+}
+
+.auth-q-cancel-btn {
+  font-family: var(--font-body, system-ui);
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 0.28rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  background: transparent;
+  cursor: pointer;
+  color: #6b7280;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.auth-q-cancel-btn:hover {
+  background: #f3f4f6;
+}
+
+.auth-q-save-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-body, system-ui);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.28rem 0.65rem;
+  border-radius: 6px;
+  border: none;
+  background: #3b82f6;
+  color: white;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.auth-q-save-btn:hover {
+  background: #2563eb;
+}
+
+.auth-q-save-btn:disabled {
+  background: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
 }
 
 .auth-q-msg--admin {
@@ -922,7 +1005,8 @@
   padding: 0;
 }
 
-.evidence-item:hover .evidence-delete-btn {
+.evidence-item:hover .evidence-delete-btn,
+.evidence-video-wrapper:hover .evidence-delete-btn {
   opacity: 1;
   transform: scale(1);
 }
@@ -937,6 +1021,21 @@
   height: 100px;
   object-fit: cover;
   cursor: pointer;
+  display: block;
+}
+
+.evidence-video-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100px;
+  background: #111827;
+  overflow: hidden;
+}
+
+.evidence-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   display: block;
 }
 

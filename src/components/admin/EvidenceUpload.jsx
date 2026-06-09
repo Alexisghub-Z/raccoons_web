@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Upload, X, FileText, Image, Loader2, Trash2 } from 'lucide-react';
+import { Upload, X, FileText, Image, Loader2, Trash2, Video } from 'lucide-react';
 import { serviceService } from '../../api/service.service';
 import './EvidenceUpload.css';
 
@@ -22,22 +22,24 @@ function EvidenceUpload({ serviceId, onUploadSuccess }) {
     const validFiles = [];
     for (const file of files) {
       const isImage = file.type.startsWith('image/');
+      const isVideo = file.type.startsWith('video/');
       const isPDF = file.type === 'application/pdf';
 
-      if (!isImage && !isPDF) {
-        setUploadError('Solo se permiten imágenes y PDFs');
+      if (!isImage && !isVideo && !isPDF) {
+        setUploadError('Solo se permiten imágenes, videos y PDFs');
         continue;
       }
 
-      if (file.size > 10 * 1024 * 1024) {
-        setUploadError('Cada archivo debe pesar máximo 10MB');
+      const maxSize = isVideo ? 200 * 1024 * 1024 : 10 * 1024 * 1024;
+      if (file.size > maxSize) {
+        setUploadError(isVideo ? 'Cada video debe pesar máximo 200MB' : 'Cada imagen/PDF debe pesar máximo 10MB');
         continue;
       }
 
       validFiles.push({
         file,
-        preview: isImage ? URL.createObjectURL(file) : null,
-        type: isImage ? 'IMAGE' : 'PDF'
+        preview: (isImage || isVideo) ? URL.createObjectURL(file) : null,
+        type: isImage ? 'IMAGE' : isVideo ? 'VIDEO' : 'PDF'
       });
     }
 
@@ -85,9 +87,9 @@ function EvidenceUpload({ serviceId, onUploadSuccess }) {
       } else if (error.message === 'NO_AUTH') {
         setUploadError('No estás autenticado. Por favor inicia sesión.');
       } else if (error.message.includes('Tipo de archivo')) {
-        setUploadError('Solo se permiten imágenes (JPG, PNG, GIF, WEBP) y archivos PDF');
-      } else if (error.message.includes('tamaño')) {
-        setUploadError('Uno o más archivos exceden el tamaño máximo de 10MB');
+        setUploadError('Solo se permiten imágenes (JPG, PNG, GIF, WEBP), PDFs y videos (MP4, MOV, WEBM, AVI, MKV)');
+      } else if (error.message.includes('tamaño') || error.message.includes('grande')) {
+        setUploadError('Archivo demasiado grande. Máximo 200MB para videos, 10MB para imágenes/PDFs');
       } else if (error.message.includes('máximo')) {
         setUploadError('Se excedió el límite máximo de archivos permitidos');
       } else {
@@ -106,7 +108,7 @@ function EvidenceUpload({ serviceId, onUploadSuccess }) {
       </div>
 
       <p className="evidence-hint">
-        Sube imágenes o PDFs del trabajo realizado (máximo 10 archivos, 10MB cada uno)
+        Sube imágenes, PDFs o videos del trabajo (máx. 10 archivos · imágenes/PDFs: 10MB · videos: 200MB)
       </p>
 
       {/* Zona de selección de archivos */}
@@ -116,14 +118,14 @@ function EvidenceUpload({ serviceId, onUploadSuccess }) {
       >
         <Upload size={32} />
         <p>Click para seleccionar archivos</p>
-        <span className="dropzone-hint">Imágenes (JPG, PNG, GIF, WEBP) o PDFs</span>
+        <span className="dropzone-hint">Imágenes (JPG, PNG, WEBP), PDFs o Videos (MP4, MOV, WEBM)</span>
       </div>
 
       <input
         ref={fileInputRef}
         type="file"
         multiple
-        accept="image/*,application/pdf"
+        accept="image/*,application/pdf,video/mp4,video/quicktime,video/webm,video/x-msvideo,video/x-matroska"
         onChange={handleFileSelect}
         style={{ display: 'none' }}
       />
@@ -143,6 +145,18 @@ function EvidenceUpload({ serviceId, onUploadSuccess }) {
                     e.target.nextSibling?.style && (e.target.nextSibling.style.display = 'flex');
                   }}
                 />
+              ) : fileObj.type === 'VIDEO' ? (
+                <div className="evidence-preview-video">
+                  <video
+                    src={fileObj.preview}
+                    className="evidence-preview-video-el"
+                    muted
+                    preload="metadata"
+                  />
+                  <div className="evidence-preview-video-overlay">
+                    <Video size={20} />
+                  </div>
+                </div>
               ) : (
                 <div className="evidence-preview-pdf">
                   <FileText size={32} />
