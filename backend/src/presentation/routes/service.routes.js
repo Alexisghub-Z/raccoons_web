@@ -5,7 +5,7 @@ import { validate } from '../middlewares/validation.middleware.js';
 import { authenticate, authorize } from '../middlewares/auth.middleware.js';
 import { uploadEvidence, uploadAuthAttachments, handleMulterError } from '../middlewares/upload.middleware.js';
 import { createServiceSchema, updateServiceSchema, updateServiceStatusSchema } from '../validators/service.validators.js';
-import { createAuthQuestionSchema, respondAuthQuestionSchema, replyAuthQuestionSchema } from '../validators/authorization-question.validators.js';
+import { createAuthQuestionSchema, respondAuthQuestionSchema, replyAuthQuestionSchema, editAuthQuestionSchema } from '../validators/authorization-question.validators.js';
 
 const router = Router();
 const serviceController = new ServiceController();
@@ -33,6 +33,13 @@ router.get(
 );
 
 router.get(
+  '/customers/search',
+  authenticate,
+  authorize('ADMIN', 'MECHANIC'),
+  (req, res, next) => serviceController.searchCustomers(req, res, next)
+);
+
+router.get(
   '/dashboard',
   authenticate,
   authorize('ADMIN', 'MECHANIC'),
@@ -49,6 +56,15 @@ router.put(
   '/authorization-questions/:questionId/respond',
   validate(respondAuthQuestionSchema),
   (req, res, next) => authQuestionController.respond(req, res, next)
+);
+
+// Endpoint admin para editar texto de la pregunta
+router.put(
+  '/authorization-questions/:questionId/edit-question',
+  authenticate,
+  authorize('ADMIN', 'MECHANIC'),
+  validate(editAuthQuestionSchema),
+  (req, res, next) => authQuestionController.editQuestion(req, res, next)
 );
 
 // Endpoint admin para responder con mensaje

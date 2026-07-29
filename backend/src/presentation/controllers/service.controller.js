@@ -285,4 +285,17 @@ export class ServiceController {
       next(error);
     }
   }
+
+  async searchCustomers(req, res, next) {
+    try {
+      const { q } = req.query;
+      if (!q || q.trim().length < 2) {
+        return res.json({ success: true, data: [] });
+      }
+      const customers = await userRepository.searchCustomers(q.trim());
+      res.json({ success: true, data: customers });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

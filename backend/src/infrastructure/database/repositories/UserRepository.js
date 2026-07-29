@@ -185,4 +185,32 @@ export class UserRepository extends IUserRepository {
       throw new DatabaseError('Error checking user existence', error.message);
     }
   }
+
+  async searchCustomers(q) {
+    try {
+      return await prisma.user.findMany({
+        where: {
+          role: 'CUSTOMER',
+          OR: [
+            { firstName: { contains: q, mode: 'insensitive' } },
+            { lastName:  { contains: q, mode: 'insensitive' } },
+            { phone:     { contains: q } },
+            { email:     { contains: q, mode: 'insensitive' } },
+          ]
+        },
+        include: {
+          services: {
+            select: { motorcycle: true, createdAt: true },
+            orderBy: { createdAt: 'desc' },
+            take: 5
+          }
+        },
+        take: 8,
+        orderBy: { createdAt: 'desc' }
+      });
+    } catch (error) {
+      logger.error('Error searching customers:', error);
+      throw new DatabaseError('Error searching customers', error.message);
+    }
+  }
 }
