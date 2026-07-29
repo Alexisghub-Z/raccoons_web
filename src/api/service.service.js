@@ -109,6 +109,14 @@ export const serviceService = {
     return res.data;
   },
 
+  async editAuthorizationQuestion(questionId, question) {
+    const res = await apiClient.put(
+      `/services/authorization-questions/${questionId}/edit-question`,
+      { question }
+    );
+    return res.data;
+  },
+
   async uploadAuthAttachments(questionId, files) {
     const formData = new FormData();
     for (const file of files) {
@@ -126,5 +134,11 @@ export const serviceService = {
       `/services/authorization-questions/attachments/${attachmentId}`
     );
     return res.data;
+  },
+
+  // Devuelve directamente el array de clientes
+  async searchCustomers(q) {
+    const res = await apiClient.get(`/services/customers/search?q=${encodeURIComponent(q)}`);
+    return res.data || [];
   }
 };

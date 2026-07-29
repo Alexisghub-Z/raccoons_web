@@ -337,3 +337,119 @@
   font-size: 0.8125rem;
   color: #6b7280;
 }
+
+/* ── Autocompletado de clientes ── */
+.customer-autocomplete-wrap {
+  position: relative;
+}
+
+.input-with-spinner {
+  position: relative;
+}
+
+.input-with-spinner input {
+  width: 100%;
+}
+
+.input-spinner {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  pointer-events: none;
+}
+
+.customer-suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  list-style: none;
+  margin: 0;
+  padding: 0.3rem;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.customer-suggestions li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.customer-suggestions li:hover {
+  background: #f1f5f9;
+}
+
+.suggestion-icon {
+  flex-shrink: 0;
+  color: #3b82f6;
+}
+
+.suggestion-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.suggestion-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.suggestion-meta {
+  font-size: 0.775rem;
+  color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Badge con conteo de servicios */
+.customer-service-count {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+/* Chips de motos previas */
+.prev-motos-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.775rem;
+  color: #6b7280;
+}
+
+.prev-moto-chip {
+  display: inline-flex;
+  align-items: center;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  font-size: 0.775rem;
+  font-weight: 500;
+  padding: 0.2rem 0.6rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.prev-moto-chip:hover {
+  background: #dbeafe;
+  border-color: #93c5fd;
+}

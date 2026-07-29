@@ -270,7 +270,6 @@ function AdminPage() {
   const handleCreateService = async (formData) => {
     setIsLoading(true);
     try {
-      // Preparar datos del cliente
       const nameParts = formData.clientName.trim().split(' ');
       const firstName = nameParts[0] || 'Cliente';
       const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : 'General';
@@ -280,47 +279,36 @@ function AdminPage() {
       let customerId;
       let wasExistingCustomer = false;
 
-      // Buscar si el cliente ya existe (por email o teléfono)
-      try {
-        const usersResponse = await userService.getAll({ role: 'CUSTOMER', limit: 1000 });
-        const allUsers = usersResponse.data || [];
-        const existingCustomer = allUsers.find(user => {
-          // Buscar por email si se proporcionó uno válido
-          if (formData.clientEmail && user.email === formData.clientEmail) {
-            return true;
-          }
-          // Buscar por teléfono si se proporcionó
-          if (formData.clientPhone && user.phone === formData.clientPhone) {
-            return true;
-          }
-          return false;
-        });
+      // Si el modal ya resolvió el cliente (seleccionado del dropdown), usarlo directamente
+      if (formData.customerId) {
+        customerId = formData.customerId;
+        wasExistingCustomer = true;
+      } else {
+        // Fallback: buscar por email o teléfono, o crear nuevo
+        try {
+          const candidates = await serviceService.searchCustomers(phoneToUse || emailToUse || firstName);
+          const found = candidates.find(u =>
+            (emailToUse && u.email === emailToUse) ||
+            (phoneToUse && u.phone === phoneToUse)
+          );
 
-        if (existingCustomer) {
-          // Cliente ya existe, reutilizarlo
-          customerId = existingCustomer.id;
-          wasExistingCustomer = true;
-          console.log(`Cliente existente encontrado: ${existingCustomer.email} (ID: ${customerId})`);
-        } else {
-          // Cliente no existe, crear uno nuevo
-          const finalEmail = emailToUse || `cliente-${Date.now()}@raccoons.internal`;
-          const customerData = {
-            firstName,
-            lastName,
-            email: finalEmail,
-            phone: phoneToUse,
-            password: 'Temp1234!',
-            role: 'CUSTOMER'
-          };
-
-          const response = await userService.create(customerData);
-          customerId = response.user.id;
-          console.log(`Cliente nuevo creado: ${emailToUse} (ID: ${customerId})`);
+          if (found) {
+            customerId = found.id;
+            wasExistingCustomer = true;
+          } else {
+            const finalEmail = emailToUse || `cliente-${Date.now()}@raccoons.internal`;
+            const response = await userService.create({
+              firstName, lastName,
+              email: finalEmail,
+              phone: phoneToUse,
+              password: 'Temp1234!',
+              role: 'CUSTOMER'
+            });
+            customerId = response.user.id;
+          }
+        } catch (error) {
+          throw error;
         }
-      } catch (error) {
-        console.error('Error al buscar/crear cliente:', error);
-        // Re-lanzar con details intactos para que el catch exterior los maneje
-        throw error;
       }
 
       // Crear servicio
