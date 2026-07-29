@@ -1,13 +1,43 @@
 import { useState, useRef } from 'react';
-import { Upload, X, FileText, Image, Loader2, Trash2, Video } from 'lucide-react';
+import { Upload, X, FileText, Image, Loader2, Trash2, Video, Camera } from 'lucide-react';
 import { serviceService } from '../../api/service.service';
+import CameraCapture from './CameraCapture';
 import './EvidenceUpload.css';
 
 function EvidenceUpload({ serviceId, onUploadSuccess }) {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState(null);
+  const [cameraOpen, setCameraOpen] = useState(false);
   const fileInputRef = useRef(null);
+
+  // Valida un File y lo convierte al formato de la lista de seleccionados
+  const buildEntry = (file) => {
+    const isImage = file.type.startsWith('image/');
+    const isVideo = file.type.startsWith('video/');
+    const isPDF = file.type === 'application/pdf';
+
+    if (!isImage && !isVideo && !isPDF) {
+      return { error: 'Solo se permiten imágenes, videos y PDFs' };
+    }
+
+    const maxSize = isVideo ? 200 * 1024 * 1024 : 10 * 1024 * 1024;
+    if (file.size > maxSize) {
+      return {
+        error: isVideo
+          ? 'Cada video debe pesar máximo 200MB'
+          : 'Cada imagen/PDF debe pesar máximo 10MB'
+      };
+    }
+
+    return {
+      entry: {
+        file,
+        preview: (isImage || isVideo) ? URL.createObjectURL(file) : null,
+        type: isImage ? 'IMAGE' : isVideo ? 'VIDEO' : 'PDF'
+      }
+    };
+  };
 
   const handleFileSelect = (e) => {
     const files = Array.from(e.target.files);
@@ -18,32 +48,35 @@ function EvidenceUpload({ serviceId, onUploadSuccess }) {
       return;
     }
 
-    // Validar tipo y tamaño de archivos
     const validFiles = [];
+    let lastError = null;
     for (const file of files) {
-      const isImage = file.type.startsWith('image/');
-      const isVideo = file.type.startsWith('video/');
-      const isPDF = file.type === 'application/pdf';
-
-      if (!isImage && !isVideo && !isPDF) {
-        setUploadError('Solo se permiten imágenes, videos y PDFs');
-        continue;
-      }
-
-      const maxSize = isVideo ? 200 * 1024 * 1024 : 10 * 1024 * 1024;
-      if (file.size > maxSize) {
-        setUploadError(isVideo ? 'Cada video debe pesar máximo 200MB' : 'Cada imagen/PDF debe pesar máximo 10MB');
-        continue;
-      }
-
-      validFiles.push({
-        file,
-        preview: (isImage || isVideo) ? URL.createObjectURL(file) : null,
-        type: isImage ? 'IMAGE' : isVideo ? 'VIDEO' : 'PDF'
-      });
+      const { entry, error } = buildEntry(file);
+      if (error) lastError = error;
+      else validFiles.push(entry);
     }
 
     setSelectedFiles([...selectedFiles, ...validFiles]);
+    setUploadError(lastError);
+
+    // Permite volver a elegir el mismo archivo si se quitó de la lista
+    e.target.value = '';
+  };
+
+  // Recibe la foto o video capturado desde la cámara
+  const handleCameraCapture = (file) => {
+    if (selectedFiles.length >= 10) {
+      setUploadError('Máximo 10 archivos permitidos');
+      return;
+    }
+
+    const { entry, error } = buildEntry(file);
+    if (error) {
+      setUploadError(error);
+      return;
+    }
+
+    setSelectedFiles(prev => [...prev, entry]);
     setUploadError(null);
   };
 
@@ -121,6 +154,16 @@ function EvidenceUpload({ serviceId, onUploadSuccess }) {
         <span className="dropzone-hint">Imágenes (JPG, PNG, WEBP), PDFs o Videos (MP4, MOV, WEBM)</span>
       </div>
 
+      {/* Captura directa desde la cámara */}
+      <button
+        type="button"
+        className="evidence-camera-btn"
+        onClick={() => setCameraOpen(true)}
+      >
+        <Camera size={18} />
+        Tomar foto o grabar video
+      </button>
+
       <input
         ref={fileInputRef}
         type="file"
@@ -128,6 +171,12 @@ function EvidenceUpload({ serviceId, onUploadSuccess }) {
         accept="image/*,application/pdf,video/mp4,video/quicktime,video/webm,video/x-msvideo,video/x-matroska"
         onChange={handleFileSelect}
         style={{ display: 'none' }}
+      />
+
+      <CameraCapture
+        isOpen={cameraOpen}
+        onClose={() => setCameraOpen(false)}
+        onCapture={handleCameraCapture}
       />
 
       {/* Vista previa de archivos seleccionados */}

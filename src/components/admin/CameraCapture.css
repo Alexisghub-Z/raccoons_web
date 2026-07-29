@@ -1,0 +1,299 @@
+/* ================================================================
+   CAMERA CAPTURE — Modal de captura de foto/video
+   ================================================================ */
+
+.cam-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.cam-modal {
+  background: #1a1a1a;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 640px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  max-height: 92vh;
+}
+
+/* ── Header ── */
+.cam-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+}
+
+.cam-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.cam-close {
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.cam-close:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+/* ── Vista de la cámara ── */
+.cam-stage {
+  position: relative;
+  background: #000;
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.cam-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Espejo solo en cámara frontal — se siente natural */
+.cam-video.mirrored {
+  transform: scaleX(-1);
+}
+
+.cam-loading,
+.cam-error {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.875rem;
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.cam-error {
+  color: #fca5a5;
+}
+
+.cam-error p {
+  margin: 0;
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+/* Badge de grabación */
+.cam-rec-badge {
+  position: absolute;
+  top: 0.85rem;
+  left: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: rgba(220, 38, 38, 0.92);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  padding: 0.3rem 0.7rem;
+  border-radius: 50px;
+}
+
+.cam-rec-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  animation: cam-blink 1.2s ease-in-out infinite;
+}
+
+@keyframes cam-blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.25; }
+}
+
+/* ── Controles ── */
+.cam-controls {
+  padding: 1.1rem 1.25rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Selector foto/video */
+.cam-mode-switch {
+  display: flex;
+  gap: 0.25rem;
+  background: rgba(255, 255, 255, 0.07);
+  padding: 0.25rem;
+  border-radius: 50px;
+}
+
+.cam-mode-switch button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0.42rem 1rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.cam-mode-switch button.active {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+.cam-mode-switch button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Botón de disparo */
+.cam-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.cam-shutter {
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.85);
+  background: transparent;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: #fff;
+  transition: transform 0.15s, border-color 0.2s;
+  padding: 0;
+}
+
+.cam-shutter:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+
+.cam-shutter:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.cam-shutter:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.cam-shutter-inner {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.cam-shutter-rec {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #dc2626;
+}
+
+.cam-shutter.recording {
+  border-color: #dc2626;
+  background: rgba(220, 38, 38, 0.16);
+  color: #dc2626;
+  animation: cam-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes cam-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+  50%      { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+}
+
+/* Botón girar cámara */
+.cam-flip {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: rgba(255, 255, 255, 0.75);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.cam-flip:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+.cam-flip:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.cam-hint {
+  margin: 0;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .cam-overlay {
+    padding: 0;
+  }
+
+  .cam-modal {
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+  }
+
+  .cam-stage {
+    flex: 1;
+    aspect-ratio: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cam-rec-dot,
+  .cam-shutter.recording {
+    animation: none;
+  }
+}

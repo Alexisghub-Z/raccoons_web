@@ -217,6 +217,32 @@
   to { transform: rotate(360deg); }
 }
 
+/* Botón de captura con cámara */
+.evidence-camera-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 0.6rem;
+  padding: 0.7rem 1rem;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  color: #374151;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+
+.evidence-camera-btn:hover {
+  border-color: #3b82f6;
+  background: #f0f9ff;
+  color: #1d4ed8;
+}
+
 /* Responsive */
 @media (max-width: 640px) {
   .evidence-preview-list {
