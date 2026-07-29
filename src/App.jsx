@@ -8,6 +8,7 @@ import './App.css'
 const HomePage = lazy(() => import('./pages/HomePage'))
 const AdminPage = lazy(() => import('./pages/AdminPage'))
 const TrackingPage = lazy(() => import('./pages/TrackingPage'))
+const MotosSoonPage = lazy(() => import('./pages/MotosSoonPage'))
 
 function App() {
   // Verificar si el splash ya se mostró en esta sesión
@@ -76,6 +77,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/seguimiento" element={<TrackingPage />} />
+            <Route path="/motos" element={<MotosSoonPage />} />
           </Routes>
         </Suspense>
       </div>

@@ -1,0 +1,322 @@
+/* ================================================================
+   MOTOS SOON PAGE — Fullscreen, sin scroll
+   ================================================================ */
+
+.ms-page {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #0a0a0a;
+  color: #fff;
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+}
+
+/* ── Fondo ── */
+.ms-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.ms-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
+  filter: brightness(0.38) saturate(0.6);
+}
+
+.ms-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(105deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.2) 100%),
+    linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 40%);
+}
+
+/* ── Header ── */
+.ms-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2.5rem;
+}
+
+.ms-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.7);
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.4rem 0.85rem 0.4rem 0.6rem;
+  border-radius: 50px;
+  letter-spacing: 0.02em;
+  backdrop-filter: blur(10px);
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.ms-back-btn:hover {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  border-color: rgba(255,255,255,0.22);
+}
+
+.ms-wordmark {
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
+  font-size: 1rem;
+  letter-spacing: 0.3em;
+  color: rgba(255,255,255,0.35);
+}
+
+/* ── Layout principal ── */
+.ms-main {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 2.5rem 2.5rem;
+}
+
+/* ── Contenido (texto) ── */
+.ms-content {
+  max-width: 640px;
+  animation: ms-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Badge "en desarrollo" */
+.ms-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 1.25rem;
+}
+
+.ms-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #25d366;
+  box-shadow: 0 0 0 3px rgba(37,211,102,0.25);
+  animation: ms-pulse 2s ease-in-out infinite;
+}
+
+@keyframes ms-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(37,211,102,0.25); }
+  50%       { box-shadow: 0 0 0 6px rgba(37,211,102,0.08); }
+}
+
+/* Título */
+.ms-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0 0 1.5rem;
+  line-height: 0.88;
+}
+
+.ms-title-line {
+  display: block;
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  color: #fff;
+}
+
+.ms-title-line--sm {
+  font-size: clamp(1.8rem, 3.5vw, 3rem);
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.08em;
+  margin-bottom: 0.1em;
+}
+
+.ms-title-line--lg {
+  font-size: clamp(5rem, 11vw, 10rem);
+  line-height: 0.85;
+}
+
+.ms-title-line--accent {
+  font-size: clamp(1.6rem, 3vw, 2.6rem);
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.1em;
+  margin-top: 0.15em;
+}
+
+/* Descripción */
+.ms-desc {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: rgba(255,255,255,0.4);
+  margin: 0 0 2rem;
+  max-width: 400px;
+}
+
+/* CTA WhatsApp */
+.ms-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: #25d366;
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.8rem 1.6rem;
+  border-radius: 50px;
+  letter-spacing: 0.01em;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 24px rgba(37,211,102,0.2);
+}
+
+.ms-cta:hover {
+  background: #1ebe5a;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(37,211,102,0.35);
+}
+
+/* ── Marcas ── */
+.ms-brands {
+  margin-top: 3rem;
+  animation: ms-rise 0.9s 0.15s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.ms-brands-label {
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+  margin: 0 0 1rem;
+}
+
+.ms-brands-row {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  flex-wrap: wrap;
+}
+
+.ms-brand-img {
+  height: 36px;
+  width: auto;
+  opacity: 0.75;
+  filter: drop-shadow(0 1px 8px rgba(0,0,0,1)) drop-shadow(0 0 3px rgba(0,0,0,1)) drop-shadow(0 0 1px rgba(0,0,0,1));
+  transition: opacity 0.25s;
+}
+
+.ms-brand-img:hover {
+  opacity: 1;
+}
+
+/* Logos oscuros/negros: invertir para hacerlos blancos */
+.ms-brand-img--invert {
+  filter: brightness(0) invert(1) drop-shadow(0 1px 4px rgba(0,0,0,0.6));
+  opacity: 0.65;
+}
+
+.ms-brand-img--invert:hover {
+  opacity: 1;
+}
+
+/* ── Número decorativo ── */
+.ms-deco-number {
+  position: absolute;
+  bottom: -0.1em;
+  right: -0.02em;
+  z-index: 5;
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
+  font-size: clamp(14rem, 28vw, 26rem);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.04);
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -0.02em;
+}
+
+/* ── Animación de entrada ── */
+@keyframes ms-rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .ms-header {
+    padding: 1.1rem 1.5rem;
+  }
+
+  .ms-main {
+    padding: 0 1.5rem 2rem;
+  }
+
+  .ms-title-line--lg {
+    font-size: clamp(4rem, 18vw, 6rem);
+  }
+
+  .ms-deco-number {
+    font-size: clamp(8rem, 38vw, 14rem);
+    opacity: 0.6;
+  }
+
+  .ms-brands-row {
+    gap: 1.25rem;
+  }
+
+  .ms-brand-img {
+    height: 26px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ms-title-line--sm {
+    font-size: clamp(1.2rem, 5.5vw, 1.8rem);
+  }
+
+  .ms-title-line--accent {
+    font-size: clamp(1.1rem, 4.5vw, 1.6rem);
+  }
+
+  .ms-desc {
+    font-size: 0.875rem;
+  }
+
+  .ms-cta {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .ms-content,
+  .ms-brands {
+    animation: none;
+  }
+
+  .ms-badge-dot {
+    animation: none;
+  }
+}

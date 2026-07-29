@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Instagram, Facebook, Youtube } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import './Header.css';
@@ -85,6 +85,7 @@ function Header() {
             <li><button className="nav-link" onClick={() => handleNavClick('servicios')}>Servicios</button></li>
             <li><button className="nav-link" onClick={() => handleNavClick('nosotros')}>Nosotros</button></li>
             <li><button className="nav-link" onClick={() => handleNavClick('contacto')}>Contacto</button></li>
+            <li><Link to="/motos" className="nav-link nav-link--motos" onClick={closeMenu}>Motos</Link></li>
           </ul>
           <div className="mobile-social-buttons">
             <button

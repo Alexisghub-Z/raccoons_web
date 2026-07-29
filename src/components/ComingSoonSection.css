@@ -33,6 +33,15 @@
   clip-path: polygon(53% 0, 100% 0, 100% 100%, 47% 100%);
 }
 
+/* ── Link que cubre todo el panel ── */
+.cs-panel-link {
+  position: absolute;
+  inset: 0;
+  display: block;
+  text-decoration: none;
+  z-index: 3;
+}
+
 /* ── Imagen sin zoom base, hover mínimo ── */
 .cs-panel-img {
   position: absolute;

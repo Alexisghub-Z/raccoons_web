@@ -556,3 +556,27 @@
     height: 35px;
   }
 }
+
+/* ── Enlace Motos — destacado en el nav ── */
+.nav-link--motos {
+  color: #fff !important;
+  background: linear-gradient(135deg, #1e40af, #3b82f6) !important;
+  border: none !important;
+  padding: 0.35rem 0.9rem !important;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  letter-spacing: 1.5px;
+  transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s !important;
+  box-shadow: 0 2px 12px rgba(59,130,246,0.3);
+}
+
+.nav-link--motos::after {
+  display: none;
+}
+
+.nav-link--motos:hover {
+  color: #fff !important;
+  opacity: 0.88;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 18px rgba(59,130,246,0.45);
+}

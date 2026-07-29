@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { Bike, Wrench } from 'lucide-react';
 import './ComingSoonSection.css';
 
@@ -23,16 +24,18 @@ export default function ComingSoonSection() {
 
       {/* Panel izquierdo — Motos */}
       <div className="cs-panel cs-panel--motos">
-        <img src="/clientes/cliente-featured.jpeg" alt="Venta de motos" className="cs-panel-img" loading="lazy" />
-        <div className="cs-panel-overlay" />
-        <div className="cs-panel-content">
-          <span className="cs-label">Próximamente</span>
-          <h3 className="cs-title">Venta<br />de Motos</h3>
-          <div className="cs-icon-line">
-            <Bike size={16} strokeWidth={1.5} />
-            <span className="cs-dot-line" />
+        <Link to="/motos" className="cs-panel-link" aria-label="Ver próximamente: Venta de Motos y Refacciones">
+          <img src="/clientes/cliente-featured.jpeg" alt="Venta de motos" className="cs-panel-img" loading="lazy" />
+          <div className="cs-panel-overlay" />
+          <div className="cs-panel-content">
+            <span className="cs-label">Próximamente</span>
+            <h3 className="cs-title">Venta<br />de Motos</h3>
+            <div className="cs-icon-line">
+              <Bike size={16} strokeWidth={1.5} />
+              <span className="cs-dot-line" />
+            </div>
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* Línea diagonal */}
@@ -42,16 +45,18 @@ export default function ComingSoonSection() {
 
       {/* Panel derecho — Refacciones */}
       <div className="cs-panel cs-panel--refacciones">
-        <img src="/servicios/reparacion.jpg" alt="Venta de refacciones" className="cs-panel-img" loading="lazy" />
-        <div className="cs-panel-overlay" />
-        <div className="cs-panel-content">
-          <span className="cs-label">Próximamente</span>
-          <h3 className="cs-title">Venta de<br />Refacciones</h3>
-          <div className="cs-icon-line">
-            <Wrench size={16} strokeWidth={1.5} />
-            <span className="cs-dot-line" />
+        <Link to="/motos" className="cs-panel-link" aria-label="Ver próximamente: Venta de Motos y Refacciones">
+          <img src="/servicios/reparacion.jpg" alt="Venta de refacciones" className="cs-panel-img" loading="lazy" />
+          <div className="cs-panel-overlay" />
+          <div className="cs-panel-content">
+            <span className="cs-label">Próximamente</span>
+            <h3 className="cs-title">Venta de<br />Refacciones</h3>
+            <div className="cs-icon-line">
+              <Wrench size={16} strokeWidth={1.5} />
+              <span className="cs-dot-line" />
+            </div>
           </div>
-        </div>
+        </Link>
       </div>
 
     </section>
