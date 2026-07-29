@@ -8,6 +8,7 @@ import { getStatusColor, getStatusText } from '../utils/statusHelpers';
 import { useCookie } from '../hooks/useCookie';
 import { serviceService } from '../api/service.service';
 import { AuthorizationQuestionsForStep } from '../components/tracking/AuthorizationQuestions';
+import { generateSimpleServicePDF } from '../services/pdfService';
 import './TrackingPage.css';
 
 const STATUS_STEPS = [
@@ -171,29 +172,25 @@ function TrackingPage() {
   const [downloadComplete, setDownloadComplete] = useState(false);
 
   const handleDownloadPDF = () => {
-    if (serviceData && serviceData.pdfFile && !isDownloading) {
-      setIsDownloading(true);
-      setTimeout(() => {
-        const base64Data = serviceData.pdfFile.split(',')[1];
-        const byteCharacters = atob(base64Data);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        const blob = new Blob([byteArray], { type: 'application/pdf' });
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = serviceData.pdfFileName || `Servicio_${serviceData.code}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-        setIsDownloading(false);
-        setDownloadComplete(true);
-        setTimeout(() => setDownloadComplete(false), 3000);
-      }, 800);
+    if (!serviceData || isDownloading) return;
+    setIsDownloading(true);
+    try {
+      generateSimpleServicePDF({
+        code: serviceData.code,
+        clientName: `${serviceData.customer?.firstName || ''} ${serviceData.customer?.lastName || ''}`.trim(),
+        motorcycle: serviceData.motorcycle,
+        serviceType: serviceData.serviceType,
+        status: serviceData.status,
+        dateCreated: serviceData.createdAt,
+        dateUpdated: serviceData.updatedAt,
+        notes: serviceData.notes,
+      });
+      setDownloadComplete(true);
+      setTimeout(() => setDownloadComplete(false), 3000);
+    } catch (err) {
+      console.error('Error generando PDF:', err);
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -461,7 +458,7 @@ function TrackingPage() {
               )}
 
               {/* ── PDF Download ── */}
-              {serviceData.pdfFile && (
+              {serviceData && (
                 <div className="tracking-actions">
                   <button
                     className={`tracking-download-btn-animated ${isDownloading ? 'downloading' : ''} ${downloadComplete ? 'complete' : ''}`}
