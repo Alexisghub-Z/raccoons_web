@@ -101,6 +101,21 @@ export class AuthorizationQuestionRepository extends IAuthorizationQuestionRepos
     }
   }
 
+  async updateQuestion(id, question) {
+    try {
+      const updated = await prisma.authorizationQuestion.update({
+        where: { id },
+        data: { question },
+        include: { attachments: { orderBy: { createdAt: 'asc' } } }
+      });
+      return new AuthorizationQuestion(updated);
+    } catch (error) {
+      logger.error('Error updating question text:', error);
+      if (error.code === 'P2025') throw new NotFoundError('AuthorizationQuestion');
+      throw new DatabaseError('Error updating question text', error.message);
+    }
+  }
+
   async updateAdminMessage(id, adminMessage) {
     try {
       const question = await prisma.authorizationQuestion.update({

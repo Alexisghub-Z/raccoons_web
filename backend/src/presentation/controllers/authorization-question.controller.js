@@ -46,6 +46,17 @@ export class AuthorizationQuestionController {
     }
   }
 
+  async editQuestion(req, res, next) {
+    try {
+      const { questionId } = req.params;
+      const { question } = req.validatedBody || req.body;
+      const updated = await authQuestionRepository.updateQuestion(questionId, question);
+      res.status(200).json({ success: true, data: updated, message: 'Question updated successfully' });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async reply(req, res, next) {
     try {
       const { questionId } = req.params;

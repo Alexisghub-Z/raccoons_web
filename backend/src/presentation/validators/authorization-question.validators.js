@@ -12,3 +12,7 @@ export const respondAuthQuestionSchema = Joi.object({
 export const replyAuthQuestionSchema = Joi.object({
   message: Joi.string().required().min(1).max(500)
 });
+
+export const editAuthQuestionSchema = Joi.object({
+  question: Joi.string().required().min(1).max(500)
+});
